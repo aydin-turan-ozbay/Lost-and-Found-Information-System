@@ -4,10 +4,10 @@ A web-based Lost and Found Information System designed for university campus.
 
 ## What will it do?
 
-•	report lost items
-•	report found items
-•	suggest match items using matching algorithms
-•	manage the delivery process easily and safely
+•report lost items
+•report found items
+•suggest match items using matching algorithms
+•manage the delivery process easily and safely
 
 ## Technology Stack
 
