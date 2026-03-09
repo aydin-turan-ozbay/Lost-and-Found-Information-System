@@ -4,31 +4,31 @@ A web-based Lost and Found Information System designed for university campus.
 
 ## What will it do?
 
-•report lost items
-•report found items
-•suggest match items using matching algorithms
-•manage the delivery process easily and safely
+- report lost items
+- report found items
+- suggest match items using matching algorithms
+- manage the delivery process easily and safely
 
 ## Technology Stack
 
 ### Frontend
-•	HTML
-•	CSS
-•	JavaScript
+-	HTML
+-	CSS
+-	JavaScript
 
 ### Backend
-•	PHP
+-	PHP
 
 ### Database
-•	MySQL
+-	MySQL
 
 ### Development Tools
-•   Visual Studio Code
+-   Visual Studio Code
 
 ## Core Features
 
-•   User login and register with Role-Based Access Control (RBAC)
-•   Email-Verified Registration System
-•   Listing Categorization of Lost and Found Items
-•   Automated Matching Algorithm
-•   Visual Proof Layer
+-   User login and register with Role-Based Access Control (RBAC)
+-   Email-Verified Registration System
+-   Listing Categorization of Lost and Found Items
+-   Automated Matching Algorithm
+-   Visual Proof Layer
