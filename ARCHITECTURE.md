@@ -1,1 +1,1 @@
-This document gives detailed information about the system architecture and structure.
+<h1>This document gives detailed information about the system architecture and structure.<h1>
