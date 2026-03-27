@@ -5,69 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Eşya Bildir - Lost and Found</title>
     <link rel="stylesheet" href="style.css">
-    <style>
-        /* Mevcut style.css üzerine ek arayüz iyileştirmeleri */
-        body {
-            align-items: flex-start !important; 
-            overflow-y: auto; 
-            padding: 40px 20px; 
-            height: auto; 
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 550px; 
-            margin: 0 auto; 
-            width: 100%;
-        }
-
-        .form-group textarea {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e1e1;
-            border-radius: 8px;
-            font-size: 15px;
-            transition: border-color 0.3s ease;
-            resize: vertical;
-        }
-
-        .form-group select {
-            width: 100%;
-            padding: 12px;
-            border: 2px solid #e1e1e1;
-            border-radius: 8px;
-            background-color: white;
-            cursor: pointer;
-        }
-
-        .file-limit-info {
-            font-size: 12px;
-            color: #666;
-            margin-top: 5px;
-            display: block;
-        }
-
-        #file_count_error {
-            color: #e74c3c;
-            font-weight: 600;
-            font-size: 13px;
-            margin-top: 5px;
-            display: none;
-        }
-
-        .footer-links {
-            margin-top: 25px;
-            text-align: center;
-        }
-
-        .btn {
-            width: 100%;
-            padding: 15px;
-            cursor: pointer;
-            border: none;
-            font-weight: bold;
-        }
-    </style>
+    <link rel="stylesheet" href="report_item.css">
+   
 </head>
 <body>
     <div class="container">
@@ -103,7 +42,13 @@
 
                 <div class="form-group">
                     <label for="location">Nerede Kayboldu/Bulundu?</label>
-                    <input type="text" name="location" id="location" placeholder="Örn: Mühendislik Fakültesi Kantini" required>
+                    <select name="location" id="location" required>
+                        <option value="">Konum Seçiniz...</option>
+                        <option value="bakirkoy">Bakırköy Kampüs</option>
+                        <option value="gayrettepe">Gayrettepe Kampüs</option>
+                        <option value="mahmutbey">Mahmutbey Kampüs A Blok</option>
+                        <option value="mahmutbey">Mahmutbey Kampüs D Blok</option>
+                    </select>
                 </div>
 
                 <div class="form-group">
@@ -147,6 +92,15 @@
             const imageLabel = document.getElementById('image_label');
             const formTitle = document.getElementById('form-main-title');
             const errorMsg = document.getElementById('file_count_error');
+            const dateInput = document.getElementById('item_date');
+
+            // --- YENİ: Tarih Sınırlama Mantığı ---
+            // Bugünün tarihini YYYY-MM-DD formatında alıyoruz
+            const today = new Date().toISOString().split('T')[0];
+            // Takvimde bugünden sonrasının seçilmesini engelliyoruz
+            dateInput.setAttribute('max', today);
+            // Varsayılan olarak bugünü seçili getirebilirsiniz (isteğe bağlı)
+            dateInput.value = today;
 
             // 1. Dinamik İçerik Ayarları
             if (itemType === 'found') {
@@ -164,11 +118,10 @@
 
             // 2. Fotoğraf Sayısı Sınırı ve Uzantı Kontrolü
             imageInput.addEventListener('change', function() {
-                // Eğer 5'ten fazla dosya seçildiyse
                 if (this.files.length > 5) {
                     errorMsg.style.display = 'block';
                     errorMsg.innerText = "⚠️ En fazla 5 fotoğraf seçebilirsiniz! Seçiminiz sıfırlandı.";
-                    this.value = ''; // Seçimi tamamen temizler
+                    this.value = ''; 
                     alert("Maksimum 5 fotoğraf sınırını aştınız.");
                 } else {
                     errorMsg.style.display = 'none';
