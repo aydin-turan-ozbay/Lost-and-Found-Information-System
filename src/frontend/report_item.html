@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eşya Bildir - Lost and Found</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Mevcut style.css üzerine ek arayüz iyileştirmeleri */
+        body {
+            align-items: flex-start !important; 
+            overflow-y: auto; 
+            padding: 40px 20px; 
+            height: auto; 
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 550px; 
+            margin: 0 auto; 
+            width: 100%;
+        }
+
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: border-color 0.3s ease;
+            resize: vertical;
+        }
+
+        .form-group select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e1e1;
+            border-radius: 8px;
+            background-color: white;
+            cursor: pointer;
+        }
+
+        .file-limit-info {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+            display: block;
+        }
+
+        #file_count_error {
+            color: #e74c3c;
+            font-weight: 600;
+            font-size: 13px;
+            margin-top: 5px;
+            display: none;
+        }
+
+        .footer-links {
+            margin-top: 25px;
+            text-align: center;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 15px;
+            cursor: pointer;
+            border: none;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="form-container">
+            <h2 id="form-main-title">Yeni Eşya Bildirisi Oluştur</h2>
+            <p style="margin-bottom: 25px; color: #666;">Lütfen eşya hakkındaki bilgileri eksiksiz doldurunuz.</p>
+            
+            <form action="../backend/report_item.php" method="POST" enctype="multipart/form-data">
+                
+                <input type="hidden" name="type" id="hidden_type">
+
+                <div class="form-group">
+                    <label for="title">Eşya Adı</label>
+                    <input type="text" name="title" id="title" placeholder="Örn: Siyah Deri Cüzdan" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="category">Kategori</label>
+                    <select name="category" id="category" required>
+                        <option value="">Seçiniz...</option>
+                        <option value="electronics">Elektronik</option>
+                        <option value="wallet">Cüzdan/Kartlık</option>
+                        <option value="bag">Çanta</option>
+                        <option value="keys">Anahtarlık</option>
+                        <option value="other">Diğer</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="color">Renk</label>
+                    <input type="text" name="color" id="color" placeholder="Örn: Lacivert, Gri">
+                </div>
+
+                <div class="form-group">
+                    <label for="location">Nerede Kayboldu/Bulundu?</label>
+                    <input type="text" name="location" id="location" placeholder="Örn: Mühendislik Fakültesi Kantini" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="item_date">Tarih</label>
+                    <input type="date" name="item_date" id="item_date" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="description">Detaylı Açıklama</label>
+                    <textarea name="description" id="description" rows="4" placeholder="Eşyayı ayırt edici özelliklerini yazınız..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label id="image_label" for="item_image">Eşya Fotoğrafları</label>
+                    <input type="file" 
+                           name="item_image[]" 
+                           id="item_image" 
+                           accept="image/*" 
+                           multiple 
+                           style="border:none; padding:0; background:none;">
+                    <span class="file-limit-info">Tüm fotoğraf formatları kabul edilir. En fazla 5 fotoğraf.</span>
+                    <span id="file_count_error">⚠️ En fazla 5 fotoğraf seçebilirsiniz!</span>
+                </div>
+
+                <button type="submit" class="btn">Bildiriyi Yayınla</button>
+            </form>
+            
+            <div class="footer-links">
+                <a href="dashboard.html" style="text-decoration: none; color: #667eea; font-weight: bold;">← Panele Geri Dön</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const itemType = urlParams.get('type'); 
+
+            const hiddenType = document.getElementById('hidden_type');
+            const imageInput = document.getElementById('item_image');
+            const imageLabel = document.getElementById('image_label');
+            const formTitle = document.getElementById('form-main-title');
+            const errorMsg = document.getElementById('file_count_error');
+
+            // 1. Dinamik İçerik Ayarları
+            if (itemType === 'found') {
+                if(hiddenType) hiddenType.value = 'found';
+                imageInput.required = true; 
+                formTitle.innerText = "Buluntu Eşya Bildirisi";
+                imageLabel.innerHTML = 'Eşya Fotoğrafları <span style="color:red;">(En az 1 fotoğraf zorunlu)</span>';
+            } 
+            else {
+                if(hiddenType) hiddenType.value = 'lost';
+                imageInput.required = false; 
+                formTitle.innerText = "Kayıp Eşya Bildirisi";
+                imageLabel.innerHTML = 'Eşya Fotoğrafları <span style="color:#888;">(Opsiyonel)</span>';
+            }
+
+            // 2. Fotoğraf Sayısı Sınırı ve Uzantı Kontrolü
+            imageInput.addEventListener('change', function() {
+                // Eğer 5'ten fazla dosya seçildiyse
+                if (this.files.length > 5) {
+                    errorMsg.style.display = 'block';
+                    errorMsg.innerText = "⚠️ En fazla 5 fotoğraf seçebilirsiniz! Seçiminiz sıfırlandı.";
+                    this.value = ''; // Seçimi tamamen temizler
+                    alert("Maksimum 5 fotoğraf sınırını aştınız.");
+                } else {
+                    errorMsg.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
