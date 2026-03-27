@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Lost and Found</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form action="../backend/login.php" method="POST">
+            <input type="hidden" id="next" name="next" value="">
+            <div class="form-group">
+                <label for="identifier">Student ID / Email</label>
+                <input 
+                type="text" 
+                id="identifier" 
+                name="identifier" 
+                placeholder="Enter ID or Email" 
+                required 
+                oninvalid="this.setCustomValidity('Please enter your Student ID or Email Address.')" 
+                oninput="this.setCustomValidity('')"
+>
+            </div>
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" placeholder="Min. 8 characters" minlength="8" required oninvalid="this.setCustomValidity('Password must be at least 8 characters long.')" 
+                oninput="this.setCustomValidity('')">
+            </div>
+            <button type="submit">Login</button>
+        </form>
+        <p class="footer-text">Don't have an account? <a href="register.html">Sign Up Now</a></p>
+    </div>
+    <script src="js/login.js"></script>
+</body>
+</html>

@@ -66,10 +66,10 @@
                     <input type="file" 
                            name="item_image[]" 
                            id="item_image" 
-                           accept="image/*" 
+                           accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.heif" 
                            multiple 
                            style="border:none; padding:0; background:none;">
-                    <span class="file-limit-info">Tüm fotoğraf formatları kabul edilir. En fazla 5 fotoğraf.</span>
+                    <span class="file-limit-info">Desteklenen formatlar: JPG, PNG, WEBP, GIF, HEIC. En fazla 5 fotoğraf.</span>
                     <span id="file_count_error">⚠️ En fazla 5 fotoğraf seçebilirsiniz!</span>
                 </div>
 
@@ -82,52 +82,6 @@
         </div>
     </div>
 
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const itemType = urlParams.get('type'); 
-
-            const hiddenType = document.getElementById('hidden_type');
-            const imageInput = document.getElementById('item_image');
-            const imageLabel = document.getElementById('image_label');
-            const formTitle = document.getElementById('form-main-title');
-            const errorMsg = document.getElementById('file_count_error');
-            const dateInput = document.getElementById('item_date');
-
-            // --- YENİ: Tarih Sınırlama Mantığı ---
-            // Bugünün tarihini YYYY-MM-DD formatında alıyoruz
-            const today = new Date().toISOString().split('T')[0];
-            // Takvimde bugünden sonrasının seçilmesini engelliyoruz
-            dateInput.setAttribute('max', today);
-            // Varsayılan olarak bugünü seçili getirebilirsiniz (isteğe bağlı)
-            dateInput.value = today;
-
-            // 1. Dinamik İçerik Ayarları
-            if (itemType === 'found') {
-                if(hiddenType) hiddenType.value = 'found';
-                imageInput.required = true; 
-                formTitle.innerText = "Buluntu Eşya Bildirisi";
-                imageLabel.innerHTML = 'Eşya Fotoğrafları <span style="color:red;">(En az 1 fotoğraf zorunlu)</span>';
-            } 
-            else {
-                if(hiddenType) hiddenType.value = 'lost';
-                imageInput.required = false; 
-                formTitle.innerText = "Kayıp Eşya Bildirisi";
-                imageLabel.innerHTML = 'Eşya Fotoğrafları <span style="color:#888;">(Opsiyonel)</span>';
-            }
-
-            // 2. Fotoğraf Sayısı Sınırı ve Uzantı Kontrolü
-            imageInput.addEventListener('change', function() {
-                if (this.files.length > 5) {
-                    errorMsg.style.display = 'block';
-                    errorMsg.innerText = "⚠️ En fazla 5 fotoğraf seçebilirsiniz! Seçiminiz sıfırlandı.";
-                    this.value = ''; 
-                    alert("Maksimum 5 fotoğraf sınırını aştınız.");
-                } else {
-                    errorMsg.style.display = 'none';
-                }
-            });
-        });
-    </script>
+    <script src="js/report-item.js"></script>
 </body>
 </html>

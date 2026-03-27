@@ -13,7 +13,7 @@ if (isset($_FILES['item_image'])) {
 
 // 2. Çoklu Dosya Yükleme Mantığı
 $uploaded_files = [];
-$allowed_exts = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+$allowed_exts = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic', 'heif'];
 
 for ($i = 0; $i < $file_count; $i++) {
     if ($_FILES['item_image']['error'][$i] === 0) {
@@ -21,14 +21,15 @@ for ($i = 0; $i < $file_count; $i++) {
         $tmp  = $_FILES['item_image']['tmp_name'][$i];
         $ext  = strtolower(pathinfo($name, PATHINFO_EXTENSION));
 
-        if (in_array($ext, $allowed_exts)) {
+        if (!in_array($ext, $allowed_exts)) {
+            die("Hata: '" . htmlspecialchars($name) . "' desteklenmeyen bir format. İzin verilenler: jpg, jpeg, png, webp, gif, heic, heif.");
+        }
             $new_name = uniqid('IMG_', true) . '.' . $ext;
             $path = '../uploads/' . $new_name;
 
             if (move_uploaded_file($tmp, $path)) {
-                $uploaded_files[] = $path; // Veritabanına kaydedilmek üzere diziye ekle
+                $uploaded_files[] = $path;
             }
-        }
     }
 }
 
@@ -37,5 +38,5 @@ for ($i = 0; $i < $file_count; $i++) {
 // veya virgülle ayrılmış bir string tercih edilir.
 $images_json = json_encode($uploaded_files);
 
-// SQL Sorgunuza $images_json değişkenini dahil edilebilir.
+// SQL Sorgunuza $images_json değişkenini dahil edebilirsiniz.
 ?>
