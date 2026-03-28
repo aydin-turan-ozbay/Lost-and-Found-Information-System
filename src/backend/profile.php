@@ -234,8 +234,7 @@ $roleMeta = isset($roleLabels[$role]) ? $roleLabels[$role] : ['label' => htmlspe
                 </div>
 
                 <div class="profile-actions">
-                    <a href="index.php" class="btn-home">Ana Sayfa</a>
-                    <a href="logout.php" class="btn-logout">Çıkış Yap</a>
+                    <a href="index.php" class="btn-home">Geri</a>
                 </div>
             </div>
         </div>
