@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profilim - Lost and Found</title>
+    <link rel="stylesheet" href="../frontend/style.css">
+    <link rel="stylesheet" href="../frontend/profile.css">
+</head>
+<body>
+    <div class="profile-wrapper">
+        <div class="profile-card">
+            <div class="profile-card-header">
+                <h2>Profil Bilgilerim</h2>
+                <div class="avatar"><?php echo htmlspecialchars($initials); ?></div>
+            </div>
+
+            <div class="profile-card-body">
+                <div class="profile-name"><?php echo htmlspecialchars($fullName); ?></div>
+                <span class="role-badge" style="background:<?php echo $roleMeta['color']; ?>;">
+                    <?php echo htmlspecialchars($roleMeta['label']); ?>
+                </span>
+
+                <div class="info-list">
+                    <div class="info-row">
+                        <div class="info-icon">👤</div>
+                        <div class="info-text">
+                            <span class="info-label">Ad Soyad</span>
+                            <span class="info-value"><?php echo htmlspecialchars($fullName); ?></span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-icon">🎓</div>
+                        <div class="info-text">
+                            <span class="info-label">Numara</span>
+                            <span class="info-value"><?php echo htmlspecialchars($studentId); ?></span>
+                        </div>
+                    </div>
+                    <div class="info-row">
+                        <div class="info-icon">✉️</div>
+                        <div class="info-text">
+                            <span class="info-label">E-posta</span>
+                            <span class="info-value"><?php echo htmlspecialchars($email); ?></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="profile-actions">
+                    <a href="index.php" class="btn-home">Geri Dön</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
