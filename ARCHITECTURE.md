@@ -1,5 +1,13 @@
 # Project Architecture:  Lost and Found Information System
 
+## Change History
+
+## Table of Contents
+
+## List of Figures
+
+---
+
 ## 1. Scope
 This application is a digital platform that facilitates the tracking of lost and found items on a university campus. Users can register to the system and create listings with photos for items they have found or lost. Thanks to the smart search feature in the system, it is possible to find a searched item in seconds by typing a category or name. In addition, there is an administrator (Admin) panel that oversees the entire process; this makes lost item tracking fast, reliable, and highly organized.
 
@@ -135,26 +143,28 @@ Through the use of GitHub:
 
 ---
 
-## 11. Quality Attributes
+## 11. Quality
 
 ### 11.1. Security & Privacy
-*   **Identity Verification:** OTP system during registration prevents fake accounts.
-*   **Confidentiality:** No direct communication between parties; process is handled via the Campus Security Unit.
-*   **RBAC:** Role-Based Access Control via the "Principle of Least Privilege."
-*   **Data Protection:** Passwords hashed using **BCRYPT**; inputs sanitized against SQL Injection and XSS.
+*   **Identity Verification (OTP):** The One-Time Password (OTP) system sent to the user's email address during registration prevents fake accounts and verifies user identity upfront.
+*   **Confidentiality:** There is no direct communication between the losing and finding parties. The entire process is conducted via the **Campus Security Unit**, preserving user anonymity.
+*   **RBAC (Role-Based Access Control):**  ***The "Principle of Least Privilege"*** is applied. The Admin (Security) can access all data, while users can only see their own listings.
+*   **Data Protection:** Passwords are hashed using ***BCRYPT***; all form inputs are cleaned against **SQL Injection** and **XSS attacks.**
 
 ### 11.2. Reliability & Integrity
 *   **Two-Step Verification:** Security officer checks verification info during physical delivery.
 *   **Visual Proof:** Mandatory photo uploads increase data accuracy.
+*   **Transaction Consistency:** Database operations work cohesively to prevent data loss during reporting and matching.
 
 ### 11.3. Performance & Efficiency
-*   **Automated Matching:** Minimizes MTTR (Mean Time To Recover).
+*   **Automated Matching Engine:** _The Matching Algorithm_, which runs when a new lost or found listing is entered, digitizes the manual search process by calculating the similarity score between listings and minimizes the ***MTTR (Mean Time To Recover)***.
 *   **Proactive Notifications:** Instant alerts for matches exceeding a 70% threshold.
+*   **Database Indexing:** Category and location-based indexing ensure fast querying even with a high volume of records.
 
 ### 11.4. Usability & UX
-*   **Personalized Interfaces:** Dashboard menus customized by role.
-*   **Mobile Responsiveness:** Accessible anywhere on campus.
+*   **Personalized Interfaces:** Dashboard menus customized by user's role.
+*   **Mobile Responsiveness:**All interfaces are mobile-responsive so the system can be easily used anywhere on campus at any time.
 
 ### 11.5. Maintainability & Audit
-*   **Modular Architecture:** Independent modules for easy debugging.
-*   **Audit Trail:** Every delivery transaction is logged with the receiver, approving officer, and timestamp.
+*   **Modular Architecture:** Backend logic (matching algorithm, notification service, DB connection) consists of ***independent modules***, making development and debugging straightforward.
+*   **Audit Trail:** Every delivery transaction is logged with the receiver, the approving officer, and a timestamp, creating a secure digital audit trail.
