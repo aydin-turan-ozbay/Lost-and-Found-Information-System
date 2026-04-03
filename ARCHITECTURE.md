@@ -148,13 +148,13 @@ Through the use of GitHub:
 ### 11.1. Security & Privacy
 *   **Identity Verification (OTP):** The One-Time Password (OTP) system sent to the user's email address during registration prevents fake accounts and verifies user identity upfront.
 *   **Confidentiality:** There is no direct communication between the losing and finding parties. The entire process is conducted via the **Campus Security Unit**, preserving user anonymity.
-*   **RBAC (Role-Based Access Control):**  ***The "Principle of Least Privilege"*** is applied. The Admin (Security) can access all data, while users can only see their own listings.
-*   **Data Protection:** Passwords are hashed using ***BCRYPT***; all form inputs are cleaned against **SQL Injection** and **XSS attacks.**
+*   **RBAC (Role-Based Access Control):**  The ***"Principle of Least Privilege"*** is applied. The Admin (Security) can access all data, while users can only see their own listings.
+*   **Data Protection:** Passwords are hashed using **BCRYPT**; all form inputs are cleaned against **SQL Injection** and **XSS attacks.**
 
 ### 11.2. Reliability & Integrity
 *   **Two-Step Verification:** Security officer checks verification info during physical delivery.
 *   **Visual Proof:** Mandatory photo uploads increase data accuracy.
-*   **Transaction Consistency:** Database operations work cohesively to prevent data loss during reporting and matching.
+*   **Transaction Consistency:** Database operations work cohesively to prevent data loss during **reporting and matching.**
 
 ### 11.3. Performance & Efficiency
 *   **Automated Matching Engine:** _The Matching Algorithm_, which runs when a new lost or found listing is entered, digitizes the manual search process by calculating the similarity score between listings and minimizes the ***MTTR (Mean Time To Recover)***.
@@ -163,8 +163,21 @@ Through the use of GitHub:
 
 ### 11.4. Usability & UX
 *   **Personalized Interfaces:** Dashboard menus customized by user's role.
-*   **Mobile Responsiveness:**All interfaces are mobile-responsive so the system can be easily used anywhere on campus at any time.
+*   **Mobile Responsiveness:** All interfaces are mobile-responsive so the system can be easily used anywhere on campus at any time.
 
 ### 11.5. Maintainability & Audit
-*   **Modular Architecture:** Backend logic (matching algorithm, notification service, DB connection) consists of ***independent modules***, making development and debugging straightforward.
+*   **Modular Architecture:** Backend logic (matching algorithm, notification service, DB connection) consists of *independent modules*, making development and debugging straightforward.
 *   **Audit Trail:** Every delivery transaction is logged with the receiver, the approving officer, and a timestamp, creating a secure digital audit trail.
+
+---
+
+## Appendices 
+
+### Acronyms and Abbreviations 
+
+
+### Definitions 
+
+
+### Design Principles
+
