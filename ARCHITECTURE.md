@@ -181,3 +181,15 @@ Through the use of GitHub:
 
 ### Design Principles
 
+
+* **Single Responsibility Principle (SRP)**
+* **Event-Driven Execution**
+* **Non-Blocking Communication (Asynchrony)**
+* **Separation of Concerns (SoC)**
+* **Layered Architecture**
+* **Principle of Least Privilege (PoLP)**
+* **Decoupled Frontend-Backend**
+* **High Cohesion / Low Coupling**
+* **Simplicity**
+* **Zero-Exposure Strategy**
+* **Normalized Data Design**
