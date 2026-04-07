@@ -175,9 +175,24 @@ Through the use of GitHub:
 
 ### Acronyms and Abbreviations 
 
-
 ### Definitions 
 
+| Term | Definition |
+| :--- | :--- |
+| **Asynchronous (Non-blocking)** | A method where operations run independently without waiting for each other. This ensures the UI remains responsive while the Fetch API performs matching in the background. |
+| **BCRYPT** | A password-hashing function based on the Blowfish cipher, used to securely store user credentials in a non-reversible format. |
+| **Endpoint** | Specific URLs or server-side scripts (e.g., `login.php`) that act as a gateway for the Frontend to communicate with the Backend. |
+| **Event-Driven** | A software architecture paradigm where the flow of the program is determined by events, such as a new data entry triggering the matching algorithm. |
+| **Fetch API** | A modern JavaScript interface for making asynchronous HTTP requests to the server without requiring a full page reload. |
+| **Hashing** | The process of converting data (passwords) into a fixed-length string of characters that cannot be reversed, ensuring security even if the database is compromised. |
+| **MTTR** | *Mean Time To Recover.* In this context, it refers to the average time taken from the moment an item is reported lost to its successful recovery. |
+| **OTP** | *One-Time Password.* A unique, time-sensitive code sent via email to verify a user's identity during the registration or password recovery process. |
+| **Payload** | The essential part of a transmitted data package. In this project, it refers to the JSON data sent within an HTTP request (e.g., item details). |
+| **RBAC** | **Role-Based Access Control.** A security mechanism that restricts system access to authorized users based on their roles (e.g., Admin vs. Student). |
+| **RDBMS** | **Relational Database Management System.** A database engine (like MySQL) that organizes data into tables linked by defined relationships. |
+| **SMTP** | **Simple Mail Transfer Protocol.** The technical standard for transmitting automated email notifications from the application server. |
+| **UX** | **User Experience.** The overall experience of a person using the application, optimized in this project through responsive design and asynchronous updates. |
+| **XSS** | **Cross-Site Scripting (XSS):** A security vulnerability whereby malicious scripts are injected into trusted websites; in this project, this is prevented through input filtering. |
 
 ### Design Principles
 
