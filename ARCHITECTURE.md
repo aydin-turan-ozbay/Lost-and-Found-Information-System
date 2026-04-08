@@ -152,18 +152,19 @@ Through the use of GitHub:
 *   **Data Protection:** Passwords are hashed using **BCRYPT**; all form inputs are cleaned against **SQL Injection** and **XSS attacks.**
 
 ### 11.2. Reliability & Integrity
-*   **Two-Step Verification:** Security officer checks verification info during physical delivery.
-*   **Visual Proof:** Mandatory photo uploads increase data accuracy.
+*   **Two-Step Verification:** The verification information sent to the user via email after a match is checked by the security officer during the physical delivery process.
+*   **Visual Proof:** The mandatory photo upload for "Found Item" reports increases the accuracy and evidentiary value of the data in the system.
 *   **Transaction Consistency:** Database operations work cohesively to prevent data loss during **reporting and matching.**
 
 ### 11.3. Performance & Efficiency
 *   **Automated Matching Engine:** _The Matching Algorithm_, which runs when a new lost or found listing is entered, digitizes the manual search process by calculating the similarity score between listings and minimizes the ***MTTR (Mean Time To Recover)***.
-*   **Proactive Notifications:** Instant alerts for matches exceeding a 70% threshold.
+*   **Proactive Email Notification:** Without the need for the user to constantly check the system, instant and proactive notifications are provided via the Email Notification Service for matches exceeding the 70% threshold.
 *   **Database Indexing:** Category and location-based indexing ensure fast querying even with a high volume of records.
 
 ### 11.4. Usability & UX
 *   **Personalized Interfaces:** Dashboard menus customized by user's role.
 *   **Mobile Responsiveness:** All interfaces are mobile-responsive so the system can be easily used anywhere on campus at any time.
+*   **Location-Based Filtering:** Customized categorization based on campus buildings increases search accuracy.
 
 ### 11.5. Maintainability & Audit
 *   **Modular Architecture:** Backend logic (matching algorithm, notification service, DB connection) consists of *independent modules*, making development and debugging straightforward.
