@@ -113,33 +113,50 @@ Through the use of GitHub:
 ---
 
 ## 9. Scenarios
+This section describes the end-to-end operational flow of the system, highlighting the interaction between the Frontend (JS), Backend (PHP API), and MySQL Database.
+
 ### Scenario 1: Posting a Lost Item (Student/User)
-*   **Action:** User logs in via `login.html`.
-*   **Technical Flow:** JS intercepts the form submission, collects data via `FormData`, and sends an asynchronous request to `backend/post_item.php` via Fetch API.
-*   **Result:** Data is stored in MySQL and the user is redirected to `my_adverts.html`.
+*   **Action:** A student logs into the platform via `login.html.` The `auth.js` script verifies the session.
+*   **Process:** The student fills out the "Post Item" form, providing a mandatory date and an optional time.
+*   **Technical Flow:** Upon submission, JavaScript intercepts the event, collects data using the `FormData` object, and sends an asynchronous request to `backend/post_item.php` via the Fetch API.
+* **Result:** The Backend validates the input and stores the data in the MySQL `items` table. The user is then dynamically redirected to `my_adverts.html` to view their active listing.
+
 
 ### Scenario 2: Smart Matching and Notification (System)
-*   **Action:** User posts a "Found" item.
-*   **Process:** Matching engine triggers immediately after the DB update.
-*   **Result:** If the Score exceeds the threshold, notifications appear on dashboards.
+* **Action:** A user posts a "Found" item listing.
+* **Process:** Immediately after the database update, the backend matching engine is triggered as an **Event-Driven** process.
+* **Technical Flow:** The system compares the new entry against existing "Lost" items using a **Weighted Scoring Algorithm** 
+* **Result:** If the calculated Score exceeds the **70% threshold**, the system creates a record in the `match_records` table and displays a proactive notification on both users' dashboards.
+
 
 ### Scenario 3: Secure Password Recovery (User)
-*   **Action:** User clicks "Forgot Password".
-*   **Technical Flow:** Backend generates a time-sensitive Security Token. An email reset link is dispatched via SMTP.
-*   **Result:** Token is invalidated immediately after use.
+* **Action:** A user clicks "Forgot Password" on the login page.
+* **Process:** The user provides their registered email address in `forgot_password.html`.
+* **Technical Flow:** The backend generates a unique, time-sensitive **Security Token** and stores it in the MySQL database. An email containing a reset link is dispatched via **SMTP**.
+* **Result:** The user follows the link to `reset_password.html` to update credentials. The token is invalidated immediately after use to ensure maximum system security.
+
 
 ### Scenario 4: Controlled Delivery Management (Admin)
-*   **Action:** Admin navigates to the "Delivery" section.
-*   **Technical Flow:** Admin enters IDs of matched items; `backend/deliver_item.php` updates status from active to passive.
-*   **Result:** Items move to "Past Listings" and are stored as transaction history.
+* **Action:** The Admin navigates to the "Delivery" section in the `admin_panel.html`.
+* **Process:** The Admin selects the recipient using a searchable dropdown filtered by **T.C. Identification Number**.
+* **Technical Flow:** The admin enters the unique IDs of the matched items. The `backend/deliver_item.php` script updates the status of both items from **Active** to **Passive**.
+* **Result:** Once delivery is confirmed, the relevant listing is moved from the **"My Active Listings"** tab to the **"My Found Items / My Past Listings"** tab in the user's dashboard.The records are not deleted from the system; they remain stored in the database as proof of delivery and a transaction history for both the user and the administrator.
 
 ---
 
 ## 10. Size and Performance
-*   **Lightweight Codebase:** Separation of concerns eliminates redundant code.
-*   **Data Efficiency:** Optimized MySQL data types (INT, DATETIME, VARCHAR) minimize disk usage.
-*   **Low Latency:** JSON-only data exchange via Fetch API reduces network traffic by up to 70%.
-*   **Search Optimization:** Admin searches are performed on indexed columns (T.C. Number) for millisecond response times.
+The system is engineered for efficiency, utilizing a lightweight architecture to ensure high responsiveness and low resource consumption.
+
+### 10.1. System Size
+* **Lightweight Codebase:** By separating concerns into `/frontend` and `/backend`, redundant code has been eliminated. The application maintains a minimal footprint, consisting primarily of optimized script files and lean HTML structures.
+* **Data Efficiency:** The MySQL database is designed with optimized data types (e.g., `INT` for IDs, `DATETIME` for timestamps, and `VARCHAR` for strings) to minimize disk space usage while maintaining data integrity.
+* **Asset Management:** The `/assets` folder is strictly reserved for essential media, such as the corporate logo. This keeps the initial load size very small, as decorative elements are handled via CSS within the frontend directory.
+
+### 10.2. Performance Metrics
+* **Low Latency Communication:** Using the **Fetch API** to exchange only JSON data (rather than full HTML pages) reduces network traffic by up to **70%**. This results in near-instantaneous UI updates and transitions.
+* **Search Optimization:** Admin searches are performed on **indexed columns** (specifically the T.C. Identification Number). This ensures that even with a database of thousands of students,search results are returned in milliseconds.
+* **Concurrency and Scalability:** When a user creates a new listing, the system executes the cross-matching algorithm in the background. Thanks to the **asynchronous** nature of the Fetch API, the User Interface (Frontend) remains unblocked, providing a smooth experience even under high traffic conditions.
+* **Server Response Time:** API endpoints are optimized for speed, aiming for a response time of **less than 100ms** per request under normal campus network load conditions.
 
 ---
 
