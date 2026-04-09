@@ -26,6 +26,14 @@
 
 ## List of Figures
 
+| Figure No | Description | Section Reference |
+| :--- | :--- | :--- |
+| **Figure 1** | Entity Relationship Diagrams (Conceptual and Logical) | [3.3.1. Entity Relationship Diagram (ERD)](#331-entity-relationship-diagram-erd) |
+| **Figure 2** | Component Diagram | [3.4. Dynamic Matching and Notification Service](#34-dynamic-matching-and-notification-service) |
+| **Figure 3** | Sequence Diagram | [6. Process Architecture](#6-process-architecture) |
+| **Figure 4** | Deployment Diagram | [8. Physical Architecture](#8-physical-architecture) |
+| **Figure 5** | Use Case Diagram | [9. Scenarios](#9-scenarios) |
+
 ---
 
 ## 1. Scope
