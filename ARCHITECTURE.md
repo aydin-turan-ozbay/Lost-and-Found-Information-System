@@ -4,8 +4,6 @@
 
 ## Table of Contents
 
-
-
 1. [Project Scope](#1-scope)
 2. [References](#2-references)
 3. [Software Architecture](#3-software-architecture)
@@ -19,7 +17,6 @@
 11. [Quality](#11-quality)
 
 ## [Appendices](#appendices)
-
 
 - [Acronyms and Abbreviations](#acronyms-and-abbreviations)
 - [Definitions](#definitions)
@@ -61,32 +58,28 @@ The technology stack and tools used in the development, testing, and deployment 
 
 ## 3. Software Architecture
 
-The diagram below illustrates the high-level software architecture of the platform, utilizing a **decoupled, event-driven logical architecture**.
+The project is built upon a **3-Tier Architecture** with clearly defined responsibilities, incorporating **Event-Driven** design principles.
 
-<p align="center">
-  <img src="docs/diagrams/component_diagram.png" alt="Component Diagram" width="1000">
-</p>
+### 3.1. Presentation Layer (Frontend)
 
-#### **Detailed Architecture Analysis**
+- **Layer Details:** This layer manages user interactions using **HTML5, CSS3, and JavaScript (Fetch API)**.
+- **Privacy Protocol:** To ensure user privacy, the frontend only displays the listings belonging to the logged-in user; a **public list of found items** is strictly prohibited.
 
-**1. Presentation Layer (Frontend)**
+### 3.2. Logic Layer (Backend)
 
-- **Web Browser Interface:** Renders static HTML/CSS, ensuring cross-browser compatibility. Responsible for displaying UI and capturing input.
-- **Client-Side Logic:** (JS Engines) Performs **Form Validation** and manages **Dynamic Content** (Dashboard) without full-page reloads.
+- **Business Logic:** This is the business logic layer based on **PHP 8.x**.
+- **Core Engine:** Beyond simple data persistence, this layer hosts the **_Bi-directional Intelligent Matching Engine_**.
 
-**2. Business Logic Layer (Backend)**
+### 3.3. Data Layer (Database)
 
-- **Authentication & Session Manager:** Handles secure registration, **BCRYPT Hashing**, and **Session Tracking**. Triggers the **OTP Service (SMTP)** on user registration.
-- **Listing Management Service:** Manages the lifecycle of reports (CRUD) and **Photo Upload**.
-- **Smart Matching Engine:** Executes the core **Weighted Scoring Algorithm** and **Cross-scanning** (comparing lost vs. found) upon receiving a new listing event. Flags matches exceeding the **70% Threshold**.
-- **Admin Panel Logic:** Allows administrative oversight and **Final Delivery Approval**.
+- **RDBMS:** A **MySQL** relational database management system (RDBMS) is utilized.
+- **Performance:** Data is stored in relational tables with **optimized indexes** (e.g., _T.C. ID Number, Item Category_) to ensure integrity and performance.
 
-**3. Data Layer (Database)**
+### 3.4. Dynamic Matching and Notification Service
 
-- **MySQL Relational Database:** Ensures normalized and secure data persistence (Users, Items, Match Records, OTP Tokens).
-
-**External Connection: External Mail Server**
-Receives asynchronous data via **Automated Notification (SMTP Relay)** for match notifications or OTP dispatches.
+- **Event Trigger:** The architecture utilizes every new data entry as a trigger.
+- **Scanning Mechanism:** When a **"Lost"** report is submitted, all active **"Found"** records are scanned; conversely, when a **"Found"** item is reported, all active **"Lost"** listings are scanned asynchronously.
+- **SMTP Notification:** If the matching algorithm produces a score exceeding the **70% threshold**, an instant notification email is dispatched to the user via the **SMTP protocol**.
 
 ---
 
@@ -118,9 +111,7 @@ When the login process is successfully completed, PHP initiates a session on the
 
 ### Smart Matching Process
 
-
 The system runs a two-way matching algorithm to maintain database accuracy and increase the speed of finding lost items. When a new found item is entered into the system, it is cross-referenced with existing lost item listings in the background. Similarly, when a new lost item listing is created, the system automatically scans the existing found item listings. The following weighted scoring formula is used in this process:
-
 
 $$Score = (CategoryMatch \times W_0) + (LocationMatch \times W_1) + (DateMatch \times W_2)$$
 
@@ -144,11 +135,13 @@ The development architecture is designed in a modular structure to ensure team c
 The project is structured in a layered folder hierarchy to facilitate team synchronization during development and make system maintenance sustainable.
 
 **Root Directory Components:**
-* **/docs:** The documentation layer containing the project's theoretical infrastructure, flowcharts, and use cases (diagrams).
-* **ARCHITECTURE.md & README.md:** Main guides prepared for developers, containing the technical architecture and installation steps of the project.
-* **.gitignore & .gitattributes:** Ensure the proper operation of the Git version control system and prevent the storage of unnecessary files (e.g., IDE configurations).
+
+- **/docs:** The documentation layer containing the project's theoretical infrastructure, flowcharts, and use cases (diagrams).
+- **ARCHITECTURE.md & README.md:** Main guides prepared for developers, containing the technical architecture and installation steps of the project.
+- **.gitignore & .gitattributes:** Ensure the proper operation of the Git version control system and prevent the storage of unnecessary files (e.g., IDE configurations).
 
 #### Detailed Analysis of src/ (Application Source Code)
+
 All dynamic and static components of the application are gathered under the `src/` directory:
 
 - **`/assets` (Static Resources):**
@@ -164,17 +157,13 @@ All dynamic and static components of the application are gathered under the `src
 - **`/database` (Data Layer):** `schema.sql` containing table structures and initial seeds.
 - **`/docs`:** Documentation layer containing flowcharts and use cases.
 
-
-
 ### 7.3. Collaboration and Version Control
 
 The entire development process was managed via GitHub to ensure code security, team synchronization, and systematic version tracking. The key advantages provided by this infrastructure are:
 
-* **Chronological Development Log:** Through the consistent use of Git, every development phase was recorded with detailed commit messages, creating a transparent and traceable history of the project's evolution.
-* **Stability and Debugging:** The version control system facilitated the debugging process by allowing the team to revert to previous states when necessary, ensuring that stable versions of the project were always secured.
-* **Parallel Development (Decoupled Efficiency):** The architectural separation of the Frontend and Backend layers allowed Ali Kemal, Aydın, and the rest of the team to work on different modules simultaneously. This decoupled structure ensured that team members could develop and test their respective components independently without interfering with each other's code.
-
-
+- **Chronological Development Log:** Through the consistent use of Git, every development phase was recorded with detailed commit messages, creating a transparent and traceable history of the project's evolution.
+- **Stability and Debugging:** The version control system facilitated the debugging process by allowing the team to revert to previous states when necessary, ensuring that stable versions of the project were always secured.
+- **Parallel Development (Decoupled Efficiency):** The architectural separation of the Frontend and Backend layers allowed Ali Kemal, Aydın, and the rest of the team to work on different modules simultaneously. This decoupled structure ensured that team members could develop and test their respective components independently without interfering with each other's code.
 
 ---
 
@@ -183,7 +172,6 @@ The entire development process was managed via GitHub to ensure code security, t
 ---
 
 ## 9. Scenarios
-
 
 This section describes the end-to-end operational flow of the system, highlighting the interaction between the Frontend (JS), Backend (PHP API), and MySQL Database.
 
@@ -215,26 +203,24 @@ This section describes the end-to-end operational flow of the system, highlighti
 - **Technical Flow:** The admin enters the unique IDs of the matched items. The `backend/deliver_item.php` script updates the status of both items from **Active** to **Passive**.
 - **Result:** Once delivery is confirmed, the relevant listing is moved from the **"My Active Listings"** tab to the **"My Found Items / My Past Listings"** tab in the user's dashboard.The records are not deleted from the system; they remain stored in the database as proof of delivery and a transaction history for both the user and the administrator.
 
-
 ---
 
 ## 10. Size and Performance
 
-
 The system is engineered for efficiency, utilizing a lightweight architecture to ensure high responsiveness and low resource consumption.
 
-
-
 ### 10.1. System Size
-* **Lightweight Codebase:** By separating concerns into `/frontend` and `/backend`, redundant code has been eliminated. The application maintains a minimal footprint, consisting primarily of optimized script files and lean HTML structures.
-* **Data Efficiency:** The MySQL database is designed with optimized data types (e.g., `INT` for IDs, `DATETIME` for timestamps, and `VARCHAR` for strings) to minimize disk space usage while maintaining data integrity.
-* **Asset Management:** The `/assets` folder is strictly reserved for essential media, such as the corporate logo. This keeps the initial load size very small, as decorative elements are handled via CSS within the frontend directory.
+
+- **Lightweight Codebase:** By separating concerns into `/frontend` and `/backend`, redundant code has been eliminated. The application maintains a minimal footprint, consisting primarily of optimized script files and lean HTML structures.
+- **Data Efficiency:** The MySQL database is designed with optimized data types (e.g., `INT` for IDs, `DATETIME` for timestamps, and `VARCHAR` for strings) to minimize disk space usage while maintaining data integrity.
+- **Asset Management:** The `/assets` folder is strictly reserved for essential media, such as the corporate logo. This keeps the initial load size very small, as decorative elements are handled via CSS within the frontend directory.
 
 ### 10.2. Performance Metrics
-* **Low Latency Communication:** Using the **Fetch API** to exchange only JSON data (rather than full HTML pages) reduces network traffic by up to **70%**. This results in near-instantaneous UI updates and transitions.
-* **Search Optimization:** Admin searches are performed on **indexed columns** (specifically the T.C. Identification Number). This ensures that even with a database of thousands of students,search results are returned in milliseconds.
-* **Concurrency and Scalability:** When a user creates a new listing, the system executes the cross-matching algorithm in the background. Thanks to the **asynchronous** nature of the Fetch API, the User Interface (Frontend) remains unblocked, providing a smooth experience even under high traffic conditions.
-* **Server Response Time:** API endpoints are optimized for speed, aiming for a response time of **less than 100ms** per request under normal campus network load conditions.
+
+- **Low Latency Communication:** Using the **Fetch API** to exchange only JSON data (rather than full HTML pages) reduces network traffic by up to **70%**. This results in near-instantaneous UI updates and transitions.
+- **Search Optimization:** Admin searches are performed on **indexed columns** (specifically the T.C. Identification Number). This ensures that even with a database of thousands of students,search results are returned in milliseconds.
+- **Concurrency and Scalability:** When a user creates a new listing, the system executes the cross-matching algorithm in the background. Thanks to the **asynchronous** nature of the Fetch API, the User Interface (Frontend) remains unblocked, providing a smooth experience even under high traffic conditions.
+- **Server Response Time:** API endpoints are optimized for speed, aiming for a response time of **less than 100ms** per request under normal campus network load conditions.
 
 ---
 
@@ -249,23 +235,21 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 
 ### 11.2. Reliability & Integrity
 
-
 - **Two-Step Verification:** The verification information sent to the user via email after a match is checked by the security officer during the physical delivery process.
 - **Visual Proof:** The mandatory photo upload for "Found Item" reports increases the accuracy and evidentiary value of the data in the system.
 - **Transaction Consistency:** Database operations work cohesively to prevent data loss during **reporting and matching.**
 
-
-
 ### 11.3. Performance & Efficiency
-*   **Automated Matching Engine:** _The Matching Algorithm_, which runs when a new lost or found listing is entered, digitizes the manual search process by calculating the similarity score between listings and minimizes the ***MTTR (Mean Time To Recover)***.
-*   **Proactive Email Notification:** Without the need for the user to constantly check the system, instant and proactive notifications are provided via the Email Notification Service for matches exceeding the 70% threshold.
-*   **Database Indexing:** Category and location-based indexing ensure fast querying even with a high volume of records.
+
+- **Automated Matching Engine:** _The Matching Algorithm_, which runs when a new lost or found listing is entered, digitizes the manual search process by calculating the similarity score between listings and minimizes the **_MTTR (Mean Time To Recover)_**.
+- **Proactive Email Notification:** Without the need for the user to constantly check the system, instant and proactive notifications are provided via the Email Notification Service for matches exceeding the 70% threshold.
+- **Database Indexing:** Category and location-based indexing ensure fast querying even with a high volume of records.
 
 ### 11.4. Usability & UX
-*   **Personalized Interfaces:** Dashboard menus customized by user's role.
-*   **Mobile Responsiveness:** All interfaces are mobile-responsive so the system can be easily used anywhere on campus at any time.
-*   **Location-Based Filtering:** Customized categorization based on campus buildings increases search accuracy.
 
+- **Personalized Interfaces:** Dashboard menus customized by user's role.
+- **Mobile Responsiveness:** All interfaces are mobile-responsive so the system can be easily used anywhere on campus at any time.
+- **Location-Based Filtering:** Customized categorization based on campus buildings increases search accuracy.
 
 ### 11.5. Maintainability & Audit
 
@@ -277,7 +261,6 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 ## Appendices
 
 ### Acronyms and Abbreviations
-
 
 ### Definitions
 
@@ -297,8 +280,6 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 | **SMTP**                        | **Simple Mail Transfer Protocol.** The technical standard for transmitting automated email notifications from the application server.                                              |
 | **UX**                          | **User Experience.** The overall experience of a person using the application, optimized in this project through responsive design and asynchronous updates.                       |
 | **XSS**                         | **Cross-Site Scripting (XSS):** A security vulnerability whereby malicious scripts are injected into trusted websites; in this project, this is prevented through input filtering. |
-
-
 
 ### Design Principles
 
