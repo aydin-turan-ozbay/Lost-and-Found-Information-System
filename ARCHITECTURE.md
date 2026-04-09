@@ -81,6 +81,28 @@ The project is built upon a **3-Tier Architecture** with clearly defined respons
 - **Scanning Mechanism:** When a **"Lost"** report is submitted, all active **"Found"** records are scanned; conversely, when a **"Found"** item is reported, all active **"Lost"** listings are scanned asynchronously.
 - **SMTP Notification:** If the matching algorithm produces a score exceeding the **70% threshold**, an instant notification email is dispatched to the user via the **SMTP protocol**.
 
+
+The diagram below illustrates the high-level software architecture of the platform, utilizing a **decoupled, event-driven logical architecture**.
+
+<p align="center">
+  <img src="docs/diagrams/component_diagram.png" alt="Component Diagram" width="1000">
+</p>
+
+#### **Detailed Architecture Analysis**
+
+**1. Presentation Layer (Frontend)**
+ **Web Browser Interface:** Renders static HTML/CSS, ensuring cross-browser compatibility. Responsible for displaying UI and capturing input.
+- **Client-Side Logic:** (JS Engines) Performs **Form Validation** and manages **Dynamic Content** (Dashboard) without full-page reloads.
+
+**2. Business Logic Layer (Backend)**
+- **Authentication & Session Manager:** Handles secure registration, **BCRYPT Hashing**, and **Session Tracking**. Triggers the **OTP Service (SMTP)** on user registration.
+- **Listing Management Service:** Manages the lifecycle of reports (CRUD) and **Photo Upload**.
+- **Smart Matching Engine:** Executes the core **Weighted Scoring Algorithm** and **Cross-scanning** (comparing lost vs. found) upon receiving a new listing event. Flags matches exceeding the **70% Threshold**.
+- **Admin Panel Logic:** Allows administrative oversight and **Final Delivery Approval**.
+
+**3. Data Layer (Database)**
+- **MySQL Relational Database:** Ensures normalized and secure data persistence (Users, Items, Match Records, OTP Tokens).
+
 ---
 
 ## 4. Architectural Goals & Constraints
