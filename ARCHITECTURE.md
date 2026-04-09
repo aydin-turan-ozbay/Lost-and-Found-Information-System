@@ -80,10 +80,14 @@ The project is built upon a **3-Tier Architecture** with clearly defined respons
 To visualize the data architecture and the logical connections between entities, the following ER diagrams represent the core of the system:
 
 **Conceptual Design**
-![ER Diagram Conceptual](docs/diagrams/Lost_and_Found_ER_Diagram.png)
+<p align="center">
+  <img src="docs/diagrams/Lost_and_Found_ER_Diagram.png" alt="Component Diagram" width="1000">
+</p>
 
 **Logical Design**
-![ER Diagram Logical](docs/diagrams/Lost_and_Found_ER_Diagram2.png)
+<p align="center">
+  <img src="docs/diagrams/Lost_and_Found_ER_Diagram2.png" alt="Component Diagram" width="1000">
+</p>
 
 #### 3.3.2. Relationship Analysis
 
