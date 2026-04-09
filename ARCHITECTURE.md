@@ -69,7 +69,7 @@ The technology stack and tools used in the development, testing, and deployment 
 The diagram below illustrates the high-level software architecture of the platform, utilizing a **decoupled, event-driven logical architecture**.
 
 <p align="center">
-  ![Component Diagram](docs/component_diagram.png)
+  ![Component Diagram](docs/diagrams/componet_diagram.png)
 </p>
 
 #### **Detailed Architecture Analysis**
