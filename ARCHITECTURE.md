@@ -4,6 +4,27 @@
 
 ## Table of Contents
 
+# Table of Contents
+
+1. [Project Scope](#1-scope)
+2. [References](#2-references)
+3. [Software Architecture](#3-software-architecture)
+4. [Architectural Goals & Constraints](#4-architectural-goals--constraints)
+5. [Logical Architecture](#5-logical-architecture)
+6. [Process Architecture](#6-process-architecture)
+7. [Development Architecture](#7-development-architecture)
+8. [Physical Architecture](#8-physical-architecture)
+9. [Scenarios](#9-scenarios)
+10. [Size and Performance](#10-size-and-performance)
+11. [Quality](#11-quality)
+
+## [Appendices](#appendices)
+* [Acronyms and Abbreviations](#acronyms-and-abbreviations)
+* [Definitions](#definitions)
+* [Design Principles](#design-principles)
+
+---
+
 ## List of Figures
 
 ---
