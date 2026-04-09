@@ -119,8 +119,6 @@ When the login process is successfully completed, PHP initiates a session on the
 ### Smart Matching Process
 
 
-The system runs a two-way matching algorithm to maintain database accuracy and increase the speed of finding lost items. When a new found item is entered, it is cross-referenced with existing lost items. The following weighted scoring formula is used:
-=======
 The system runs a two-way matching algorithm to maintain database accuracy and increase the speed of finding lost items. When a new found item is entered into the system, it is cross-referenced with existing lost item listings in the background. Similarly, when a new lost item listing is created, the system automatically scans the existing found item listings. The following weighted scoring formula is used in this process:
 
 
@@ -139,10 +137,18 @@ The development architecture is designed in a modular structure to ensure team c
 - **Languages:** PHP 8.x, HTML5, CSS3, Modern JavaScript (ES6+).
 - **Database:** MySQL.
 - **Development Tools:** VS Code, Apache (XAMPP).
-- **Version Control:** GitHub.
+- **Version Control:** GitHub. The entire development process is managed via GitHub to ensure code security and team synchronization.
 
 ### 7.2. File Organization and System Architecture
 
+The project is structured in a layered folder hierarchy to facilitate team synchronization during development and make system maintenance sustainable.
+
+**Root Directory Components:**
+* **/docs:** The documentation layer containing the project's theoretical infrastructure, flowcharts, and use cases (diagrams).
+* **ARCHITECTURE.md & README.md:** Main guides prepared for developers, containing the technical architecture and installation steps of the project.
+* **.gitignore & .gitattributes:** Ensure the proper operation of the Git version control system and prevent the storage of unnecessary files (e.g., IDE configurations).
+
+#### Detailed Analysis of src/ (Application Source Code)
 All dynamic and static components of the application are gathered under the `src/` directory:
 
 - **`/assets` (Static Resources):**
@@ -158,50 +164,6 @@ All dynamic and static components of the application are gathered under the `src
 - **`/database` (Data Layer):** `schema.sql` containing table structures and initial seeds.
 - **`/docs`:** Documentation layer containing flowcharts and use cases.
 
-### 7.3. Collaboration and Version Control
-
-Through the use of GitHub:
-
-- Every development is recorded with commit messages.
-- The decoupled structure of Frontend and Backend layers allows independent development.
-*   **Languages:** PHP 8.x, HTML5, CSS3, Modern JavaScript (ES6+).
-*   **Database:** MySQL.
-*   **Development Tools:** VS Code, Apache (XAMPP).
-*   **Version Control:** GitHub.The entire development process is managed via GitHub to ensure code security and team synchronization.
-
-
-### 7.2. File Organization and System Architecture
-
-The project is structured in a layered folder hierarchy to facilitate team synchronization during development and make system maintenance sustainable.
-
-**Root Directory Components:**
-* **/docs:** The documentation layer containing the project's theoretical infrastructure, flowcharts, and use cases (diagrams).
-* **ARCHITECTURE.md & README.md:** Main guides prepared for developers, containing the technical architecture and installation steps of the project.
-* **.gitignore & .gitattributes:** Ensure the proper operation of the Git version control system and prevent the storage of unnecessary files (e.g., IDE configurations).
-
----
-
-#### Detailed Analysis of src/ (Application Source Code)
-
-All dynamic and static components of the application are gathered under the **src** directory. The functions of its subfolders are detailed below:
-
-1.  **/assets (Static Resources and Design):** Manages the visual appearance and client-side interactions of the application.
-    * **/css:** Contains the style files defining the visual identity. `style.css` manages the general design, while `profile.css` and `report_item.css` handle page-specific UI adjustments.
-    * **/js:** Houses the JavaScript engines providing user interactions (form controls, dynamic listings, etc.).
-    * **/images:** The area where the system logo and item photos uploaded by users are securely stored.
-
-2.  **/frontend (Presentation Layer - HTML):** Forms the skeleton of the pages the user interacts with directly via the browser. It manages secure access and registration through the `main`, `login`, and `register` pages; centralizes listing tracking via `dashboard.html`; and triggers the cross-matching algorithm via data entry on the `report_item.html` form.
-
-3.  **/backend (Business Logic Layer - PHP):** The layer acting as the "brain," executing all server-side logical processes.
-    * `db_config.php`: Establishes a secure connection bridge to the database.
-    * `login.php` & `register.php`: Manages authentication, secure encryption, and **OTP (One-Time Password)** services.
-    * `report_item.php`: The most critical component; records new listings and triggers the cross-matching algorithm to check lost/found matches.
-    * `logout.php`: Securely terminates session information.
-
-4.  **/database (Data Layer):**
-    * `schema.sql`: The skeleton of the database. Contains all SQL commands including table structures, relationships (Foreign Keys), data types, and initial data (seeds).
-
----
 
 
 ### 7.3. Collaboration and Version Control
@@ -252,115 +214,16 @@ This section describes the end-to-end operational flow of the system, highlighti
 - **Process:** The Admin selects the recipient using a searchable dropdown filtered by **T.C. Identification Number**.
 - **Technical Flow:** The admin enters the unique IDs of the matched items. The `backend/deliver_item.php` script updates the status of both items from **Active** to **Passive**.
 - **Result:** Once delivery is confirmed, the relevant listing is moved from the **"My Active Listings"** tab to the **"My Found Items / My Past Listings"** tab in the user's dashboard.The records are not deleted from the system; they remain stored in the database as proof of delivery and a transaction history for both the user and the administrator.
-=======
 
-
-This section describes the end-to-end operational flow of the system, highlighting the interaction between the **Frontend (JavaScript)**, **Backend (PHP API)**, and **MySQL Database**.
-
-## 9. Scenarios
-
-This section describes the end-to-end operational flow of the system, highlighting the interaction between the **Frontend (JavaScript)**, **Backend (PHP API)**, and **MySQL Database**.
-
----
-
-### Scenario 1: Posting a Lost Item (Student/User)
-* **Action:** A student logs into the platform via `login.html`. The `auth.js` script verifies the session and privileges.
-* **Process:** The student fills out the "Post Item" form, providing a mandatory date, category, and an optional time/description.
-* **Technical Flow:** Upon submission, JavaScript intercepts the event, collects data using the `FormData` object, and sends an asynchronous request to `backend/post_item.php` via the **Fetch API**.
-* **Result:** The Backend validates the input and stores the data in the MySQL `items` table. The user is then dynamically redirected to `my_adverts.html` to view their active listing.
-
----
-=======
-This section describes the end-to-end operational flow of the system, highlighting the interaction between the Frontend (JS), Backend (PHP API), and MySQL Database.
-
-### Scenario 1: Posting a Lost Item (Student/User)
-*   **Action:** A student logs into the platform via `login.html.` The `auth.js` script verifies the session.
-*   **Process:** The student fills out the "Post Item" form, providing a mandatory date and an optional time.
-*   **Technical Flow:** Upon submission, JavaScript intercepts the event, collects data using the `FormData` object, and sends an asynchronous request to `backend/post_item.php` via the Fetch API.
-* **Result:** The Backend validates the input and stores the data in the MySQL `items` table. The user is then dynamically redirected to `my_adverts.html` to view their active listing.
-
-
-
-### Scenario 2: Smart Matching and Notification (System)
-* **Action:** A user posts a "Found" item listing.
-* **Process:** Immediately after the database update, the backend matching engine is triggered as an **Event-Driven** process.
-
-* **Technical Flow:** The system compares the new entry against existing "Lost" items using a **Weighted Scoring Algorithm** ($Score = (Cat*W0) + (Loc*W1) + (Date*W2)$).
-* **Result:** If the calculated Score exceeds the **70% threshold**, the system creates a record in the `match_records` table and displays a proactive notification on both users' dashboards.
-
----
-
-### Scenario 3: Secure Password Recovery (User)
-* **Action:** A user clicks "Forgot Password" on the login page.
-* **Process:** The user provides their registered university email address in `forgot_password.html`.
-* **Technical Flow:** The backend generates a unique, time-sensitive **Security Token** and stores it in the `otp_tokens` table. A reset link is then dispatched via **SMTP**.
-* **Result:** The user follows the link to `reset_password.html` to update credentials. The token is invalidated immediately after use to ensure maximum system security.
-
----
-=======
-* **Technical Flow:** The system compares the new entry against existing "Lost" items using a **Weighted Scoring Algorithm** 
-* **Result:** If the calculated Score exceeds the **70% threshold**, the system creates a record in the `match_records` table and displays a proactive notification on both users' dashboards.
-
-
-### Scenario 3: Secure Password Recovery (User)
-* **Action:** A user clicks "Forgot Password" on the login page.
-* **Process:** The user provides their registered email address in `forgot_password.html`.
-* **Technical Flow:** The backend generates a unique, time-sensitive **Security Token** and stores it in the MySQL database. An email containing a reset link is dispatched via **SMTP**.
-* **Result:** The user follows the link to `reset_password.html` to update credentials. The token is invalidated immediately after use to ensure maximum system security.
-
-### Scenario 4: Controlled Delivery Management (Admin)
-* **Action:** The Admin navigates to the "Delivery" section in the `admin_panel.html`.
-* **Process:** The Admin selects the recipient using a searchable dropdown filtered by **T.C. Identification Number**.
-* **Technical Flow:** The admin enters the unique IDs of the matched items. The `backend/deliver_item.php` script updates the status of both items from **Active** to **Passive**.
-<<<<<<< HEAD
-* **Result:** Once delivery is confirmed, the listing moves to the "Past Listings" tab. Records are not deleted; they remain in the database to provide a secure **Audit Trail** and transaction history for both the user and the administrator.
-
-
-=======
-* **Result:** Once delivery is confirmed, the relevant listing is moved from the **"My Active Listings"** tab to the **"My Found Items / My Past Listings"** tab in the user's dashboard.The records are not deleted from the system; they remain stored in the database as proof of delivery and a transaction history for both the user and the administrator.
 
 ---
 
 ## 10. Size and Performance
-<<<<<<< Updated upstream
-
-The system is engineered for efficiency, utilizing a lightweight architecture to ensure high responsiveness and low resource consumption.
-
-### 10.1. System Size
-
-- **Lightweight Codebase:** By separating concerns into `/frontend` and `/backend`, redundant code has been eliminated. The application maintains a minimal footprint, consisting primarily of optimized script files and lean HTML structures.
-- **Data Efficiency:** The MySQL database is designed with optimized data types (e.g., `INT` for IDs, `DATETIME` for timestamps, and `VARCHAR` for strings) to minimize disk space usage while maintaining data integrity.
-- **Asset Management:** The `/assets` folder is strictly reserved for essential media, such as the corporate logo. This keeps the initial load size very small, as decorative elements are handled via CSS within the frontend directory.
-
-### 10.2. Performance Metrics
-
-- **Low Latency Communication:** Using the **Fetch API** to exchange only JSON data (rather than full HTML pages) reduces network traffic by up to **70%**. This results in near-instantaneous UI updates and transitions.
-- **Search Optimization:** Admin searches are performed on **indexed columns** (specifically the T.C. Identification Number). This ensures that even with a database of thousands of students,search results are returned in milliseconds.
-- **Concurrency and Scalability:** When a user creates a new listing, the system executes the cross-matching algorithm in the background. Thanks to the **asynchronous** nature of the Fetch API, the User Interface (Frontend) remains unblocked, providing a smooth experience even under high traffic conditions.
-- **Server Response Time:** API endpoints are optimized for speed, aiming for a response time of **less than 100ms** per request under normal campus network load conditions.
-=======
 
 
 The system is engineered for efficiency, utilizing a lightweight architecture to ensure high responsiveness and low resource consumption.
 
----
 
-### 10.1. System Size
-* **Lightweight Codebase:** By separating concerns into `/frontend` and `/backend`, redundant code has been eliminated. The application maintains a minimal footprint, consisting primarily of optimized script files and lean HTML structures.
-* **Data Efficiency:** The MySQL database is designed with optimized data types (e.g., `INT` for IDs, `DATETIME` for timestamps, and `VARCHAR` for strings) to minimize disk space usage while maintaining high data integrity.
-* **Asset Management:** The `/assets` folder is strictly reserved for essential media, such as the corporate logo. This keeps the initial load size very small, as decorative and UI elements are handled via CSS within the frontend directory.
-
----
-
-### 10.2. Performance Metrics
-* **Low Latency Communication:** Using the **Fetch API** to exchange only JSON data (rather than full HTML pages) reduces network traffic by up to **70%**. This results in near-instantaneous UI updates and transitions.
-* **Search Optimization:** Administrative searches are performed on **indexed columns** (specifically the T.C. Identification Number). This ensures that search results are returned in milliseconds, even within a database containing thousands of student records.
-* **Concurrency and Scalability:** When a user creates a new listing, the system executes the cross-matching algorithm in the background. Thanks to the **asynchronous** nature of the Fetch API, the User Interface (Frontend) remains unblocked, providing a smooth experience even under high traffic conditions.
-* **Server Response Time:** API endpoints are optimized for speed, aiming for a response time of **less than 100ms** per request under normal campus network load conditions.
-
-
-=======
-The system is engineered for efficiency, utilizing a lightweight architecture to ensure high responsiveness and low resource consumption.
 
 ### 10.1. System Size
 * **Lightweight Codebase:** By separating concerns into `/frontend` and `/backend`, redundant code has been eliminated. The application maintains a minimal footprint, consisting primarily of optimized script files and lean HTML structures.
@@ -391,21 +254,7 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 - **Visual Proof:** The mandatory photo upload for "Found Item" reports increases the accuracy and evidentiary value of the data in the system.
 - **Transaction Consistency:** Database operations work cohesively to prevent data loss during **reporting and matching.**
 
-### 11.3. Performance & Efficiency
 
-- **Automated Matching Engine:** _The Matching Algorithm_, which runs when a new lost or found listing is entered, digitizes the manual search process by calculating the similarity score between listings and minimizes the **_MTTR (Mean Time To Recover)_**.
-- **Proactive Email Notification:** Without the need for the user to constantly check the system, instant and proactive notifications are provided via the Email Notification Service for matches exceeding the 70% threshold.
-- **Database Indexing:** Category and location-based indexing ensure fast querying even with a high volume of records.
-
-### 11.4. Usability & UX
-
-- **Personalized Interfaces:** Dashboard menus customized by user's role.
-- **Mobile Responsiveness:** All interfaces are mobile-responsive so the system can be easily used anywhere on campus at any time.
-- **Location-Based Filtering:** Customized categorization based on campus buildings increases search accuracy.
-=======
-*   **Two-Step Verification:** The verification information sent to the user via email after a match is checked by the security officer during the physical delivery process.
-*   **Visual Proof:** The mandatory photo upload for "Found Item" reports increases the accuracy and evidentiary value of the data in the system.
-*   **Transaction Consistency:** Database operations work cohesively to prevent data loss during **reporting and matching.**
 
 ### 11.3. Performance & Efficiency
 *   **Automated Matching Engine:** _The Matching Algorithm_, which runs when a new lost or found listing is entered, digitizes the manual search process by calculating the similarity score between listings and minimizes the ***MTTR (Mean Time To Recover)***.
