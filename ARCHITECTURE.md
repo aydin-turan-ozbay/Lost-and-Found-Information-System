@@ -75,6 +75,39 @@ The project is built upon a **3-Tier Architecture** with clearly defined respons
 - **RDBMS:** A **MySQL** relational database management system (RDBMS) is utilized.
 - **Performance:** Data is stored in relational tables with **optimized indexes** (e.g., _T.C. ID Number, Item Category_) to ensure integrity and performance.
 
+#### 3.3.1. Entity Relationship Diagram (ERD)
+
+To visualize the data architecture and the logical connections between entities, the following ER diagrams represent the core of the system:
+
+**Conceptual Design**
+![ER Diagram Conceptual](docs/diagrams/Lost_and_Found_ER_Diagram.png)
+
+**Logical Design**
+![ER Diagram Logical](docs/diagrams/Lost_and_Found_ER_Diagram2.png)
+
+#### 3.3.2. Relationship Analysis
+
+The system architecture is built upon strategic relationships between four main tables. These relationships ensure data integrity while optimizing user experience and system automation capabilities.
+
+*   **User and Advertisement Relationship (Users ↔ Items):**
+    *   **Relationship Type:** 1:N (One-to-Many).
+    *   **Description:** A user can create multiple lost or found advertisements in the system; however, each advertisement belongs to only one user.
+    *   **Critical Point:** This link, established through the `user_id` field in the `Items` table, ensures that the owner of the item or the person who found it can be reached.
+
+*   **Security and Verification Relationship (Users ↔ OTP Tokens):**
+    *   **Relationship Type:** 1:N (One-to-Many).
+    *   **Description:** A user may request multiple OTP codes over time for processes such as registration or password reset.
+    *   **Critical Point:** This relationship is designed to ensure the security of user accounts and to automate email verification processes.
+
+*   **Smart Matching Mechanism (Items ↔ Match Records):**
+    *   This section is the most complex and vital part of the system. The `Match Records` table acts as a "bridge" managing the self-referencing relationship of the `Items` table.
+    *   **Relationship Type:** 1:N (Two Separate Connections).
+        *   **Triggers Match:** Defines the potential matches of the newly entered item (`item_id`) within the system.
+        *   **Matched With:** Represents the second item (`matched_item_id`) found by the algorithm that shows similarity to the first item.
+    *   **Critical Point:** This structure brings together a lost advertisement and a found advertisement, tracking the similarity score (`score`) between them. The `CHECK (item_id <> matched_item_id)` rule prevents logical errors by ensuring an item cannot be matched with itself.
+
+> **Note:** The system design offers a relational structure covering all stages from the user's advertisement posting process to tracking the results of the smart matching algorithm and managing security protocols (OTP). Especially through the **Match Records** table, the matching process is managed transparently, allowing users to be informed quickly.
+
 ### 3.4. Dynamic Matching and Notification Service
 
 - **Event Trigger:** The architecture utilizes every new data entry as a trigger.
