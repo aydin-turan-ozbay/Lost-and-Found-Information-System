@@ -89,22 +89,22 @@ To visualize the data architecture and the logical connections between entities,
 
 The system architecture is built upon strategic relationships between four main tables. These relationships ensure data integrity while optimizing user experience and system automation capabilities.
 
-*   **User and Advertisement Relationship (Users ↔ Items):**
-    *   **Relationship Type:** 1:N (One-to-Many).
-    *   **Description:** A user can create multiple lost or found advertisements in the system; however, each advertisement belongs to only one user.
-    *   **Critical Point:** This link, established through the `user_id` field in the `Items` table, ensures that the owner of the item or the person who found it can be reached.
+- **User and Advertisement Relationship (Users ↔ Items):**
+  - **Relationship Type:** 1:N (One-to-Many).
+  - **Description:** A user can create multiple lost or found advertisements in the system; however, each advertisement belongs to only one user.
+  - **Critical Point:** This link, established through the `user_id` field in the `Items` table, ensures that the owner of the item or the person who found it can be reached.
 
-*   **Security and Verification Relationship (Users ↔ OTP Tokens):**
-    *   **Relationship Type:** 1:N (One-to-Many).
-    *   **Description:** A user may request multiple OTP codes over time for processes such as registration or password reset.
-    *   **Critical Point:** This relationship is designed to ensure the security of user accounts and to automate email verification processes.
+- **Security and Verification Relationship (Users ↔ OTP Tokens):**
+  - **Relationship Type:** 1:N (One-to-Many).
+  - **Description:** A user may request multiple OTP codes over time for processes such as registration or password reset.
+  - **Critical Point:** This relationship is designed to ensure the security of user accounts and to automate email verification processes.
 
-*   **Smart Matching Mechanism (Items ↔ Match Records):**
-    *   This section is the most complex and vital part of the system. The `Match Records` table acts as a "bridge" managing the self-referencing relationship of the `Items` table.
-    *   **Relationship Type:** 1:N (Two Separate Connections).
-        *   **Triggers Match:** Defines the potential matches of the newly entered item (`item_id`) within the system.
-        *   **Matched With:** Represents the second item (`matched_item_id`) found by the algorithm that shows similarity to the first item.
-    *   **Critical Point:** This structure brings together a lost advertisement and a found advertisement, tracking the similarity score (`score`) between them. The `CHECK (item_id <> matched_item_id)` rule prevents logical errors by ensuring an item cannot be matched with itself.
+- **Smart Matching Mechanism (Items ↔ Match Records):**
+  - This section is the most complex and vital part of the system. The `Match Records` table acts as a "bridge" managing the self-referencing relationship of the `Items` table.
+  - **Relationship Type:** 1:N (Two Separate Connections).
+    - **Triggers Match:** Defines the potential matches of the newly entered item (`item_id`) within the system.
+    - **Matched With:** Represents the second item (`matched_item_id`) found by the algorithm that shows similarity to the first item.
+  - **Critical Point:** This structure brings together a lost advertisement and a found advertisement, tracking the similarity score (`score`) between them. The `CHECK (item_id <> matched_item_id)` rule prevents logical errors by ensuring an item cannot be matched with itself.
 
 > **Note:** The system design offers a relational structure covering all stages from the user's advertisement posting process to tracking the results of the smart matching algorithm and managing security protocols (OTP). Especially through the **Match Records** table, the matching process is managed transparently, allowing users to be informed quickly.
 
@@ -113,7 +113,6 @@ The system architecture is built upon strategic relationships between four main 
 - **Event Trigger:** The architecture utilizes every new data entry as a trigger.
 - **Scanning Mechanism:** When a **"Lost"** report is submitted, all active **"Found"** records are scanned; conversely, when a **"Found"** item is reported, all active **"Lost"** listings are scanned asynchronously.
 - **SMTP Notification:** If the matching algorithm produces a score exceeding the **70% threshold**, an instant notification email is dispatched to the user via the **SMTP protocol**.
-
 
 The diagram below illustrates the high-level software architecture of the platform, utilizing a **decoupled, event-driven logical architecture**.
 
@@ -124,16 +123,19 @@ The diagram below illustrates the high-level software architecture of the platfo
 #### **Detailed Architecture Analysis**
 
 **1. Presentation Layer (Frontend)**
- **Web Browser Interface:** Renders static HTML/CSS, ensuring cross-browser compatibility. Responsible for displaying UI and capturing input.
+**Web Browser Interface:** Renders static HTML/CSS, ensuring cross-browser compatibility. Responsible for displaying UI and capturing input.
+
 - **Client-Side Logic:** (JS Engines) Performs **Form Validation** and manages **Dynamic Content** (Dashboard) without full-page reloads.
 
 **2. Business Logic Layer (Backend)**
+
 - **Authentication & Session Manager:** Handles secure registration, **BCRYPT Hashing**, and **Session Tracking**. Triggers the **OTP Service (SMTP)** on user registration.
 - **Listing Management Service:** Manages the lifecycle of reports (CRUD) and **Photo Upload**.
 - **Smart Matching Engine:** Executes the core **Weighted Scoring Algorithm** and **Cross-scanning** (comparing lost vs. found) upon receiving a new listing event. Flags matches exceeding the **70% Threshold**.
 - **Admin Panel Logic:** Allows administrative oversight and **Final Delivery Approval**.
 
 **3. Data Layer (Database)**
+
 - **MySQL Relational Database:** Ensures normalized and secure data persistence (Users, Items, Match Records, OTP Tokens).
 
 ---
@@ -239,6 +241,36 @@ The entire development process was managed via GitHub to ensure code security, t
 ## 8. Physical Architecture
 
 The physical deployment of the system is configured to ensure high availability and data security within the campus network. The architecture consists of three main components: **end-user devices, network infrastructure, and a centralized application server.**
+
+The diagram below illustrates the high-level physical deployment of the platform, highlighting the interaction between **End-User Devices**, **Campus Network**, and the **Server Tier**.
+
+<p align="center">
+  <img src="docs/diagrams/Deployment_Diagram.jpeg" alt="Integrated Deployment Diagram" width="1000">
+</p>
+
+#### **Detailed Architecture Analysis**
+
+**1. End-User Client Tier (Presentation Layer)**
+
+- **Web Browser Interface:** Users access the platform via modern browsers on diverse devices (iOS/Android smartphones, Laptops/Workstations).
+- **Asynchronous Communication:** All data exchange is performed over **HTTPS** using the **Fetch API**, ensuring that JSON-based payloads are processed without blocking the UI.
+
+**2. Centralized Server Tier (Application & Web Layer)**
+
+- **Apache Web Server:** Executes the **PHP 8.x** backend logic and manages incoming HTTP/HTTPS requests.
+- **Core Logic Services:** Manages critical operations such as **Role-Based Access Control (RBAC)**, listing lifecycles, and secure session management.
+- **Intelligent Match Algorithm:** An event-driven engine that performs weighted scoring. If a match exceeds the **70% Threshold**, it triggers the **SMTP Email Relay Server** for instant user notification.
+
+**3. Data Management Tier (Database Layer)**
+
+- **MySQL Relational Database:** Provides secure and persistent storage using a normalized schema.
+- **Key Tables:** The database is structured into four primary tables: **Items**, **Users**, **Matched Records**, and **OTP Tokens**.
+
+#### **Security and Design Integrity**
+
+- **Zero-Exposure Security:** To prevent misuse, item records are never listed publicly; the system relies on automated matches.
+- **Data Protection:** The architecture enforces **BCRYPT Hashing** for passwords and utilizes strict input filtering to prevent **XSS** and **SQL Injection** attacks.
+- **Architectural Principles:** By adhering to **Separation of Concerns (SoC)** and **Event-Driven Execution**, every new report triggers an immediate, background-processed matching sequence.
 
 ### 8.1. Server-Side Components
 
