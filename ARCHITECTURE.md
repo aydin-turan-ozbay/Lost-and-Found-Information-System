@@ -19,16 +19,11 @@
 11. [Quality](#11-quality)
 
 ## [Appendices](#appendices)
-<<<<<<< Updated upstream
+
 
 - [Acronyms and Abbreviations](#acronyms-and-abbreviations)
 - [Definitions](#definitions)
 - [Design Principles](#design-principles)
-=======
-* [Acronyms and Abbreviations](#acronyms-and-abbreviations)
-* [Definitions](#definitions)
-* [Design Principles](#design-principles)
->>>>>>> Stashed changes
 
 ---
 
@@ -122,12 +117,12 @@ The user interface communicates with the server without fully refreshing the pag
 When the login process is successfully completed, PHP initiates a session on the server side. This session information allows the Navbar and access privileges to change dynamically based on the user's role in the system (Admin/Student).
 
 ### Smart Matching Process
-<<<<<<< Updated upstream
+
 
 The system runs a two-way matching algorithm to maintain database accuracy and increase the speed of finding lost items. When a new found item is entered, it is cross-referenced with existing lost items. The following weighted scoring formula is used:
 =======
 The system runs a two-way matching algorithm to maintain database accuracy and increase the speed of finding lost items. When a new found item is entered into the system, it is cross-referenced with existing lost item listings in the background. Similarly, when a new lost item listing is created, the system automatically scans the existing found item listings. The following weighted scoring formula is used in this process:
->>>>>>> Stashed changes
+
 
 $$Score = (CategoryMatch \times W_0) + (LocationMatch \times W_1) + (DateMatch \times W_2)$$
 
@@ -140,7 +135,6 @@ If the calculated score is above the threshold value, the system automatically s
 The development architecture is designed in a modular structure to ensure team collaboration and code maintainability.
 
 ### 7.1. Tech Stack
-<<<<<<< Updated upstream
 
 - **Languages:** PHP 8.x, HTML5, CSS3, Modern JavaScript (ES6+).
 - **Database:** MySQL.
@@ -170,7 +164,6 @@ Through the use of GitHub:
 
 - Every development is recorded with commit messages.
 - The decoupled structure of Frontend and Backend layers allows independent development.
-=======
 *   **Languages:** PHP 8.x, HTML5, CSS3, Modern JavaScript (ES6+).
 *   **Database:** MySQL.
 *   **Development Tools:** VS Code, Apache (XAMPP).
@@ -220,7 +213,6 @@ The entire development process was managed via GitHub to ensure code security, t
 * **Parallel Development (Decoupled Efficiency):** The architectural separation of the Frontend and Backend layers allowed Ali Kemal, Aydın, and the rest of the team to work on different modules simultaneously. This decoupled structure ensured that team members could develop and test their respective components independently without interfering with each other's code.
 
 
->>>>>>> Stashed changes
 
 ---
 
@@ -229,7 +221,7 @@ The entire development process was managed via GitHub to ensure code security, t
 ---
 
 ## 9. Scenarios
-<<<<<<< Updated upstream
+
 
 This section describes the end-to-end operational flow of the system, highlighting the interaction between the Frontend (JS), Backend (PHP API), and MySQL Database.
 
@@ -261,7 +253,7 @@ This section describes the end-to-end operational flow of the system, highlighti
 - **Technical Flow:** The admin enters the unique IDs of the matched items. The `backend/deliver_item.php` script updates the status of both items from **Active** to **Passive**.
 - **Result:** Once delivery is confirmed, the relevant listing is moved from the **"My Active Listings"** tab to the **"My Found Items / My Past Listings"** tab in the user's dashboard.The records are not deleted from the system; they remain stored in the database as proof of delivery and a transaction history for both the user and the administrator.
 =======
-<<<<<<< HEAD
+
 
 This section describes the end-to-end operational flow of the system, highlighting the interaction between the **Frontend (JavaScript)**, **Backend (PHP API)**, and **MySQL Database**.
 
@@ -287,12 +279,12 @@ This section describes the end-to-end operational flow of the system, highlighti
 *   **Technical Flow:** Upon submission, JavaScript intercepts the event, collects data using the `FormData` object, and sends an asynchronous request to `backend/post_item.php` via the Fetch API.
 * **Result:** The Backend validates the input and stores the data in the MySQL `items` table. The user is then dynamically redirected to `my_adverts.html` to view their active listing.
 
->>>>>>> 257f61beb729135a952cf32bcf94ed133def727f
+
 
 ### Scenario 2: Smart Matching and Notification (System)
 * **Action:** A user posts a "Found" item listing.
 * **Process:** Immediately after the database update, the backend matching engine is triggered as an **Event-Driven** process.
-<<<<<<< HEAD
+
 * **Technical Flow:** The system compares the new entry against existing "Lost" items using a **Weighted Scoring Algorithm** ($Score = (Cat*W0) + (Loc*W1) + (Date*W2)$).
 * **Result:** If the calculated Score exceeds the **70% threshold**, the system creates a record in the `match_records` table and displays a proactive notification on both users' dashboards.
 
@@ -316,8 +308,6 @@ This section describes the end-to-end operational flow of the system, highlighti
 * **Technical Flow:** The backend generates a unique, time-sensitive **Security Token** and stores it in the MySQL database. An email containing a reset link is dispatched via **SMTP**.
 * **Result:** The user follows the link to `reset_password.html` to update credentials. The token is invalidated immediately after use to ensure maximum system security.
 
->>>>>>> 257f61beb729135a952cf32bcf94ed133def727f
-
 ### Scenario 4: Controlled Delivery Management (Admin)
 * **Action:** The Admin navigates to the "Delivery" section in the `admin_panel.html`.
 * **Process:** The Admin selects the recipient using a searchable dropdown filtered by **T.C. Identification Number**.
@@ -328,8 +318,6 @@ This section describes the end-to-end operational flow of the system, highlighti
 
 =======
 * **Result:** Once delivery is confirmed, the relevant listing is moved from the **"My Active Listings"** tab to the **"My Found Items / My Past Listings"** tab in the user's dashboard.The records are not deleted from the system; they remain stored in the database as proof of delivery and a transaction history for both the user and the administrator.
->>>>>>> 257f61beb729135a952cf32bcf94ed133def727f
->>>>>>> Stashed changes
 
 ---
 
@@ -351,7 +339,7 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 - **Concurrency and Scalability:** When a user creates a new listing, the system executes the cross-matching algorithm in the background. Thanks to the **asynchronous** nature of the Fetch API, the User Interface (Frontend) remains unblocked, providing a smooth experience even under high traffic conditions.
 - **Server Response Time:** API endpoints are optimized for speed, aiming for a response time of **less than 100ms** per request under normal campus network load conditions.
 =======
-<<<<<<< HEAD
+
 
 The system is engineered for efficiency, utilizing a lightweight architecture to ensure high responsiveness and low resource consumption.
 
@@ -384,8 +372,6 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 * **Search Optimization:** Admin searches are performed on **indexed columns** (specifically the T.C. Identification Number). This ensures that even with a database of thousands of students,search results are returned in milliseconds.
 * **Concurrency and Scalability:** When a user creates a new listing, the system executes the cross-matching algorithm in the background. Thanks to the **asynchronous** nature of the Fetch API, the User Interface (Frontend) remains unblocked, providing a smooth experience even under high traffic conditions.
 * **Server Response Time:** API endpoints are optimized for speed, aiming for a response time of **less than 100ms** per request under normal campus network load conditions.
->>>>>>> 257f61beb729135a952cf32bcf94ed133def727f
->>>>>>> Stashed changes
 
 ---
 
@@ -399,7 +385,7 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 - **Data Protection:** Passwords are hashed using **BCRYPT**; all form inputs are cleaned against **SQL Injection** and **XSS attacks.**
 
 ### 11.2. Reliability & Integrity
-<<<<<<< Updated upstream
+
 
 - **Two-Step Verification:** The verification information sent to the user via email after a match is checked by the security officer during the physical delivery process.
 - **Visual Proof:** The mandatory photo upload for "Found Item" reports increases the accuracy and evidentiary value of the data in the system.
@@ -430,7 +416,7 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 *   **Personalized Interfaces:** Dashboard menus customized by user's role.
 *   **Mobile Responsiveness:** All interfaces are mobile-responsive so the system can be easily used anywhere on campus at any time.
 *   **Location-Based Filtering:** Customized categorization based on campus buildings increases search accuracy.
->>>>>>> Stashed changes
+
 
 ### 11.5. Maintainability & Audit
 
@@ -443,7 +429,7 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 
 ### Acronyms and Abbreviations
 
-<<<<<<< Updated upstream
+
 ### Definitions
 
 | Term                            | Definition                                                                                                                                                                         |
@@ -463,25 +449,7 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 | **UX**                          | **User Experience.** The overall experience of a person using the application, optimized in this project through responsive design and asynchronous updates.                       |
 | **XSS**                         | **Cross-Site Scripting (XSS):** A security vulnerability whereby malicious scripts are injected into trusted websites; in this project, this is prevented through input filtering. |
 =======
-### Definitions 
 
-| Term | Definition |
-| :--- | :--- |
-| **Asynchronous (Non-blocking)** | A method where operations run independently without waiting for each other. This ensures the UI remains responsive while the Fetch API performs matching in the background. |
-| **BCRYPT** | A password-hashing function based on the Blowfish cipher, used to securely store user credentials in a non-reversible format. |
-| **Endpoint** | Specific URLs or server-side scripts (e.g., `login.php`) that act as a gateway for the Frontend to communicate with the Backend. |
-| **Event-Driven** | A software architecture paradigm where the flow of the program is determined by events, such as a new data entry triggering the matching algorithm. |
-| **Fetch API** | A modern JavaScript interface for making asynchronous HTTP requests to the server without requiring a full page reload. |
-| **Hashing** | The process of converting data (passwords) into a fixed-length string of characters that cannot be reversed, ensuring security even if the database is compromised. |
-| **MTTR** | *Mean Time To Recover.* In this context, it refers to the average time taken from the moment an item is reported lost to its successful recovery. |
-| **OTP** | *One-Time Password.* A unique, time-sensitive code sent via email to verify a user's identity during the registration or password recovery process. |
-| **Payload** | The essential part of a transmitted data package. In this project, it refers to the JSON data sent within an HTTP request (e.g., item details). |
-| **RBAC** | **Role-Based Access Control.** A security mechanism that restricts system access to authorized users based on their roles (e.g., Admin vs. Student). |
-| **RDBMS** | **Relational Database Management System.** A database engine (like MySQL) that organizes data into tables linked by defined relationships. |
-| **SMTP** | **Simple Mail Transfer Protocol.** The technical standard for transmitting automated email notifications from the application server. |
-| **UX** | **User Experience.** The overall experience of a person using the application, optimized in this project through responsive design and asynchronous updates. |
-| **XSS** | **Cross-Site Scripting (XSS):** A security vulnerability whereby malicious scripts are injected into trusted websites; in this project, this is prevented through input filtering. |
->>>>>>> Stashed changes
 
 ### Design Principles
 
