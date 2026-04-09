@@ -4,7 +4,7 @@
 
 ## Table of Contents
 
-# Table of Contents
+
 
 1. [Project Scope](#1-scope)
 2. [References](#2-references)
@@ -71,22 +71,22 @@ The diagram below illustrates the high-level software architecture of the platfo
 
 **1. Presentation Layer (Frontend)**
 
-- **`Web Browser Interface`:** Renders static HTML/CSS, ensuring cross-browser compatibility. Responsible for displaying UI and capturing input.
-- **`Client-Side Logic`:** (JS Engines) Performs **Form Validation** and manages **Dynamic Content** (Dashboard) without full-page reloads.
+- **Web Browser Interface:** Renders static HTML/CSS, ensuring cross-browser compatibility. Responsible for displaying UI and capturing input.
+- **Client-Side Logic:** (JS Engines) Performs **Form Validation** and manages **Dynamic Content** (Dashboard) without full-page reloads.
 
 **2. Business Logic Layer (Backend)**
 
-- **`Authentication & Session Manager`:** Handles secure registration, **BCRYPT Hashing**, and **Session Tracking**. Triggers the `OTP Service (SMTP)` on user registration.
-- **`Listing Management Service`:** Manages the lifecycle of reports (CRUD) and **Photo Upload**.
-- **`Smart Matching Engine`:** Executes the core **`Weighted Scoring Algorithm`** and **`Cross-scanning`** (comparing lost vs. found) upon receiving a new listing event. Flags matches exceeding the **`70% Threshold`**.
-- **`Admin Panel Logic`:** Allows administrative oversight and **Final Delivery Approval**.
+- **Authentication & Session Manager:** Handles secure registration, **BCRYPT Hashing**, and **Session Tracking**. Triggers the **OTP Service (SMTP)** on user registration.
+- **Listing Management Service:** Manages the lifecycle of reports (CRUD) and **Photo Upload**.
+- **Smart Matching Engine:** Executes the core **Weighted Scoring Algorithm** and **Cross-scanning** (comparing lost vs. found) upon receiving a new listing event. Flags matches exceeding the **70% Threshold**.
+- **Admin Panel Logic:** Allows administrative oversight and **Final Delivery Approval**.
 
 **3. Data Layer (Database)**
 
-- **`MySQL Relational Database`:** Ensures normalized and secure data persistence (Users, Items, Match Records, OTP Tokens).
+- **MySQL Relational Database:** Ensures normalized and secure data persistence (Users, Items, Match Records, OTP Tokens).
 
-**External Connection: `External Mail Server`**
-Receives asynchronous data via **`Automated Notification (SMTP Relay)`** for match notifications or OTP dispatches.
+**External Connection: External Mail Server**
+Receives asynchronous data via **Automated Notification (SMTP Relay)** for match notifications or OTP dispatches.
 
 ---
 
