@@ -183,6 +183,28 @@ The entire development process was managed via GitHub to ensure code security, t
 
 ## 8. Physical Architecture
 
+The physical deployment of the system is configured to ensure high availability and data security within the campus network. The architecture consists of three main components: **end-user devices, network infrastructure, and a centralized application server.**
+
+### 8.1. Server-Side Components
+
+- **Hosting Environment:** The application is hosted on a centralized server within the campus network. During the development phase, the **XAMPP (Apache, MySQL, PHP)** local server environment was utilized.
+- **Web Server (Apache):** Handles incoming HTTP/HTTPS requests from users, executes PHP scripts, and delivers static files (**HTML, CSS, JS**) to the client.
+- **Database Server (MySQL):** Securely stores lost and found item data, user accounts, and matching records.
+- **Mail Server (SMTP Relay):** Responsible for **automated email dispatch** to users whenever a match score of 70% or higher is achieved.
+
+### 8.2. Client-Side Components
+
+The system does not require any application installation. Users can access the system through the following physical devices:
+
+- **Mobile Devices:** Smartphones and tablets (**iOS/Android**).
+- **Desktop/Laptop Computers:** Campus laboratory terminals or personal computers.
+- **Browser:** Modern web browsers (**_Chrome, Firefox, Safari_**) serve as the primary execution environment for all operations.
+
+### 8.3. Network & Connectivity
+
+- **Agnostic Connectivity Support:** The application architecture is designed to be **network-agnostic**, functioning independently of the physical connection type. The system provides uninterrupted service over campus local networks (**Wi-Fi/Ethernet**), home internet (ADSL/Fiber), public access points, and mobile data (**3G/4G/5G**) services from all operators.
+- **Low Bandwidth Optimization:** Through **Fetch API** and **JSON-based asynchronous data transfer**, the system continues to operate without data loss or UI freezing even on low-speed or unstable connections (e.g., weak mobile signals).
+
 ---
 
 ## 9. Scenarios
