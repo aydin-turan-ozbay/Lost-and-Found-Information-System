@@ -52,6 +52,7 @@ The technology stack and tools used in the development, testing, and deployment 
 - **PHP 8.x:** Used as the core engine on the server side (Backend) for processing form data, session management, and performing database CRUD (Create, Read, Update, Delete) operations.
 - **MySQL:** Chosen as the project's relational database management system (RDBMS). Data integrity is ensured by establishing Foreign Key relationships between the users and items tables.
 - **Web Standards (HTML5, CSS3, JS):** Semantic HTML is used for interface design, customized CSS (`style.css`, `profile.css`) for style management, and client-side JavaScript for dynamic user interactions.
+- **Drawio.com:** Used to visualize the database architecture **(ER Diagrams)** and system flowcharts of the project and to model the **logical** and **conceptual design.** [Draw.io](https://app.diagrams.net/)
 
 ### 2.2. Development and Server Environment
 
@@ -62,6 +63,10 @@ The technology stack and tools used in the development, testing, and deployment 
 ### 2.3. Version Control and Collaboration
 
 - **Git & GitHub:** Used for team code synchronization, branch management, and tracking change history. So far, version tracking has been maintained on the project.
+
+### 2.4. Other Research Sources
+- **Visual Paradigm:** Used for UML modeling (Component, Sequence, Deployment, Use Case) & ERD design, and architectural visualization to ensure system consistency. [Visual Paradigm](https://www.visual-paradigm.com/)
+- **GeeksforGeeks - ER Model:** Referenced for database normalization, cardinality constraints, and ERD standards during the data modeling phase. [GeeksforGeeks - ER Model](https://www.geeksforgeeks.org/introduction-of-er-model/)
 
 ---
 
