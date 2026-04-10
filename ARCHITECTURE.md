@@ -201,6 +201,41 @@ $$Score = (CategoryMatch \times W_0) + (LocationMatch \times W_1) + (DateMatch \
 
 If the calculated score is above the threshold value, the system automatically sends a notification to potential item owners.
 
+### 6.1. Sequence Diagram
+
+This diagram illustrates the end-to-end operational flow of the system, covering authentication, automated matching, and the administrative delivery cycle.
+
+<p align="center">
+  <img src="docs/diagrams/sequence-diagram.png" alt="Sequence Diagram" width="1000">
+</p>
+
+### 6.2. Technical Description of the Sequence Diagram
+
+The following detailed technical analysis breaks down the data flow across the decoupled layers of the **Smart Lost and Found Information System**:
+
+#### A. Authentication and Login Process
+The workflow initiates when the user interacts with the login interface:
+* **Frontend:** Collects user credentials (Email/ID and Password), encapsulates them into a **JSON** object, and dispatches an asynchronous `POST` request using the **Fetch API**.
+* **Backend:** Receives the request, queries the **MySQL** database to validate the user, and retrieves their specific role (Admin or Student).
+* **Session Management:** Upon successful validation, a **Server-side Session** is established, granting the user access to a personalized, dynamic dashboard.
+
+#### B. Item Posting and Smart Matching Engine
+This phase represents the core "intelligence" of the system, designed to operate without disrupting the user experience:
+* **Item Submission:** When a user creates a lost or found listing, the **JavaScript** engine transmits the form data to the PHP API.
+* **Database Recording:** The Backend records the item entry in the `items` table with an **"Active"** status.
+* **Asynchronous Matching:** Immediately after the record is saved, a background process (Matching Engine) is triggered. It scans the database for potential matches and calculates a similarity score based on the following algorithm:
+
+$$Score = (CategoryMatch \times W_c) + (LocationMatch \times W_l) + (DescriptionSimilarity \times W_d)$$
+
+* **Match Recording:** If the calculated score exceeds a predefined **threshold**, a record is automatically inserted into the `matches` table.
+
+#### C. Admin Control and Delivery Process
+The physical delivery and final archival of items are managed through the administrative interface:
+* **Panel Access:** The **Admin (Security Personnel)** accesses the management dashboard where the Frontend fetches all active listings from the MySQL database.
+* **Transaction Execution:** Once a physical handover occurs, the Admin submits the **Lost Item ID**, **Found Item ID**, and the receiver's identification.
+* **Status Update:** The Backend executes a database transaction to update the status of both involved items to **"passive"** (delivered) simultaneously, ensuring data integrity.
+* **UI Feedback:** The Frontend receives a success confirmation and instantly moves the transaction to the system archive.
+
 ---
 
 ## 7. Development Architecture
