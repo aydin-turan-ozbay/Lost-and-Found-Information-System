@@ -135,6 +135,7 @@ The diagram below illustrates the high-level software architecture of the platfo
 #### **Detailed Architecture Analysis**
 
 **1. Presentation Layer (Frontend)**
+
 **Web Browser Interface:** Renders static HTML/CSS, ensuring cross-browser compatibility. Responsible for displaying UI and capturing input.
 
 - **Client-Side Logic:** (JS Engines) Performs **Form Validation** and manages **Dynamic Content** (Dashboard) without full-page reloads.
@@ -337,6 +338,41 @@ This section describes the end-to-end operational flow of the system, highlighti
 - **Process:** The Admin selects the recipient using a searchable dropdown filtered by **T.C. Identification Number**.
 - **Technical Flow:** The admin enters the unique IDs of the matched items. The `backend/deliver_item.php` script updates the status of both items from **Active** to **Passive**.
 - **Result:** Once delivery is confirmed, the relevant listing is moved from the **"My Active Listings"** tab to the **"My Found Items / My Past Listings"** tab in the user's dashboard.The records are not deleted from the system; they remain stored in the database as proof of delivery and a transaction history for both the user and the administrator.
+
+#### 9.1. Use Case Diagram
+
+
+
+
+#### **Detailed Architecture Analysis**
+
+**1. USER WORKFLOW**
+
+- **Register & Login:** Access is governed by strict security protocols. Registration requires **email-based OTP Verification via SMTP** with **"include"**. During login, credentials are authenticated using **BCrypt validation (hashing)** to ensure data security.
+- **Reset Password:** For forgotten passwords, the system generates a time-limited, unique **Security Token**; this process is an integral part of the password reset use case (**"include"**).
+- **Dashboard and Extend Relationship:** The Dashboard use case is linked to **"My Active Listings"** and **"My Past Listings"** via **"extend"** relationships. This indicates that these views are loaded upon user request, providing a flexible and performance-oriented interface.
+- **Report Lost/Found Item:** Users can create listings. For **"Found Items,"** a mandatory photo upload is enforced. Critically, as soon as the database is updated, the system triggers the matching engine as an asynchronous, **Event-Driven** process.
+- **Receive Matching Notification:** Once a match is identified, the user receives an automated notification via the **SMTP** protocol.
+  
+**2. Smart Matching Engine (System Service)**
+
+- **Execute Weighted Scoring Algorithm:** Triggered automatically upon new item submission.It calculates a similarity score based on Category, Location, and Date parameters.
+- **Scan Active Lost/Found Items:** Performs **cross-scanning** across all active records in the database.
+- **Log Match Record:** If the calculated score meets the threshold   (≥ 70%), the system automatically updates the **"match_records (bridge table)"** and initiates the notification flow.
+
+> **Note:** The relationship line from the Admin to the **Execute Weighted Scoring Algorithm** indicates that the Admin utilizes the algorithm's output as a **decision support mechanism** during the approval process rather than triggering the algorithm manually.
+
+**3. Admin (Security Officer) Workflow**
+
+- **Admin Panel:** It is the system's general management interface.
+- **Manage Listings (CRUD):** The Admin has full authority to perform CRUD (Create, Read, Update, Delete) operations on all listings to maintain system integrity.
+- **Perform Smart Search:** Unlike regular users, the Admin has the authority to search the entire database using critical parameters such as **T.C. Identification Number** or **Category**. This is essential for verifying recipients during physical delivery.
+- **Approve Delivery:** Physical delivery is strictly tied to Admin approval. Upon confirmation `(deliver_item.php)`, the Admin updates the item status from **"Active"** to **"Passive/Past."**
+- **Generate Transaction History / Audit Trail:** Upon delivery approval, the system generates a dual-purpose record:
+  - **Transaction History (User-Oriented):** A functional record of the transfer (visible under the user's **"My Past Listings"** tab).
+  - **Audit Trail (Security-Oriented):** A technical log documenting which Admin performed the action, the timestamp, and the security protocols used.
+
+> **Note:** The system generates a Transaction History for every successful delivery; this record simultaneously serves as a digital **Audit Trail** for the security department, ensuring full traceability and transparency of the entire process.
 
 ---
 
