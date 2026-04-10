@@ -47,26 +47,30 @@ This application is a digital platform that facilitates the tracking of lost and
 
 The technology stack and tools used in the development, testing, and deployment phases of the project are as follows:
 
-### 2.1. Programming Languages and Technologies
+### 2.1. Architectural Methodology
+**The 4+1 View Model (P.B. Kruchten):** Utilized as the primary architectural framework to organize system design through multiple concurrent views, ensuring high-level abstraction and stakeholder alignment.
+
+### 2.2. Programming Languages and Technologies
 
 - **PHP 8.x:** Used as the core engine on the server side (Backend) for processing form data, session management, and performing database CRUD (Create, Read, Update, Delete) operations.
 - **MySQL:** Chosen as the project's relational database management system (RDBMS). Data integrity is ensured by establishing Foreign Key relationships between the users and items tables.
 - **Web Standards (HTML5, CSS3, JS):** Semantic HTML is used for interface design, customized CSS (`style.css`, `profile.css`) for style management, and client-side JavaScript for dynamic user interactions.
 - **Drawio.com:** Used to visualize the database architecture **(ER Diagrams)** and system flowcharts of the project and to model the **logical** and **conceptual design.** [Draw.io](https://app.diagrams.net/)
 
-### 2.2. Development and Server Environment
+### 2.3. Development and Server Environment
 
 - **XAMPP Control Panel:** A software package used to simulate the Apache HTTP server and MariaDB/MySQL services on the local machine (localhost).
 - **MySQL Workbench:** Used for designing database schemas, testing SQL queries, and visually managing table structures.
 - **Visual Studio Code (VS Code):** The preferred integrated development environment (IDE) for managing the modular file structure and editing PHP/HTML files.
 
-### 2.3. Version Control and Collaboration
+### 2.4. Version Control and Collaboration
 
 - **Git & GitHub:** Used for team code synchronization, branch management, and tracking change history. So far, version tracking has been maintained on the project.
 
-### 2.4. Other Research Sources
+### 2.5. Other Research Sources
 - **Visual Paradigm:** Used for UML modeling (Component, Sequence, Deployment, Use Case) & ERD design, and architectural visualization to ensure system consistency. [Visual Paradigm](https://www.visual-paradigm.com/)
 - **GeeksforGeeks - ER Model:** Referenced for database normalization, cardinality constraints, and ERD standards during the data modeling phase. [GeeksforGeeks - ER Model](https://www.geeksforgeeks.org/introduction-of-er-model/)
+- **4+1 Architectural View Model (Wikipedia):** Referenced to establish the theoretical foundation of the multi-view architecture, ensuring clear documentation of system dynamics and deployment views. [Wikipedia - 4+1 Architectural View Model](https://en.wikipedia.org/wiki/4%2B1_architectural_view_model)
 
 ---
 
