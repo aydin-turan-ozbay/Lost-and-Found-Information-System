@@ -2,6 +2,8 @@
 
 ## Change History
 
+*You can see the repository history of the project in detail in the source control section.*
+
 ## Table of Contents
 
 1. [Project Scope](#1-scope)
@@ -16,10 +18,9 @@
 10. [Size and Performance](#10-size-and-performance)
 11. [Quality](#11-quality)
 
-## [Appendices](#appendices)
+  [Appendices](#appendices)
 
-- [Acronyms and Abbreviations](#acronyms-and-abbreviations)
-- [Definitions](#definitions)
+- [Acronyms and Abbreviations & Definitions](#acronyms-and-abbreviations--definitions)
 - [Design Principles](#design-principles)
 
 ---
@@ -30,9 +31,9 @@
 | :--- | :--- | :--- |
 | **Figure 1** | Entity Relationship Diagrams (Conceptual and Logical) | [3.3.1. Entity Relationship Diagram (ERD)](#331-entity-relationship-diagram-erd) |
 | **Figure 2** | Component Diagram | [3.4. Dynamic Matching and Notification Service](#34-dynamic-matching-and-notification-service) |
-| **Figure 3** | Sequence Diagram | [6. Process Architecture](#6-process-architecture) |
-| **Figure 4** | Deployment Diagram | [8. Physical Architecture](#8-physical-architecture) |
-| **Figure 5** | Use Case Diagram | [9. Scenarios](#9-scenarios) |
+| **Figure 3** | Sequence Diagram | [6.1. Sequence Diagram](#61-sequence-diagram) |
+| **Figure 4** | Deployment Diagram | [8.3. Network & Connectivity](#83-network--connectivity) |
+| **Figure 5** | Use Case Diagram | [9.1. Use Case Diagram](#91-use-case-diagram) |
 
 ---
 
@@ -60,7 +61,7 @@ The technology stack and tools used in the development, testing, and deployment 
 
 ### 2.3. Version Control and Collaboration
 
-- **Git & GitHub:** Used for team code synchronization, branch management, and tracking change history. So far, version tracking has been maintained with 38 commits on the project.
+- **Git & GitHub:** Used for team code synchronization, branch management, and tracking change history. So far, version tracking has been maintained on the project.
 
 ---
 
@@ -288,6 +289,25 @@ The entire development process was managed via GitHub to ensure code security, t
 
 ## 8. Physical Architecture
 
+### 8.1. Server-Side Components
+
+- **Hosting Environment:** The application is hosted on a centralized server within the campus network. During the development phase, the **XAMPP (Apache, MySQL, PHP)** local server environment was utilized.
+- **Web Server (Apache):** Handles incoming HTTP/HTTPS requests from users, executes PHP scripts, and delivers static files (**HTML, CSS, JS**) to the client.
+- **Database Server (MySQL):** Securely stores lost and found item data, user accounts, and matching records.
+- **Mail Server (SMTP Relay):** Responsible for **automated email dispatch** to users whenever a match score of 70% or higher is achieved.
+
+### 8.2. Client-Side Components
+
+The system does not require any application installation. Users can access the system through the following physical devices:
+
+- **Mobile Devices:** Smartphones and tablets (**iOS/Android**).
+- **Desktop/Laptop Computers:** Campus laboratory terminals or personal computers.
+- **Browser:** Modern web browsers (**_Chrome, Firefox, Safari_**) serve as the primary execution environment for all operations.
+
+### 8.3. Network & Connectivity
+
+- **Agnostic Connectivity Support:** The application architecture is designed to be **network-agnostic**, functioning independently of the physical connection type. The system provides uninterrupted service over campus local networks (**Wi-Fi/Ethernet**), home internet (ADSL/Fiber), public access points, and mobile data (**3G/4G/5G**) services from all operators.
+- **Low Bandwidth Optimization:** Through **Fetch API** and **JSON-based asynchronous data transfer**, the system continues to operate without data loss or UI freezing even on low-speed or unstable connections (e.g., weak mobile signals).
 The physical deployment of the system is configured to ensure high availability and data security within the campus network. The architecture consists of three main components: **end-user devices, network infrastructure, and a centralized application server.**
 
 The diagram below illustrates the high-level physical deployment of the platform, highlighting the interaction between **End-User Devices**, **Campus Network**, and the **Server Tier**.
@@ -319,26 +339,6 @@ The diagram below illustrates the high-level physical deployment of the platform
 - **Zero-Exposure Security:** To prevent misuse, item records are never listed publicly; the system relies on automated matches.
 - **Data Protection:** The architecture enforces **BCRYPT Hashing** for passwords and utilizes strict input filtering to prevent **XSS** and **SQL Injection** attacks.
 - **Architectural Principles:** By adhering to **Separation of Concerns (SoC)** and **Event-Driven Execution**, every new report triggers an immediate, background-processed matching sequence.
-
-### 8.1. Server-Side Components
-
-- **Hosting Environment:** The application is hosted on a centralized server within the campus network. During the development phase, the **XAMPP (Apache, MySQL, PHP)** local server environment was utilized.
-- **Web Server (Apache):** Handles incoming HTTP/HTTPS requests from users, executes PHP scripts, and delivers static files (**HTML, CSS, JS**) to the client.
-- **Database Server (MySQL):** Securely stores lost and found item data, user accounts, and matching records.
-- **Mail Server (SMTP Relay):** Responsible for **automated email dispatch** to users whenever a match score of 70% or higher is achieved.
-
-### 8.2. Client-Side Components
-
-The system does not require any application installation. Users can access the system through the following physical devices:
-
-- **Mobile Devices:** Smartphones and tablets (**iOS/Android**).
-- **Desktop/Laptop Computers:** Campus laboratory terminals or personal computers.
-- **Browser:** Modern web browsers (**_Chrome, Firefox, Safari_**) serve as the primary execution environment for all operations.
-
-### 8.3. Network & Connectivity
-
-- **Agnostic Connectivity Support:** The application architecture is designed to be **network-agnostic**, functioning independently of the physical connection type. The system provides uninterrupted service over campus local networks (**Wi-Fi/Ethernet**), home internet (ADSL/Fiber), public access points, and mobile data (**3G/4G/5G**) services from all operators.
-- **Low Bandwidth Optimization:** Through **Fetch API** and **JSON-based asynchronous data transfer**, the system continues to operate without data loss or UI freezing even on low-speed or unstable connections (e.g., weak mobile signals).
 
 ---
 
@@ -376,8 +376,11 @@ This section describes the end-to-end operational flow of the system, highlighti
 
 #### 9.1. Use Case Diagram
 
+-To visualize the functional boundaries and interaction patterns of the platform, the following Use Case Diagram illustrates the relationship between users, administrative staff, and core system services. This model highlights the **event-driven** nature of the matching engine and the security-first approach integrated into the user workflows.
 
-
+<p align="center">
+  <img src="docs\diagrams\Lost_ and_ Found_ Platform Use-Case Diagram.png" alt="Use-Case Diagram" width="1000">
+</p>
 
 #### **Detailed Architecture Analysis**
 
@@ -393,7 +396,7 @@ This section describes the end-to-end operational flow of the system, highlighti
 
 - **Execute Weighted Scoring Algorithm:** Triggered automatically upon new item submission.It calculates a similarity score based on Category, Location, and Date parameters.
 - **Scan Active Lost/Found Items:** Performs **cross-scanning** across all active records in the database.
-- **Log Match Record:** If the calculated score meets the threshold   (≥ 70%), the system automatically updates the **"match_records (bridge table)"** and initiates the notification flow.
+- **Log Match Record:** If the calculated score meets the threshold (≥ 70%), the system automatically updates the **"match_records (bridge table)"** and initiates the notification flow.
 
 > **Note:** The relationship line from the Admin to the **Execute Weighted Scoring Algorithm** indicates that the Admin utilizes the algorithm's output as a **decision support mechanism** during the approval process rather than triggering the algorithm manually.
 
@@ -466,9 +469,7 @@ The system is engineered for efficiency, utilizing a lightweight architecture to
 
 ## Appendices
 
-### Acronyms and Abbreviations
-
-### Definitions
+### Acronyms and Abbreviations & Definitions
 
 | Term                            | Definition                                                                                                                                                                         |
 | :------------------------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
