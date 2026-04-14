@@ -17,10 +17,10 @@ $fullName = isset($_SESSION['full_name']) ? $_SESSION['full_name'] : '';
     </div>
 
     <nav class="top-nav">
-        <div class="brand">
+        <a href="index.php" class="brand brand-link" aria-label="Ana sayfaya git">
             <img src="../assets/logo.png" alt="Logo" class="logo" />
             <span>Lost And Found Information System</span>
-        </div>
+        </a>
 
         <div class="nav-actions">
             <?php if ($loggedIn): ?>
@@ -45,11 +45,14 @@ $fullName = isset($_SESSION['full_name']) ? $_SESSION['full_name'] : '';
                 <h1>Hoş Geldin!</h1>
             <?php endif; ?>
             <p>Kaybolan ya da bulunan eşyaların hızlıca kaydedildiği güvenilir platform.</p>
-            <?php if ($loggedIn): ?>
-                <a href="../frontend/dashboard.html" class="action-btn">İlan Ver</a>
-            <?php else: ?>
-                <a href="../frontend/login.html?next=dashboard" class="action-btn">İlan Ver</a>
-            <?php endif; ?>
+            <div class="hero-actions">
+                <?php if ($loggedIn): ?>
+                    <a href="../frontend/dashboard.html" class="action-btn">İlan Ver</a>
+                    <a href="../frontend/my_items.html" class="action-btn secondary">İlanlarımı Görüntüle</a>
+                <?php else: ?>
+                    <a href="../frontend/login.html?next=dashboard" class="action-btn">İlan Ver</a>
+                <?php endif; ?>
+            </div>
         </section>
     </div>
 

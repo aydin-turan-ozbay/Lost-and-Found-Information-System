@@ -42,6 +42,8 @@ try {
         // BASARILI: next parametresine gore yonlendir
         if ($next === 'dashboard') {
             header("Location: ../frontend/dashboard.html");
+        } elseif ($next === 'my_items') {
+            header("Location: ../frontend/my_items.html");
         } else {
             header("Location: index.php");
         }

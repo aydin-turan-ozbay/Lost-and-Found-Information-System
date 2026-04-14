@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>İlanlarım - Lost and Found</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="my_items.css">
+</head>
+<body>
+    <nav class="top-nav">
+        <a href="../backend/index.php" class="brand brand-link" aria-label="Ana sayfaya git">
+            <img src="../assets/logo.png" alt="Logo" class="logo" />
+            <span>Lost And Found Information System</span>
+        </a>
+
+        <div class="nav-actions">
+            <div class="auth user">
+                <a href="../backend/profile.php" class="icon-btn" title="Profil">👤 Profil</a>
+                <a href="../backend/logout.php" class="link-btn secondary">Çıkış Yap</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container items-container">
+        <div class="items-header">
+            <h1>İlanlarım</h1>
+            <p>Kayıp ve buluntu ilanlarını buradan görüntüleyebilir, filtreleyebilir ve arayabilirsiniz.</p>
+        </div>
+
+        <div class="items-controls">
+            <div class="filter-tabs" role="tablist" aria-label="İlan türü filtreleri">
+                <button class="filter-tab active" data-filter="all" type="button">Tümü</button>
+                <button class="filter-tab" data-filter="lost" type="button">Kayıp</button>
+                <button class="filter-tab" data-filter="found" type="button">Buluntu</button>
+            </div>
+
+            <input
+                id="searchInput"
+                class="search-input"
+                type="search"
+                placeholder="Tabloda ara (başlık, kategori, konum, açıklama...)"
+                aria-label="İlanlarda arama"
+            >
+        </div>
+
+        <div class="table-wrap">
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Tür</th>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Renk</th>
+                        <th>Konum</th>
+                        <th>Tarih</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsTableBody">
+                    <tr>
+                        <td colspan="7" class="table-message">Yükleniyor...</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="js/my-items.js"></script>
+</body>
+</html>

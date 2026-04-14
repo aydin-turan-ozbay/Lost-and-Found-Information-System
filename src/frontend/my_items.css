@@ -1,0 +1,132 @@
+.items-container {
+    max-width: 1100px;
+    margin-top: 90px;
+    text-align: left;
+}
+
+.items-header h1 {
+    color: #2d3d72;
+    margin-bottom: 8px;
+}
+
+.items-header p {
+    color: #4f5784;
+    margin-bottom: 18px;
+}
+
+.items-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+}
+
+.filter-tabs {
+    display: flex;
+    gap: 10px;
+}
+
+.filter-tab {
+    border: 1px solid #d9e0ff;
+    background: #f4f6ff;
+    color: #4154a8;
+    border-radius: 999px;
+    padding: 8px 14px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.filter-tab:hover {
+    background: linear-gradient(135deg, #e9eeff, #dde5ff);
+    border-color: #becbff;
+    color: #304398;
+    transform: translateY(-1px);
+    box-shadow: 0 5px 12px rgba(72, 98, 210, 0.18);
+}
+
+.filter-tab.active {
+    background: linear-gradient(135deg, #4f70ff, #5f60f9);
+    color: #fff;
+    border-color: transparent;
+}
+
+.filter-tab.active:hover {
+    background: linear-gradient(135deg, #4768fa, #5657f2);
+    box-shadow: 0 8px 18px rgba(52, 72, 180, 0.35);
+}
+
+.search-input {
+    width: min(420px, 100%);
+    border: 1px solid #d9e0ff;
+    border-radius: 10px;
+    padding: 10px 12px;
+    font-size: 14px;
+}
+
+.search-input:focus {
+    outline: none;
+    border-color: #7a8eff;
+    box-shadow: 0 0 0 3px rgba(103, 117, 214, 0.15);
+}
+
+.table-wrap {
+    width: 100%;
+    overflow-x: auto;
+    border: 1px solid #e7ebff;
+    border-radius: 12px;
+}
+
+.items-table {
+    width: 100%;
+    min-width: 940px;
+    border-collapse: collapse;
+    background: #fff;
+}
+
+.items-table th,
+.items-table td {
+    border-bottom: 1px solid #eef1ff;
+    padding: 12px 10px;
+    font-size: 14px;
+    vertical-align: top;
+}
+
+.items-table th {
+    background: #f6f8ff;
+    color: #354480;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+}
+
+.badge.lost {
+    background: #ffe4e1;
+    color: #b43b2f;
+}
+
+.badge.found {
+    background: #dff7e8;
+    color: #1f8c4b;
+}
+
+.table-message {
+    text-align: center;
+    color: #6a7195;
+    padding: 18px;
+}
+
+.cell-description {
+    max-width: 340px;
+    white-space: normal;
+    word-break: break-word;
+}

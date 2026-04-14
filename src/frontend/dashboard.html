@@ -6,7 +6,21 @@
     <title>Öğrenci Paneli - Lost and Found</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
+<body class="dashboard-page">
+    <nav class="top-nav">
+        <a href="../backend/index.php" class="brand brand-link" aria-label="Ana sayfaya git">
+            <img src="../assets/logo.png" alt="Logo" class="logo" />
+            <span>Lost And Found Information System</span>
+        </a>
+
+        <div class="nav-actions">
+            <div class="auth user">
+                <a href="../backend/profile.php" class="icon-btn" title="Profil">👤 Profil</a>
+                <a href="../backend/logout.php" class="link-btn secondary">Çıkış Yap</a>
+            </div>
+        </div>
+    </nav>
+
     <div class="container">
         <h1>Hoş Geldin!</h1>
         <p>Lütfen yapmak istediğiniz işlemi seçiniz:</p>
@@ -14,11 +28,6 @@
         <div class="button-group">
             <a href="report_item.html?type=lost" class="main-btn btn-lost">Eşyamı Kaybettim</a>
             <a href="report_item.html?type=found" class="main-btn btn-found">Eşya Buldum</a>
-        </div>
-
-        <div class="footer-links">
-            <a href="my_items.html" class="footer-link primary">İlanlarımı Görüntüle</a>
-            <a href="../backend/logout.php" class="footer-link secondary">Güvenli Çıkış</a>
         </div>
     </div>
 </body>
