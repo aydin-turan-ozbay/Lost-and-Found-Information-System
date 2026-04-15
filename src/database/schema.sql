@@ -1,16 +1,7 @@
--- 1. Create and use the database
-CREATE DATABASE IF NOT EXISTS lost_found_db;
+CREATE DATABASE  lost_found_db;
 USE lost_found_db;
 
--- 2. Drop existing tables to start fresh (Order is important due to Foreign Keys)
-SET FOREIGN_KEY_CHECKS = 0;
-DROP TABLE IF EXISTS items;
-DROP TABLE IF EXISTS users;
-SET FOREIGN_KEY_CHECKS = 1;
 
--- 3. Users Table
--- Removed: tc_no, lang
--- Added: Password length constraint (min 8 chars)
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     full_name VARCHAR(100) NOT NULL,
@@ -22,9 +13,9 @@ CREATE TABLE users (
     -- Password length check (8 chars minimum)
     CONSTRAINT chk_password_length CHECK (CHAR_LENGTH(password) >= 8)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-USE lost_found_db;
 
-CREATE TABLE `items` (
+
+CREATE TABLE items (
   `id` INT NOT NULL AUTO_INCREMENT,
   `user_id` INT NOT NULL,
   `title` VARCHAR(255) NOT NULL,
@@ -38,4 +29,33 @@ CREATE TABLE `items` (
   `created_at` TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   CONSTRAINT `fk_items_user` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE otp_codes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    otp_code VARCHAR(6) NOT NULL, 
+    type ENUM('registration', 'password_reset') NOT NULL, 
+    expires_at DATETIME NOT NULL, 
+    is_used TINYINT(1) DEFAULT 0, 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
+
+    CONSTRAINT fk_otp_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+
+CREATE TABLE matches (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    lost_item_id INT NOT NULL,
+    found_item_id INT NOT NULL,
+    match_score DECIMAL(5,2) NOT NULL, 
+    is_notified TINYINT(1) DEFAULT 0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT chk_different_items CHECK (lost_item_id <> found_item_id),    
+    UNIQUE KEY unique_match_pair (lost_item_id, found_item_id),
+
+    CONSTRAINT fk_lost_item FOREIGN KEY (lost_item_id) REFERENCES items(id) ON DELETE CASCADE,
+    CONSTRAINT fk_found_item FOREIGN KEY (found_item_id) REFERENCES items(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
