@@ -37,7 +37,7 @@ CREATE TABLE otp_codes (
     otp_code VARCHAR(6) NOT NULL, 
     type ENUM('registration', 'password_reset') NOT NULL, 
     expires_at DATETIME NOT NULL, 
-    is_used TINYINT(1) DEFAULT 0, 
+    is_used TINYINT DEFAULT 0, 
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     
 
@@ -50,7 +50,7 @@ CREATE TABLE matches (
     lost_item_id INT NOT NULL,
     found_item_id INT NOT NULL,
     match_score DECIMAL(5,2) NOT NULL, 
-    is_notified TINYINT(1) DEFAULT 0,
+    is_notified TINYINT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT chk_different_items CHECK (lost_item_id <> found_item_id),    
