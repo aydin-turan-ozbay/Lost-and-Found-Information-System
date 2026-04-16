@@ -11,7 +11,8 @@ CREATE TABLE IF NOT EXISTS users (
 	role ENUM('student', 'staff', 'academician', 'visitor', 'admin') DEFAULT 'student',
     is_verified TINYINT(1) DEFAULT 0, -- For OTP approval
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    -- Password length check (8 chars minimum)
+    
+        -- Password length check (8 chars minimum)
     CONSTRAINT chk_password_length CHECK (CHAR_LENGTH(password) >= 8)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -26,10 +27,11 @@ CREATE TABLE IF NOT EXISTS items (
     item_date DATE NOT NULL,
     description TEXT,
     type ENUM('lost', 'found') NOT NULL,
-    status ENUM('active', 'matched', 'delivered', 'archived') DEFAULT 'active',
+    status ENUM('active', 'delivered', 'archived') DEFAULT 'active',
     image_path VARCHAR(255) DEFAULT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    
     CONSTRAINT fk_items_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -42,6 +44,7 @@ CREATE TABLE IF NOT EXISTS otp_codes (
     expires_at DATETIME NOT NULL,
     is_used TINYINT(1) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    
     CONSTRAINT fk_otp_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -51,7 +54,6 @@ CREATE TABLE IF NOT EXISTS matches (
     lost_item_id INT NOT NULL,
     found_item_id INT NOT NULL,
     match_score DECIMAL(5,2) NOT NULL,
-    status ENUM('pending', 'notified', 'approved', 'rejected', 'completed') DEFAULT 'pending',
     is_notified TINYINT(1) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
