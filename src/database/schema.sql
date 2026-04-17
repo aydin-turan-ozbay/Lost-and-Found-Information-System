@@ -21,7 +21,7 @@ CREATE TABLE IF NOT EXISTS items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     title VARCHAR(255) NOT NULL,
-    category ENUM('electronic', 'wallet/card holder', 'bag', 'keychain', 'other') NOT NULL,
+    category ENUM('electronic', 'wallet', 'bag', 'keychain', 'other') NOT NULL,
     color VARCHAR(50) DEFAULT NULL,
     location ENUM('bakırköy campus', 'gayrettepe campus', 'mahmutbey campus A block', 'mahmutbey campus D block') NOT NULL,
     item_date DATE NOT NULL,
