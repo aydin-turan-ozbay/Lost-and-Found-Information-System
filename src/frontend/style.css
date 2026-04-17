@@ -199,6 +199,59 @@ button:hover {
     box-shadow: 0 5px 15px rgba(0,0,0,0.1);
 }
 
+.forgot-password {
+    display: inline-block;
+    margin-left: auto;
+    white-space: nowrap;
+    font-size: 13px;
+    font-weight: 600;
+    color: #667eea;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.forgot-password:visited {
+    color: #667eea;
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
+}
+
+.login-options-row {
+    margin-top: -10px;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    gap: 12px;
+    flex-wrap: nowrap;
+}
+
+.remember-me {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #666;
+    user-select: none;
+    margin: 0;
+    flex: 0 0 auto;
+    white-space: nowrap;
+}
+
+.remember-me:hover {
+    text-decoration: underline;
+}
+
+.remember-me input {
+    width: 14px;
+    height: 14px;
+    accent-color: #764ba2;
+}
+
 /* Ana Sayfa Stilleri */
 .hero {
     margin-bottom: 25px;

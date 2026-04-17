@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - Lost and Found</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260417">
 </head>
 <body>
     <div class="container">
@@ -28,10 +28,17 @@
                 <input type="password" id="password" name="password" placeholder="Min. 8 characters" minlength="8" required oninvalid="this.setCustomValidity('Password must be at least 8 characters long.')" 
                 oninput="this.setCustomValidity('')">
             </div>
+            <div class="login-options-row">
+                <label class="remember-me">
+                    <input type="checkbox" id="remember_me" name="remember_me">
+                    <span>Remember Me</span>
+                </label>
+                <a class="forgot-password" href="forgot_password.html">Forgot Password</a>
+            </div>
             <button type="submit">Login</button>
         </form>
         <p class="footer-text">Don't have an account? <a href="register.html">Sign Up Now</a></p>
     </div>
-    <script src="js/login.js"></script>
+    <script src="js/login.js?v=20260417"></script>
 </body>
 </html>
