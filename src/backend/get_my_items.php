@@ -15,13 +15,6 @@ if (!isset($_SESSION['user_id'])) {
 
 $user_id = (int) $_SESSION['user_id'];
 
-// Farkli kurulumlarda ilan turu sutunu status veya type olabilir.
-$typeColumn = 'status';
-$checkStatus = $conn->query("SHOW COLUMNS FROM items LIKE 'status'");
-if (!$checkStatus || $checkStatus->num_rows === 0) {
-    $typeColumn = 'type';
-}
-
 $sql = "
     SELECT
         id,
@@ -31,7 +24,7 @@ $sql = "
         location,
         item_date,
         description,
-        $typeColumn AS item_type,
+        type AS item_type,
         image_path
     FROM items
     WHERE user_id = ?
@@ -44,7 +37,7 @@ if (!$stmt) {
     http_response_code(500);
     echo json_encode([
         "ok" => false,
-        "error" => "Sorgu hazırlanamadı: " . $conn->error
+        "error" => $conn->error
     ]);
     exit();
 }
@@ -54,6 +47,7 @@ $stmt->execute();
 $result = $stmt->get_result();
 
 $items = [];
+
 while ($row = $result->fetch_assoc()) {
     $items[] = $row;
 }
