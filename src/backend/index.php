@@ -2,6 +2,8 @@
 session_start();
 $loggedIn = isset($_SESSION['user_id']);
 $fullName = isset($_SESSION['full_name']) ? $_SESSION['full_name'] : '';
+$role = isset($_SESSION['role']) ? $_SESSION['role'] : '';
+$isAdmin = ($role === 'admin');
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -25,6 +27,9 @@ $fullName = isset($_SESSION['full_name']) ? $_SESSION['full_name'] : '';
         <div class="nav-actions">
             <?php if ($loggedIn): ?>
                 <div class="auth user">
+                    <?php if ($isAdmin): ?>
+                        <a href="admin_panel.php" class="icon-btn" title="Admin Paneli">🔐 Admin Paneli</a>
+                    <?php endif; ?>
                     <a href="profile.php" class="icon-btn" title="Profil">👤 Profil</a>
                     <a href="logout.php" class="link-btn secondary">Çıkış Yap</a>
                 </div>
