@@ -1,3 +1,6 @@
+CREATE DATABASE IF NOT EXISTS lost_found_db;
+USE lost_found_db;
+
 -- 1. USERS TABLE
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -6,12 +9,14 @@ CREATE TABLE IF NOT EXISTS users (
     student_id VARCHAR(50) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
     role ENUM('student', 'staff', 'academician', 'visitor', 'admin') DEFAULT 'student',
+    security_question VARCHAR(255) NOT NULL, 
+    security_answer VARCHAR(255) NOT NULL,   
     is_verified TINYINT(1) DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     CONSTRAINT chk_password_length CHECK (CHAR_LENGTH(password) >= 8)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
--- 2. ITEMS TABLE (Tüm sütunlar ve kısıtlamalar tek seferde eklenmiş hali)
+-- 2. ITEMS TABLE
 CREATE TABLE IF NOT EXISTS items (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
