@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Paneli - Lost and Found</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="admin_panel.css">
+</head>
+<body class="admin-panel-page">
+    <nav class="top-nav">
+        <a href="index.php" class="brand brand-link" aria-label="Ana sayfaya git">
+            <img src="../assets/logo.png" alt="Logo" class="logo" />
+            <span>Lost And Found Information System</span>
+        </a>
+
+        <div class="nav-actions">
+            <div class="auth user">
+                <span class="admin-badge">🔒 Yetkili Panel</span>
+                <a href="../backend/profile.php" class="icon-btn" title="Profil">👤 Profil</a>
+                <a href="../backend/logout.php" class="link-btn secondary">Çıkış Yap</a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container admin-container">
+        <h1>Admin Paneli</h1>
+        <form id="filterForm">
+            <div class="filter-group">
+                <label for="filterLocation">Konum:</label>
+                <input type="text" id="filterLocation" name="location" placeholder="Konum">
+
+                <label for="filterCategory">Kategori:</label>
+                <input type="text" id="filterCategory" name="category" placeholder="Kategori">
+
+                <button type="submit" class="filter-btn">Filtrele</button>
+            </div>
+        </form>
+
+        <div class="admin-panel">
+            <h1>İlanlarım</h1>
+            <p>Kayıp ve bulundu ilanlarını buradan görüntüleyebilir, filtreleyebilir ve arayabilirsiniz.</p>
+            <div class="filter-buttons">
+                <button class="filter-btn active">Tümü</button>
+                <button class="filter-btn">Kayıp</button>
+                <button class="filter-btn">Buluntu</button>
+            </div>
+            <div class="search-bar">
+                <input type="text" placeholder="Tabloda ara (başlık, kategori, konum, açıklama...)" />
+            </div>
+            <table class="items-table">
+                <thead>
+                    <tr>
+                        <th>Tür</th>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Renk</th>
+                        <th>Konum</th>
+                        <th>Tarih</th>
+                        <th>Açıklama</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="7">Bu filtre için ilan bulunamadı.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script src="js/admin_panel.js"></script>
+</body>
+</html>

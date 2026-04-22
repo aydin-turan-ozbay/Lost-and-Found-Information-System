@@ -12,13 +12,19 @@ if ($_SESSION['role'] !== 'admin') {
     exit;
 }
 
+// Redirect admin users directly to admin panel after login
+if ($_SERVER['PHP_SELF'] === '/index.php' && $_SESSION['role'] === 'admin') {
+    header('Location: admin_panel.php');
+    exit;
+}
+
 include 'db_config.php';
 
 $fullName = $_SESSION['full_name'] ?? 'Admin';
 $email = $_SESSION['email'] ?? '';
 
 // Get tab parameter, default to 'all'
-$activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'all';
+$activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'lost'; // Default to 'lost' tab
 ?>
 <!DOCTYPE html>
 <html lang="tr">
@@ -48,110 +54,39 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'all';
     </nav>
 
     <div class="container admin-container">
-        <div class="admin-header">
-            <h1>Admin Yönetim Paneli</h1>
-            <p>Tüm kayıp ve buluntu eşyalarını yönetin</p>
+        <div class="admin-panel">
+            <h1>İlanlarım</h1>
+            <p>Kayıp ve bulundu ilanlarını buradan görüntüleyebilir, filtreleyebilir ve arayabilirsiniz.</p>
+            <div class="filter-buttons">
+                <button class="filter-btn active" data-filter="lost">Kayıp</button>
+                <button class="filter-btn" data-filter="found">Buluntu</button>
+                <button class="filter-btn" data-filter="delivered">Teslim Edilenler</button>
+            </div>
+            <div class="search-bar">
+                <input type="text" id="searchInput" placeholder="Tabloda ara (başlık, kategori, konum, açıklama...)" />
+            </div>
+            <table class="items-table" id="itemsTable">
+                <thead>
+                    <tr>
+                        <th>Tür</th>
+                        <th>Başlık</th>
+                        <th>Kategori</th>
+                        <th>Renk</th>
+                        <th>Konum</th>
+                        <th>Tarih</th>
+                        <th>Açıklama</th>
+                        <th>Oluşturan</th>
+                        <th>İşlem</th>
+                    </tr>
+                </thead>
+                <tbody id="itemsBody">
+                    <tr>
+                        <td colspan="9">Yükleniyor...</td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
-        <!-- Tab Navigation -->
-        <div class="tab-navigation">
-            <button class="tab-btn <?php echo $activeTab === 'all' ? 'active' : ''; ?>" data-tab="all">
-                📋 Tümü
-            </button>
-            <button class="tab-btn <?php echo $activeTab === 'lost' ? 'active' : ''; ?>" data-tab="lost">
-                🔍 Kayıp Eşyalar
-            </button>
-            <button class="tab-btn <?php echo $activeTab === 'found' ? 'active' : ''; ?>" data-tab="found">
-                📦 Bulunan Eşyalar
-            </button>
-            <button class="tab-btn <?php echo $activeTab === 'delivered' ? 'active' : ''; ?>" data-tab="delivered">
-                ✅ Teslim Edilenler
-            </button>
-        </div>
-
-        <!-- Items Table Container -->
-        <div class="table-container">
-            <div id="all-tab" class="tab-content <?php echo $activeTab === 'all' ? 'active' : ''; ?>">
-                <table class="admin-table" id="all-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Başlık</th>
-                            <th>Tür</th>
-                            <th>Kategori</th>
-                            <th>Konum</th>
-                            <th>İlan Sahibi</th>
-                            <th>Durum</th>
-                            <th>Tarih</th>
-                            <th>İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody id="all-body">
-                        <tr>
-                            <td colspan="9" class="loading">Yükleniyor...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div id="lost-tab" class="tab-content <?php echo $activeTab === 'lost' ? 'active' : ''; ?>">
-                <table class="admin-table" id="lost-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Başlık</th>
-                            <th>Kategori</th>
-                            <th>Konum</th>
-                            <th>İlan Sahibi</th>
-                            <th>Durum</th>
-                            <th>Tarih</th>
-                            <th>İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody id="lost-body">
-                        <tr>
-                            <td colspan="8" class="loading">Yükleniyor...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div id="found-tab" class="tab-content <?php echo $activeTab === 'found' ? 'active' : ''; ?>">
-                <table class="admin-table" id="found-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Başlık</th>
-                            <th>Kategori</th>
-                            <th>Konum</th>
-                            <th>İlan Sahibi</th>
-                            <th>Durum</th>
-                            <th>Tarih</th>
-                            <th>İşlem</th>
-                        </tr>
-                    </thead>
-                    <tbody id="found-body">
-                        <tr>
-                            <td colspan="8" class="loading">Yükleniyor...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-
-            <div id="delivered-tab" class="tab-content <?php echo $activeTab === 'delivered' ? 'active' : ''; ?>">
-                <table class="admin-table" id="delivered-table">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Başlık</th>
-                            <th>Tür</th>
-                            <th>Kategori</th>
-                            <th>Konum</th>
-                            <th>Bulanlar</th>
-                            <th>Teslim Alıcı</th>
-                            <th>Tarih</th>
-                        </tr>
-                    </thead>
+    </div>
                     <tbody id="delivered-body">
                         <tr>
                             <td colspan="8" class="loading">Yükleniyor...</td>
@@ -188,7 +123,7 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'all';
         </div>
     </div>
 
-    <script src="../frontend/admin_panel.js"></script>
+    <script src="../frontend/js/admin_panel.js"></script>
 </body>
 
 </html>

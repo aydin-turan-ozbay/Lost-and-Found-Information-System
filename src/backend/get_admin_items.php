@@ -18,6 +18,8 @@ if ($_SESSION['role'] !== 'admin') {
 header('Content-Type: application/json');
 
 $type = isset($_GET['type']) ? $_GET['type'] : 'all';
+$location = isset($_GET['location']) ? $conn->real_escape_string($_GET['location']) : '';
+$category = isset($_GET['category']) ? $conn->real_escape_string($_GET['category']) : '';
 
 // Connect to database
 $conn = new mysqli($host, $username, $password, $db_name);
@@ -37,6 +39,8 @@ if ($type === 'all') {
                    u.full_name, u.student_id, u.email
             FROM items i
             LEFT JOIN users u ON i.user_id = u.id
+            WHERE (i.location LIKE '%$location%' OR '$location' = '')
+              AND (i.category LIKE '%$category%' OR '$category' = '')
             ORDER BY i.created_at DESC";
     
     $result = $conn->query($sql);

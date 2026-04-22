@@ -28,7 +28,7 @@ $isAdmin = ($role === 'admin');
             <?php if ($loggedIn): ?>
                 <div class="auth user">
                     <?php if ($isAdmin): ?>
-                        <a href="admin_panel.php" class="icon-btn" title="Admin Paneli">🔐 Admin Paneli</a>
+                        <!-- Admin Paneli butonu kaldırıldı -->
                     <?php endif; ?>
                     <a href="profile.php" class="icon-btn" title="Profil">👤 Profil</a>
                     <a href="logout.php" class="link-btn secondary">Çıkış Yap</a>
@@ -52,8 +52,12 @@ $isAdmin = ($role === 'admin');
             <p>Kaybolan ya da bulunan eşyaların hızlıca kaydedildiği güvenilir platform.</p>
             <div class="hero-actions">
                 <?php if ($loggedIn): ?>
-                    <a href="../frontend/dashboard.html" class="action-btn">İlan Ver</a>
-                    <a href="../frontend/my_items.html" class="action-btn secondary">İlanlarımı Görüntüle</a>
+                    <?php if ($isAdmin): ?>
+                        <a href="admin_panel.php" class="action-btn">Admin Paneli</a>
+                    <?php else: ?>
+                        <a href="../frontend/dashboard.html" class="action-btn">İlan Ver</a>
+                        <a href="../frontend/my_items.html" class="action-btn secondary">İlanlarımı Görüntüle</a>
+                    <?php endif; ?>
                 <?php else: ?>
                     <a href="../frontend/login.html?next=dashboard" class="action-btn">İlan Ver</a>
                 <?php endif; ?>

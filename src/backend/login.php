@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once 'db_config.php'; 
+require_once 'db_config.php';
 
 // Hata raporlamayı açalım ki bir sorun olursa görebilelim
 error_reporting(E_ALL);
@@ -11,9 +11,9 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $identifier = isset($_POST['identifier']) ? trim($_POST['identifier']) : '';
-$password   = isset($_POST['password']) ? $_POST['password'] : '';
-$next       = isset($_POST['next']) ? trim($_POST['next']) : '';
-$nextParam  = $next !== '' ? '&next=' . urlencode($next) : '';
+$password = isset($_POST['password']) ? $_POST['password'] : '';
+$next = isset($_POST['next']) ? trim($_POST['next']) : '';
+$nextParam = $next !== '' ? '&next=' . urlencode($next) : '';
 
 // 1. Boş alan kontrolü
 if (empty($identifier) || empty($password)) {
@@ -33,14 +33,17 @@ try {
     // 3. Şifre doğrulama ve Yönlendirme
     if ($user && password_verify($password, $user['password'])) {
         // Session bilgilerini kaydet
-        $_SESSION['user_id']   = $user['id'];
-        $_SESSION['role']      = $user['role'];
+        $_SESSION['user_id'] = $user['id'];
+        $_SESSION['role'] = $user['role'];
         $_SESSION['full_name'] = $user['full_name'];
-        $_SESSION['email']     = $user['email'];
-        $_SESSION['student_id']= $user['student_id'];
+        $_SESSION['email'] = $user['email'];
+        $_SESSION['student_id'] = $user['student_id'];
 
         // BASARILI: next parametresine gore yonlendir
-        if ($next === 'dashboard') {
+        if ($user['role'] === 'admin') {
+            header("Location: admin_panel.php");
+            exit();
+        } elseif ($next === 'dashboard') {
             header("Location: ../frontend/dashboard.html");
         } elseif ($next === 'my_items') {
             header("Location: ../frontend/my_items.html");

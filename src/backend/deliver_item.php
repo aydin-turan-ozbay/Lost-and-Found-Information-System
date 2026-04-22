@@ -85,4 +85,48 @@ if ($updateStmt->execute()) {
 }
 
 $conn->close();
-?>
+
+// Fetch users with active lost items
+if (isset($_GET['action']) && $_GET['action'] === 'get_users') {
+    $users = [];
+    $userSql = "SELECT DISTINCT u.id, u.full_name FROM users u 
+                JOIN items i ON u.id = i.user_id 
+                WHERE i.type = 'lost' AND i.status = 'active'";
+    $userResult = $conn->query($userSql);
+
+    if ($userResult) {
+        while ($userRow = $userResult->fetch_assoc()) {
+            $users[] = $userRow;
+        }
+        echo json_encode(["ok" => true, "users" => $users]);
+    } else {
+        echo json_encode(["ok" => false, "error" => "Kullanıcılar alınamadı"]);
+    }
+    exit;
+}
+
+// Fetch lost items for a specific user
+if (isset($_GET['action']) && $_GET['action'] === 'get_user_items') {
+    $userId = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+    $items = [];
+
+    if ($userId) {
+        $itemSql = "SELECT id, title FROM items WHERE user_id = ? AND type = 'lost' AND status = 'active'";
+        $itemStmt = $conn->prepare($itemSql);
+        if ($itemStmt) {
+            $itemStmt->bind_param("i", $userId);
+            $itemStmt->execute();
+            $itemResult = $itemStmt->get_result();
+
+            while ($itemRow = $itemResult->fetch_assoc()) {
+                $items[] = $itemRow;
+            }
+            echo json_encode(["ok" => true, "items" => $items]);
+        } else {
+            echo json_encode(["ok" => false, "error" => "Kayıp eşyalar alınamadı"]);
+        }
+    } else {
+        echo json_encode(["ok" => false, "error" => "Geçersiz kullanıcı"]);
+    }
+    exit;
+}
