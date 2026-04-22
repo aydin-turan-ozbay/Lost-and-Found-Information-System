@@ -9,45 +9,23 @@
 <body>
     <div class="container">
         <h2>Create Account</h2>
+        <p style="text-align: center; color: #666; margin-bottom: 20px;">Join the Lost and Found Information System.</p>
+        
         <form action="../backend/register.php" method="POST">
             
             <div class="form-group">
                 <label for="full_name">Full Name</label>
-                <input 
-                    type="text" 
-                    id="full_name" 
-                    name="full_name" 
-                    placeholder="John Doe" 
-                    required
-                    oninvalid="this.setCustomValidity('Please enter your full name.')"
-                    oninput="this.setCustomValidity('')"
-                >
+                <input type="text" id="full_name" name="full_name" placeholder="e.g. John Doe" required>
             </div>
             
             <div class="form-group">
                 <label for="email">Email Address</label>
-                <input 
-                    type="email" 
-                    id="email" 
-                    name="email" 
-                    placeholder="example@mail.com" 
-                    required
-                    oninvalid="this.setCustomValidity('Please enter a valid email address without special characters like ı, ş, ğ.')"
-                    oninput="this.setCustomValidity('')"
-                >
+                <input type="email" id="email" name="email" placeholder="example@mail.com" required>
             </div>
             
             <div class="form-group">
                 <label for="student_id">Student / Staff ID</label>
-                <input 
-                    type="text" 
-                    id="student_id" 
-                    name="student_id" 
-                    placeholder="e.g. 2021001" 
-                    required
-                    oninvalid="this.setCustomValidity('Please enter your Student or Staff ID.')"
-                    oninput="this.setCustomValidity('')"
-                >
+                <input type="text" id="student_id" name="student_id" placeholder="e.g. 2021001" required>
             </div>
             
             <div class="form-group">
@@ -59,23 +37,46 @@
                     <option value="visitor">Visitor</option>
                 </select>
             </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+
+            <div class="form-group">
+                <label for="security_question">Select a Security Question</label>
+                <select id="security_question" name="security_question" required>
+                    <option value="" disabled selected>Please choose a question...</option>
+                    <option value="nickname">What was your childhood nickname?</option>
+                    <option value="best_friend">What is the name of your favorite childhood friend?</option>
+                    <option value="first_pet">What was the name of your first pet?</option>
+                    <option value="birth_city">In which city were you born?</option>
+                    <option value="teacher_surname">What is the last name of your favorite teacher?</option>
+                    <option value="first_school">What was the name of the first school you attended?</option>
+                    <option value="mother_maiden">What is your mother's maiden name?</option>
+                    <option value="favorite_color">What is your favorite color?</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="security_answer">Security Question Answer</label>
+                <input 
+                    type="text" 
+                    id="security_answer" 
+                    name="security_answer" 
+                    placeholder="Type your answer here" 
+                    required
+                >
+                <small style="color: #888; font-size: 0.8rem;">* This answer will be required if you forget your password.</small>
+            </div>
+
+            <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
             
             <div class="form-group">
                 <label for="password">Password (Min. 8 characters)</label>
-                <input 
-                    type="password" 
-                    id="password" 
-                    name="password" 
-                    placeholder="******" 
-                    minlength="8" 
-                    required
-                    oninvalid="this.setCustomValidity('Password must be at least 8 characters long.')"
-                    oninput="this.setCustomValidity('')"
-                >
+                <input type="password" id="password" name="password" placeholder="******" minlength="8" required>
             </div>
             
             <button type="submit">Create Account</button>
         </form>
+        
         <p class="footer-text">Already have an account? <a href="login.html">Login</a></p>
     </div>
 </body>
