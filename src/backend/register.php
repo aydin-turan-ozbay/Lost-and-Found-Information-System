@@ -5,15 +5,17 @@ ini_set('display_errors', 1);
 header('Content-Type: application/json; charset=utf-8');
 require_once 'db_config.php'; 
 
-// 1. Get data from form (English fields)
+// 1. Get data from the form
 $full_name  = isset($_POST['full_name']) ? trim($_POST['full_name']) : '';
 $email      = isset($_POST['email']) ? trim($_POST['email']) : '';
 $student_id = isset($_POST['student_id']) ? trim($_POST['student_id']) : '';
 $password   = isset($_POST['password']) ? $_POST['password'] : '';
 $role       = isset($_POST['role']) ? $_POST['role'] : 'student';
+$security_question = isset($_POST['security_question']) ? trim($_POST['security_question']) : '';
+$security_answer   = isset($_POST['security_answer']) ? trim($_POST['security_answer']) : '';
 
 // 2. Empty field and Password length check (8 chars)
-if (empty($full_name) || empty($email) || empty($student_id) || empty($password)) {
+if (empty($full_name) || empty($email) || empty($student_id) || empty($password) || empty($security_question) || empty($security_answer)) {
     echo json_encode(["ok" => false, "error" => "Please fill in all required fields!"]);
     exit;
 }
@@ -47,11 +49,12 @@ try {
         exit;
     }
 
-    // 5. Hash the password
+    // 5. Hash the password and security answer & Case Sensitivity for security answer
     $hashed_password = password_hash($password, PASSWORD_DEFAULT);
+    $hashed_answer = password_hash(strtolower($security_answer), PASSWORD_DEFAULT);
 
-    // 6. Save to Database (English column names)
-    $insert_sql = "INSERT INTO users (full_name, email, student_id, password, role) VALUES (?, ?, ?, ?, ?)";
+    // 6. Save to Database
+    $insert_sql = "INSERT INTO users (full_name, email, student_id, password, role, security_question, security_answer) VALUES (?, ?, ?, ?, ?, ?, ?)";
     $insert_stmt = $conn->prepare($insert_sql);
 
     if (!$insert_stmt) {
@@ -59,8 +62,16 @@ try {
         exit;
     }
 
-    // 5 "s" for 5 string variables
-    $insert_stmt->bind_param("sssss", $full_name, $email, $student_id, $hashed_password, $role);
+    // 7 "s" for 7 string variables
+    $insert_stmt->bind_param("sssssss", 
+        $full_name, 
+        $email, 
+        $student_id, 
+        $hashed_password, 
+        $role, 
+        $security_question, 
+        $hashed_answer
+    );
 
     if ($insert_stmt->execute()) {
         // Redirect on success
