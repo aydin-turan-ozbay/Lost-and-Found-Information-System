@@ -1,13 +1,42 @@
+// --- DEĞİŞKENLER ---
 let currentFilter = 'lost';
 let allItems = [];
+let currentDeliveryItem = null;
 
-// Load items on page load
+// --- SAYFA YÜKLENDİĞİNDE ÇALIŞACAKLAR ---
 document.addEventListener('DOMContentLoaded', () => {
+    // İlk verileri yükle
     fetchItems();
+
+    // Filtre butonlarına dinleyici ekle
+    setupFilterButtons();
+
+    // Arama kutusuna dinleyici ekle
+    const searchInput = document.querySelector('#searchInput');
+    if (searchInput) {
+        searchInput.addEventListener('input', filterSearch);
+    }
+
+    // Modal Kontrolleri
+    const cancelBtn = document.getElementById('cancelDelivery');
+    const closeBtn = document.querySelector('.modal-close');
+    const confirmBtn = document.getElementById('confirmDelivery');
+    const modal = document.getElementById('deliveryModal');
+
+    if (cancelBtn) cancelBtn.addEventListener('click', closeDeliveryModal);
+    if (closeBtn) closeBtn.addEventListener('click', closeDeliveryModal);
+    if (confirmBtn) confirmBtn.addEventListener('click', confirmDelivery);
+
+    if (modal) {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) closeDeliveryModal();
+        });
+    }
 });
 
-// Fetch items from server
+// --- VERİ ÇEKME FONKSİYONLARI ---
 function fetchItems() {
+    // Not: tabType parametresini kaldırıp tüm admin itemlarını çekiyoruz
     fetch('../backend/get_admin_items.php')
         .then(response => response.json())
         .then(data => {
@@ -21,19 +50,22 @@ function fetchItems() {
         .catch(error => console.error('Error fetching items:', error));
 }
 
-// Render items based on filter
+// --- TABLO OLUŞTURMA ---
 function renderItems(items, filter) {
     const tableBody = document.querySelector('#itemsBody');
+    if (!tableBody) return;
+    
     tableBody.innerHTML = '';
 
     let filteredItems = items;
     if (filter === 'lost') {
         filteredItems = items.filter(item => item.type === 'lost');
     } else if (filter === 'found') {
-        filteredItems = items.filter(item => item.type === 'found' && item.delivered_to_user_id == null);
+        // Teslim edilmemiş buluntular
+        filteredItems = items.filter(item => item.type === 'found' && (item.status === 'active' || item.delivered_to_user_id == null));
     } else if (filter === 'delivered') {
-        // Show delivered items (items with delivered_to_user_id not null)
-        filteredItems = items.filter(item => item.delivered_to_user_id != null);
+        // Teslim edilmişler
+        filteredItems = items.filter(item => item.delivered_to_user_id != null || item.status === 'delivered');
     }
 
     if (filteredItems.length === 0) {
@@ -43,52 +75,52 @@ function renderItems(items, filter) {
 
     filteredItems.forEach(item => {
         const row = document.createElement('tr');
-        const showDeliverBtn = (filter === 'found' && item.type === 'found');
+        // Sadece 'buluntu' sekmesindeyken 'Teslim Et' butonunu göster
+        const showDeliverBtn = (filter === 'found' && item.type === 'found' && item.status !== 'delivered');
+        
         row.innerHTML = `
             <td>${item.type === 'lost' ? 'Kayıp' : 'Buluntu'}</td>
-            <td>${item.title}</td>
-            <td>${item.category}</td>
-            <td>${item.color}</td>
-            <td>${item.location}</td>
+            <td>${escapeHtml(item.title)}</td>
+            <td>${escapeHtml(item.category)}</td>
+            <td>${escapeHtml(item.color || '-')}</td>
+            <td>${escapeHtml(item.location)}</td>
             <td>${item.item_date}</td>
-            <td>${item.description}</td>
-            <td>${item.full_name} (${item.student_id})</td>
-            <td>${showDeliverBtn ? `<button class="deliver-btn" data-item-id="${item.id}">Teslim Et</button>` : ''}</td>
+            <td>${escapeHtml(item.description)}</td>
+            <td>${escapeHtml(item.full_name)} (${item.student_id})</td>
+            <td>${showDeliverBtn ? `<button class="deliver-btn btn-deliver" onclick="openDeliveryModal(${item.id}, '${escapeHtml(item.title)}')">✓ Teslim Et</button>` : '-'}</td>
         `;
         tableBody.appendChild(row);
     });
-
-    setupDeliverButtons();
 }
 
-// Filter buttons event listeners
-document.querySelectorAll('.filter-btn').forEach(button => {
-    button.addEventListener('click', () => {
-        document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
-        currentFilter = button.dataset.filter;
-        renderItems(allItems, currentFilter);
-        filterSearch();
+// --- FİLTRELEME VE ARAMA ---
+function setupFilterButtons() {
+    document.querySelectorAll('.filter-btn').forEach(button => {
+        button.addEventListener('click', () => {
+            document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            currentFilter = button.dataset.filter;
+            filterSearch();
+        });
     });
-});
-
-// Search functionality
-document.querySelector('#searchInput').addEventListener('input', filterSearch);
+}
 
 function filterSearch() {
     const searchTerm = document.querySelector('#searchInput').value.toLowerCase();
-    let filteredItems = allItems;
+    let filtered = allItems;
 
+    // Önce tab filtresi
     if (currentFilter === 'lost') {
-        filteredItems = allItems.filter(item => item.type === 'lost');
+        filtered = allItems.filter(item => item.type === 'lost');
     } else if (currentFilter === 'found') {
-        filteredItems = allItems.filter(item => item.type === 'found');
+        filtered = allItems.filter(item => item.type === 'found' && item.status !== 'delivered');
     } else if (currentFilter === 'delivered') {
-        filteredItems = allItems.filter(item => item.delivered_to_user_id != null);
+        filtered = allItems.filter(item => item.status === 'delivered');
     }
 
+    // Sonra arama terimi filtresi
     if (searchTerm) {
-        filteredItems = filteredItems.filter(item =>
+        filtered = filtered.filter(item =>
             item.title.toLowerCase().includes(searchTerm) ||
             item.category.toLowerCase().includes(searchTerm) ||
             item.location.toLowerCase().includes(searchTerm) ||
@@ -96,94 +128,110 @@ function filterSearch() {
         );
     }
 
-    renderItems(filteredItems, currentFilter);
+    renderItems(filtered, currentFilter);
 }
 
-// Event listener for 'Teslim Et' button
-function setupDeliverButtons() {
-    document.querySelectorAll('.deliver-btn').forEach(button => {
-        button.addEventListener('click', event => {
-            const itemId = event.target.dataset.itemId;
-            fetch('../backend/deliver_item.php?action=get_users')
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        showUserDropdown(data.users, itemId);
-                    } else {
-                        alert(data.error);
-                    }
-                })
-                .catch(error => console.error('Error fetching users:', error));
-        });
-    });
+// --- MODAL İŞLEMLERİ (TESLİMAT) ---
+function openDeliveryModal(itemId, itemTitle) {
+    currentDeliveryItem = itemId;
+    const itemInfoPara = document.getElementById('itemInfo');
+    if (itemInfoPara) itemInfoPara.textContent = `Eşya: ${itemTitle}`;
+    
+    loadRecipients();
+    
+    const modal = document.getElementById('deliveryModal');
+    if (modal) modal.classList.remove('hidden');
 }
 
-function showUserDropdown(users, itemId) {
-    const dropdown = document.createElement('select');
-    dropdown.innerHTML = '<option value="">Kullanıcı Seçin</option>';
-    users.forEach(user => {
-        const option = document.createElement('option');
-        option.value = user.id;
-        option.textContent = user.full_name;
-        dropdown.appendChild(option);
-    });
-
-    dropdown.addEventListener('change', () => {
-        const userId = dropdown.value;
-        if (userId) {
-            fetch(`../backend/deliver_item.php?action=get_user_items&user_id=${userId}`)
-                .then(response => response.json())
-                .then(data => {
-                    if (data.ok) {
-                        showItemDropdown(data.items, itemId);
-                    } else {
-                        alert(data.error);
-                    }
-                })
-                .catch(error => console.error('Error fetching user items:', error));
-        }
-    });
-
-    document.body.appendChild(dropdown);
+function closeDeliveryModal() {
+    const modal = document.getElementById('deliveryModal');
+    if (modal) modal.classList.add('hidden');
+    currentDeliveryItem = null;
+    const select = document.getElementById('recipientSelect');
+    if (select) select.innerHTML = '<option value="">Seçiniz...</option>';
 }
 
-function showItemDropdown(items, foundItemId) {
-    const dropdown = document.createElement('select');
-    dropdown.innerHTML = '<option value="">İlan Seçin</option>';
-    items.forEach(item => {
-        const option = document.createElement('option');
-        option.value = item.id;
-        option.textContent = item.title;
-        dropdown.appendChild(option);
-    });
+function loadRecipients() {
+    const select = document.getElementById('recipientSelect');
+    if (!select) return;
+    
+    select.innerHTML = '<option value="">Yükleniyor...</option>';
 
-    dropdown.addEventListener('change', () => {
-        const lostItemId = dropdown.value;
-        if (lostItemId) {
-            deliverItem(foundItemId, lostItemId);
-        }
-    });
-
-    document.body.appendChild(dropdown);
-}
-
-function deliverItem(foundItemId, lostItemId) {
-    fetch('../backend/deliver_item.php', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ item_id: foundItemId, recipient_id: lostItemId })
-    })
+    // Daha önce konuştuğumuz deliver_item.php?action=get_users endpointini kullanıyoruz
+    fetch('../backend/deliver_item.php?action=get_users')
         .then(response => response.json())
         .then(data => {
-            if (data.ok) {
-                alert('İlan başarıyla teslim edildi!');
-                location.reload();
+            if (data.ok && data.users.length > 0) {
+                select.innerHTML = '<option value="">Seçiniz...</option>';
+                data.users.forEach(user => {
+                    const option = document.createElement('option');
+                    option.value = user.id;
+                    option.textContent = `${escapeHtml(user.full_name)}`;
+                    select.appendChild(option);
+                });
             } else {
-                alert(data.error);
+                select.innerHTML = '<option value="">Aktif kayıp ilanı olan kullanıcı bulunamadı</option>';
             }
         })
-        .catch(error => console.error('Error delivering item:', error));
+        .catch(error => {
+            console.error('Error:', error);
+            select.innerHTML = '<option value="">Hata oluştu</option>';
+        });
 }
 
-// Initialize deliver buttons setup
-document.addEventListener('DOMContentLoaded', setupDeliverButtons);
+function confirmDelivery() {
+    if (!currentDeliveryItem) return;
+
+    const recipientSelect = document.getElementById('recipientSelect');
+    const recipientId = recipientSelect.value;
+
+    if (!recipientId) {
+        alert('Lütfen teslim alıcıyı seçiniz');
+        return;
+    }
+
+    const confirmBtn = document.getElementById('confirmDelivery');
+    confirmBtn.disabled = true;
+    confirmBtn.textContent = 'İşleniyor...';
+
+    // HATA ÇÖZÜMÜ: Veriyi PHP'nin beklediği FormData formatında gönderiyoruz
+    const formData = new FormData();
+    formData.append('item_id', currentDeliveryItem);
+    formData.append('recipient_id', recipientId);
+
+    fetch('../backend/deliver_item.php', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.ok) {
+            alert('Eşya başarıyla teslim edildi!');
+            closeDeliveryModal();
+            fetchItems(); // Tabloyu yenile
+        } else {
+            alert('Hata: ' + data.error);
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Bağlantı hatası oluştu');
+    })
+    .finally(() => {
+        confirmBtn.disabled = false;
+        confirmBtn.textContent = 'Teslim Et';
+    });
+}
+
+// --- YARDIMCI FONKSİYONLAR ---
+function escapeHtml(text) {
+    if (!text) return '';
+    const map = {
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#039;'
+    };
+    return text.replace(/[&<>"']/g, m => map[m]);
+}

@@ -55,7 +55,7 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'lost'; // Default to 'lost' t
 
     <div class="container admin-container">
         <div class="admin-panel">
-            <h1>İlanlarım</h1>
+            <h1>Tüm İlanlar</h1>
             <p>Kayıp ve bulundu ilanlarını buradan görüntüleyebilir, filtreleyebilir ve arayabilirsiniz.</p>
             <div class="filter-buttons">
                 <button class="filter-btn active" data-filter="lost">Kayıp</button>
@@ -85,15 +85,6 @@ $activeTab = isset($_GET['tab']) ? $_GET['tab'] : 'lost'; // Default to 'lost' t
                     </tr>
                 </tbody>
             </table>
-        </div>
-    </div>
-                    <tbody id="delivered-body">
-                        <tr>
-                            <td colspan="8" class="loading">Yükleniyor...</td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
         </div>
     </div>
 

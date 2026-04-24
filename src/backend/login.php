@@ -41,7 +41,7 @@ try {
 
         // BASARILI: next parametresine gore yonlendir
         if ($user['role'] === 'admin') {
-            header("Location: admin_panel.php");
+            header("Location: index.php");
             exit();
         } elseif ($next === 'dashboard') {
             header("Location: ../frontend/dashboard.html");

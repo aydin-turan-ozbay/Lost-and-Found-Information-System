@@ -64,23 +64,27 @@ if (isset($_GET['action'])) {
 
 // ================= DELIVER =================
 
-// JSON oku
-$data = json_decode(file_get_contents("php://input"), true);
-
-$item_id = (int)($data['item_id'] ?? 0);
-$recipient_id = (int)($data['recipient_id'] ?? 0);
+/**
+ * JS tarafında FormData kullandığımız için verileri doğrudan $_POST içinden alıyoruz.
+ * JSON_DECODE satırlarını siliyoruz.
+ */
+$item_id = isset($_POST['item_id']) ? (int)$_POST['item_id'] : 0;
+$recipient_id = isset($_POST['recipient_id']) ? (int)$_POST['recipient_id'] : 0;
 
 if (!$item_id || !$recipient_id) {
-    echo json_encode(["ok"=>false,"error"=>"Parametre eksik"]);
+    echo json_encode(["ok"=>false,"error"=>"Parametre eksik (Item: $item_id, Recipient: $recipient_id)"]);
     exit;
 }
 
-// update
+// Güncelleme İşlemi
+// Bulunan eşyanın (found) durumunu 'delivered' yapıyoruz ve teslim alan kişiyi kaydediyoruz.
 $stmt = $conn->prepare("UPDATE items SET status='delivered', delivered_to_user_id=?, updated_at=NOW() WHERE id=?");
-$stmt->bind_param("ii",$recipient_id,$item_id);
+$stmt->bind_param("ii", $recipient_id, $item_id);
 
-if($stmt->execute()){
-    echo json_encode(["ok"=>true]);
-}else{
-    echo json_encode(["ok"=>false,"error"=>"DB hata"]);
+if ($stmt->execute()) {
+    echo json_encode(["ok" => true, "message" => "Eşya başarıyla teslim edildi"]);
+} else {
+    echo json_encode(["ok" => false, "error" => "Veritabanı güncelleme hatası"]);
 }
+
+$conn->close();
