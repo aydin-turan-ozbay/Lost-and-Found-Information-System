@@ -1,53 +1,52 @@
 <!DOCTYPE html>
 <html lang="tr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Paneli - Lost and Found</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="admin_panel.css">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="../frontend/style.css">
+    <link rel="stylesheet" href="../frontend/admin_panel.css">
 </head>
+
 <body class="admin-panel-page">
+
     <nav class="top-nav">
-        <a href="index.php" class="brand brand-link" aria-label="Ana sayfaya git">
-            <img src="../assets/logo.png" alt="Logo" class="logo" />
+        <a href="index.php" class="brand brand-link">
+            <img src="../assets/logo.png" class="logo" alt="Logo" />
             <span>Lost And Found Information System</span>
         </a>
 
         <div class="nav-actions">
             <div class="auth user">
-                <span class="admin-badge">🔒 Yetkili Panel</span>
-                <a href="../backend/profile.php" class="icon-btn" title="Profil">👤 Profil</a>
-                <a href="../backend/logout.php" class="link-btn secondary">Çıkış Yap</a>
+                <span class="admin-badge">🔐 Yetkili Panel</span>
+
+                <span>👤 <?= htmlspecialchars($fullName) ?></span>
+
+                <!-- backend içindesin → ../backend YANLIŞ -->
+                <a href="profile.php">Profil</a>
+                <a href="logout.php">Çıkış Yap</a>
             </div>
         </div>
     </nav>
 
     <div class="container admin-container">
-        <h1>Admin Paneli</h1>
-        <form id="filterForm">
-            <div class="filter-group">
-                <label for="filterLocation">Konum:</label>
-                <input type="text" id="filterLocation" name="location" placeholder="Konum">
-
-                <label for="filterCategory">Kategori:</label>
-                <input type="text" id="filterCategory" name="category" placeholder="Kategori">
-
-                <button type="submit" class="filter-btn">Filtrele</button>
-            </div>
-        </form>
-
         <div class="admin-panel">
-            <h1>İlanlarım</h1>
-            <p>Kayıp ve bulundu ilanlarını buradan görüntüleyebilir, filtreleyebilir ve arayabilirsiniz.</p>
+            <h1>Tüm İlanlar</h1>
+            <p>Kayıp ve bulundu ilanlarını buradan görüntüleyebilirsiniz.</p>
+
             <div class="filter-buttons">
-                <button class="filter-btn active">Tümü</button>
-                <button class="filter-btn">Kayıp</button>
-                <button class="filter-btn">Buluntu</button>
+                <button class="filter-btn active" data-filter="lost">Kayıp</button>
+                <button class="filter-btn" data-filter="found">Buluntu</button>
+                <button class="filter-btn" data-filter="delivered">Teslim</button>
             </div>
+
             <div class="search-bar">
-                <input type="text" placeholder="Tabloda ara (başlık, kategori, konum, açıklama...)" />
+                <input type="text" id="searchInput" placeholder="Ara..." />
             </div>
+
             <table class="items-table">
                 <thead>
                     <tr>
@@ -58,17 +57,47 @@
                         <th>Konum</th>
                         <th>Tarih</th>
                         <th>Açıklama</th>
+                        <th>Oluşturan</th>
+                        <th>İşlem</th>
                     </tr>
                 </thead>
-                <tbody>
+
+                <tbody id="itemsBody">
                     <tr>
-                        <td colspan="7">Bu filtre için ilan bulunamadı.</td>
+                        <td colspan="9">Yükleniyor...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <script src="js/admin_panel.js"></script>
+    <div class="logout-container">
+        <a href="logout.php" class="logout-btn">Çıkış Yap</a>
+    </div>
+
+    <!-- MODAL -->
+    <div id="deliveryModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Eşya Teslim Et</h3>
+                <button class="modal-close">&times;</button>
+            </div>
+
+            <div class="modal-body">
+                <p id="itemInfo"></p>
+                <label>Alıcı:</label>
+                <select id="recipientSelect"></select>
+            </div>
+
+            <div class="modal-footer">
+                <button id="cancelDelivery">İptal</button>
+                <button id="confirmDelivery">Teslim Et</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- JS -->
+    <script src="../frontend/js/admin_panel.js"></script>
+
 </body>
 </html>
