@@ -114,31 +114,48 @@ if (!$foundItem) {
 $conn->begin_transaction();
 
 try {
-    // Delete Found Item
-    $deleteFoundStmt = $conn->prepare("DELETE FROM items WHERE id=? AND type='found'");
-    $deleteFoundStmt->bind_param("i", $item_id);
-    $deleteFoundStmt->execute();
+    // ✅ FOUND ITEM → delivered
+    $updateFoundStmt = $conn->prepare("
+        UPDATE items 
+        SET status='delivered' 
+        WHERE id=? AND type='found'
+    ");
+    $updateFoundStmt->bind_param("i", $item_id);
+    $updateFoundStmt->execute();
 
-    if ($deleteFoundStmt->affected_rows !== 1) {
-        throw new Exception("Could not delete the found item report");
+    if ($updateFoundStmt->affected_rows !== 1) {
+        throw new Exception("Could not update the found item");
     }
-    $deleteFoundStmt->close();
+    $updateFoundStmt->close();
 
-    // Delete Lost Item
-    $deleteLostStmt = $conn->prepare("DELETE FROM items WHERE id=? AND type='lost'");
-    $deleteLostStmt->bind_param("i", $recipient_lost_item_id);
-    $deleteLostStmt->execute();
+    // ✅ LOST ITEM → archived
+    $updateLostStmt = $conn->prepare("
+        UPDATE items 
+        SET status='archived' 
+        WHERE id=? AND type='lost'
+    ");
+    $updateLostStmt->bind_param("i", $recipient_lost_item_id);
+    $updateLostStmt->execute();
 
-    if ($deleteLostStmt->affected_rows !== 1) {
-        throw new Exception("Could not delete the lost item report");
+    if ($updateLostStmt->affected_rows !== 1) {
+        throw new Exception("Could not update the lost item");
     }
-    $deleteLostStmt->close();
+    $updateLostStmt->close();
 
     $conn->commit();
-    echo json_encode(["ok" => true, "message" => "Delivery complete. Found and selected lost item reports have been removed."]);
+
+    echo json_encode([
+        "ok" => true,
+        "message" => "Delivery complete. Found item delivered, lost item archived."
+    ]);
+
 } catch (Exception $e) {
     $conn->rollback();
-    echo json_encode(["ok" => false, "error" => "Delivery process failed: " . $e->getMessage()]);
+
+    echo json_encode([
+        "ok" => false,
+        "error" => "Delivery process failed: " . $e->getMessage()
+    ]);
 }
 
 $conn->close();
