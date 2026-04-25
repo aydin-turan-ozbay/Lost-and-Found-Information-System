@@ -1,48 +1,48 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>İlanlarım - Lost and Found</title>
+    <title>My Items - Lost and Found</title>
     <link rel="stylesheet" href="style.css?v=20260425">
     <link rel="stylesheet" href="my_items.css">
 </head>
 <body class="my-items-page">
     <nav class="top-nav">
-        <a href="../backend/index.php" class="brand brand-link" aria-label="Ana sayfaya git">
+        <a href="../backend/index.php" class="brand brand-link" aria-label="Go to home page">
             <img src="../assets/logo.png" alt="Logo" class="logo" />
             <span>Lost And Found Information System</span>
         </a>
 
-        <button type="button" class="nav-toggle" aria-label="Menü" aria-expanded="false" aria-controls="navActions">☰</button>
+        <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="navActions">☰</button>
 
         <div class="nav-actions" id="navActions">
             <div class="auth user">
-                <a href="../backend/profile.php" class="icon-btn" title="Profil">👤 Profil</a>
-                <a href="../backend/logout.php" class="link-btn secondary">Çıkış Yap</a>
+                <a href="../backend/profile.php" class="icon-btn" title="Profile">👤 Profile</a>
+                <a href="../backend/logout.php" class="link-btn secondary">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container items-container">
         <div class="items-header">
-            <h1>İlanlarım</h1>
-            <p>Kayıp ve buluntu ilanlarını buradan görüntüleyebilir, filtreleyebilir ve arayabilirsiniz.</p>
+            <h1>My Items</h1>
+            <p>You can view, filter, and search through your lost and found reports here.</p>
         </div>
 
         <div class="items-controls">
-            <div class="filter-tabs" role="tablist" aria-label="İlan türü filtreleri">
-                <button class="filter-tab active" data-filter="all" type="button">Tümü</button>
-                <button class="filter-tab" data-filter="lost" type="button">Kayıp</button>
-                <button class="filter-tab" data-filter="found" type="button">Buluntu</button>
+            <div class="filter-tabs" role="tablist" aria-label="Item type filters">
+                <button class="filter-tab active" data-filter="all" type="button">All</button>
+                <button class="filter-tab" data-filter="lost" type="button">Lost</button>
+                <button class="filter-tab" data-filter="found" type="button">Found</button>
             </div>
 
             <input
                 id="searchInput"
                 class="search-input"
                 type="search"
-                placeholder="Tabloda ara (başlık, kategori, konum, açıklama...)"
-                aria-label="İlanlarda arama"
+                placeholder="Search in table (title, category, location, description...)"
+                aria-label="Search items"
             >
         </div>
 
@@ -50,25 +50,25 @@
             <table class="items-table">
                 <thead>
                     <tr>
-                        <th>Tür</th>
-                        <th>Başlık</th>
-                        <th>Kategori</th>
-                        <th>Renk</th>
-                        <th>Konum</th>
-                        <th>Tarih</th>
-                        <th>Açıklama</th>
+                        <th>Type</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Color</th>
+                        <th>Location</th>
+                        <th>Date</th>
+                        <th>Description</th>
                     </tr>
                 </thead>
                 <tbody id="itemsTableBody">
                     <tr>
-                        <td colspan="7" class="table-message">Yükleniyor...</td>
+                        <td colspan="7" class="table-message">Loading...</td>
                     </tr>
                 </tbody>
             </table>
         </div>
 
         <div class="footer-links">
-            <a href="../backend/index.php" class="back-text-link">← Geri Dön</a>
+            <a href="../backend/index.php" class="back-text-link">← Go Back</a>
         </div>
     </div>
 

@@ -5,13 +5,13 @@ include 'db_config.php';
 // Admin Access Control
 if (!isset($_SESSION['user_id'])) {
     header('Content-Type: application/json');
-    echo json_encode(["ok" => false, "error" => "Lütfen önce giriş yapın"]);
+    echo json_encode(["ok" => false, "error" => "Please log in first"]);
     exit;
 }
 
 if ($_SESSION['role'] !== 'admin') {
     header('Content-Type: application/json');
-    echo json_encode(["ok" => false, "error" => "Bu işlem için yetkiniz yok"]);
+    echo json_encode(["ok" => false, "error" => "You do not have permission for this action"]);
     exit;
 }
 
@@ -20,7 +20,7 @@ header('Content-Type: application/json');
 // Connect to database
 $conn = new mysqli($host, $username, $password, $db_name);
 if ($conn->connect_error) {
-    echo json_encode(["ok" => false, "error" => "Veritabanı bağlantısı başarısız"]);
+    echo json_encode(["ok" => false, "error" => "Database connection failed"]);
     exit;
 }
 

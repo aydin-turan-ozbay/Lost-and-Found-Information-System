@@ -4,29 +4,30 @@ include 'db_config.php';
 
 header('Content-Type: application/json');
 
-// Auth
+// Auth Check
 if (!isset($_SESSION['user_id'])) {
-    echo json_encode(["ok" => false, "error" => "Lütfen giriş yapın"]);
+    echo json_encode(["ok" => false, "error" => "Please log in"]);
     exit;
 }
 
 if ($_SESSION['role'] !== 'admin') {
-    echo json_encode(["ok" => false, "error" => "Yetkiniz yok"]);
+    echo json_encode(["ok" => false, "error" => "Unauthorized access"]);
     exit;
 }
 
-// DB
+// Database Connection
 $conn = new mysqli($host, $username, $password, $db_name);
 $conn->set_charset("utf8mb4");
 
 if ($conn->connect_error) {
-    echo json_encode(["ok" => false, "error" => "DB bağlantı hatası"]);
+    echo json_encode(["ok" => false, "error" => "Database connection error"]);
     exit;
 }
 
 // ================= ACTIONS =================
 if (isset($_GET['action'])) {
 
+    // Fetch users who have active lost item reports
     if ($_GET['action'] === 'get_users') {
         $users = [];
         $sql = "SELECT DISTINCT u.id, u.full_name 
@@ -39,45 +40,46 @@ if (isset($_GET['action'])) {
             $users[] = $row;
         }
 
-        echo json_encode(["ok"=>true,"users"=>$users]);
+        echo json_encode(["ok" => true, "users" => $users]);
         exit;
     }
 
+    // Fetch specific lost items belonging to a user
     if ($_GET['action'] === 'get_user_items') {
         $userId = (int)$_GET['user_id'];
 
-        $stmt = $conn->prepare("SELECT id,title FROM items WHERE user_id=? AND type='lost' AND status='active'");
-        $stmt->bind_param("i",$userId);
+        $stmt = $conn->prepare("SELECT id, title FROM items WHERE user_id=? AND type='lost' AND status='active'");
+        $stmt->bind_param("i", $userId);
         $stmt->execute();
 
         $res = $stmt->get_result();
-        $items=[];
+        $items = [];
 
-        while($row=$res->fetch_assoc()){
-            $items[]=$row;
+        while ($row = $res->fetch_assoc()) {
+            $items[] = $row;
         }
 
-        echo json_encode(["ok"=>true,"items"=>$items]);
+        echo json_encode(["ok" => true, "items" => $items]);
         exit;
     }
 }
 
-// ================= DELIVER =================
+// ================= DELIVERY PROCESS =================
 
 /**
- * JS tarafında FormData kullandığımız için verileri doğrudan $_POST içinden alıyoruz.
- * JSON_DECODE satırlarını siliyoruz.
+ * Since FormData is used on the JS side, we retrieve data directly from $_POST.
+ * JSON_DECODE lines have been removed.
  */
 $item_id = isset($_POST['item_id']) ? (int)$_POST['item_id'] : 0;
 $recipient_id = isset($_POST['recipient_id']) ? (int)$_POST['recipient_id'] : 0;
 $recipient_lost_item_id = isset($_POST['recipient_lost_item_id']) ? (int)$_POST['recipient_lost_item_id'] : 0;
 
 if (!$item_id || !$recipient_id || !$recipient_lost_item_id) {
-    echo json_encode(["ok"=>false,"error"=>"Parametre eksik (Found Item: $item_id, Recipient: $recipient_id, Lost Item: $recipient_lost_item_id)"]);
+    echo json_encode(["ok" => false, "error" => "Missing parameters (Found Item: $item_id, Recipient: $recipient_id, Lost Item: $recipient_lost_item_id)"]);
     exit;
 }
 
-// Önce seçilen kayıp ilanı doğrula
+// 1. Validate the selected lost item report
 $checkLostStmt = $conn->prepare("SELECT user_id FROM items WHERE id=? AND type='lost' AND status='active'");
 $checkLostStmt->bind_param("i", $recipient_lost_item_id);
 $checkLostStmt->execute();
@@ -86,16 +88,16 @@ $lostItem = $lostResult->fetch_assoc();
 $checkLostStmt->close();
 
 if (!$lostItem) {
-    echo json_encode(["ok"=>false,"error"=>"Seçilen kayıp ilan geçersiz veya aktif değil"]);
+    echo json_encode(["ok" => false, "error" => "Selected lost item report is invalid or inactive"]);
     exit;
 }
 
 if ((int)$lostItem['user_id'] !== $recipient_id) {
-    echo json_encode(["ok"=>false,"error"=>"Kayıp ilan sahibi ile seçilen alıcı eşleşmiyor"]);
+    echo json_encode(["ok" => false, "error" => "Lost item owner does not match the selected recipient"]);
     exit;
 }
 
-// Seçilen buluntu ilanı doğrula
+// 2. Validate the selected found item report
 $checkFoundStmt = $conn->prepare("SELECT id FROM items WHERE id=? AND type='found' AND status='active'");
 $checkFoundStmt->bind_param("i", $item_id);
 $checkFoundStmt->execute();
@@ -104,37 +106,39 @@ $foundItem = $foundResult->fetch_assoc();
 $checkFoundStmt->close();
 
 if (!$foundItem) {
-    echo json_encode(["ok"=>false,"error"=>"Seçilen buluntu ilan geçersiz veya aktif değil"]);
+    echo json_encode(["ok" => false, "error" => "Selected found item report is invalid or inactive"]);
     exit;
 }
 
-// İki ilanı da tek işlemde sil
+// 3. Delete both reports in a single transaction
 $conn->begin_transaction();
 
 try {
+    // Delete Found Item
     $deleteFoundStmt = $conn->prepare("DELETE FROM items WHERE id=? AND type='found'");
     $deleteFoundStmt->bind_param("i", $item_id);
     $deleteFoundStmt->execute();
 
     if ($deleteFoundStmt->affected_rows !== 1) {
-        throw new Exception("Buluntu ilan silinemedi");
+        throw new Exception("Could not delete the found item report");
     }
     $deleteFoundStmt->close();
 
+    // Delete Lost Item
     $deleteLostStmt = $conn->prepare("DELETE FROM items WHERE id=? AND type='lost'");
     $deleteLostStmt->bind_param("i", $recipient_lost_item_id);
     $deleteLostStmt->execute();
 
     if ($deleteLostStmt->affected_rows !== 1) {
-        throw new Exception("Kayıp ilan silinemedi");
+        throw new Exception("Could not delete the lost item report");
     }
     $deleteLostStmt->close();
 
     $conn->commit();
-    echo json_encode(["ok" => true, "message" => "Teslim tamamlandı. Buluntu ve seçilen kayıp ilan kaldırıldı."]);
+    echo json_encode(["ok" => true, "message" => "Delivery complete. Found and selected lost item reports have been removed."]);
 } catch (Exception $e) {
     $conn->rollback();
-    echo json_encode(["ok" => false, "error" => "Teslim işlemi tamamlanamadı: " . $e->getMessage()]);
+    echo json_encode(["ok" => false, "error" => "Delivery process failed: " . $e->getMessage()]);
 }
 
 $conn->close();

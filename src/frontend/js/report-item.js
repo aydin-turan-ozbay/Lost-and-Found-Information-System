@@ -9,31 +9,31 @@ document.addEventListener("DOMContentLoaded", function () {
     var errorMsg   = document.getElementById('file_count_error');
     var dateInput  = document.getElementById('item_date');
 
-    // Tarih sınırlaması: bugünden sonrası seçilemesin
+    // Date restriction: prevent future dates from being selected
     var today = new Date().toISOString().split('T')[0];
     dateInput.setAttribute('max', today);
     dateInput.value = today;
 
-    // Form tipi ayarları
+    // Form type settings
     if (itemType === 'found') {
         if (hiddenType) hiddenType.value = 'found';
         imageInput.required = true;
-        formTitle.innerText = "Buluntu Eşya Bildirisi";
-        imageLabel.innerHTML = 'Eşya Fotoğrafları <span style="color:red;">(En az 1 fotoğraf zorunlu)</span>';
+        formTitle.innerText = "Report a Found Item";
+        imageLabel.innerHTML = 'Item Photos <span style="color:red;">(At least 1 photo required)</span>';
     } else {
         if (hiddenType) hiddenType.value = 'lost';
         imageInput.required = false;
-        formTitle.innerText = "Kayıp Eşya Bildirisi";
-        imageLabel.innerHTML = 'Eşya Fotoğrafları <span style="color:#888;">(Opsiyonel)</span>';
+        formTitle.innerText = "Report a Lost Item";
+        imageLabel.innerHTML = 'Item Photos <span style="color:#888;">(Optional)</span>';
     }
 
     var ALLOWED_EXTS = ['jpg', 'jpeg', 'png', 'webp', 'gif', 'heic', 'heif'];
 
-    // Fotoğraf sayısı ve uzantı kontrolü
+    // Photo count and extension validation
     imageInput.addEventListener('change', function () {
         if (this.files.length > 5) {
             errorMsg.style.display = 'block';
-            errorMsg.innerText = "⚠️ En fazla 5 fotoğraf seçebilirsiniz! Seçiminiz sıfırlandı.";
+            errorMsg.innerText = "⚠️ You can select up to 5 photos! Your selection has been reset.";
             this.value = '';
             return;
         }
@@ -48,7 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
         if (invalid.length > 0) {
             errorMsg.style.display = 'block';
-            errorMsg.innerText = "⚠️ Desteklenmeyen format: " + invalid.join(', ') + ". İzin verilenler: jpg, jpeg, png, webp, gif, heic, heif.";
+            errorMsg.innerText = "⚠️ Unsupported format: " + invalid.join(', ') + ". Allowed formats: jpg, jpeg, png, webp, gif, heic, heif.";
             this.value = '';
         } else {
             errorMsg.style.display = 'none';

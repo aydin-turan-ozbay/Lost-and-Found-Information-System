@@ -1,12 +1,11 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Paneli - Lost and Found</title>
+    <title>Admin Panel - Lost and Found</title>
 
-    <!-- CSS -->
     <link rel="stylesheet" href="../frontend/style.css?v=20260425">
     <link rel="stylesheet" href="../frontend/admin_panel.css">
 </head>
@@ -19,51 +18,51 @@
             <span>Lost And Found Information System</span>
         </a>
 
-        <button type="button" class="nav-toggle" aria-label="Menü" aria-expanded="false" aria-controls="navActions">☰</button>
+        <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="navActions">☰</button>
 
         <div class="nav-actions" id="navActions">
             <div class="auth user">
-                <span class="admin-badge">🔐 Yetkili Panel</span>
-                <a href="profile.php" class="icon-btn" title="Profil">👤 <?= htmlspecialchars($fullName) ?></a>
-                <a href="logout.php" class="link-btn secondary">Çıkış Yap</a>
+                <span class="admin-badge">🔐 Admin Panel</span>
+                <a href="profile.php" class="icon-btn" title="Profile">👤 <?= htmlspecialchars($fullName) ?></a>
+                <a href="logout.php" class="link-btn secondary">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container admin-container">
         <div class="admin-panel">
-            <h1>Tüm İlanlar</h1>
-            <p>Kayıp ve bulundu ilanlarını buradan görüntüleyebilirsiniz.</p>
+            <h1>All Listings</h1>
+            <p>You can view and manage all lost and found reports here.</p>
 
             <div class="filter-buttons">
-                <button class="filter-btn active" data-filter="lost">Kayıp</button>
-                <button class="filter-btn" data-filter="found">Buluntu</button>
-                <button class="filter-btn" data-filter="delivered">Teslim</button>
+                <button class="filter-btn active" data-filter="lost">Lost</button>
+                <button class="filter-btn" data-filter="found">Found</button>
+                <button class="filter-btn" data-filter="delivered">Delivered</button>
             </div>
 
             <div class="search-bar">
-                <input type="text" id="searchInput" placeholder="Ara..." />
+                <input type="text" id="searchInput" placeholder="Search..." />
             </div>
 
             <div class="table-wrap">
                 <table class="items-table">
                     <thead>
                         <tr>
-                            <th>Tür</th>
-                            <th>Başlık</th>
-                            <th>Kategori <button type="button" class="column-filter-btn" data-attr="category" aria-label="Kategori filtresi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
-                            <th>Renk</th>
-                            <th>Konum <button type="button" class="column-filter-btn" data-attr="location" aria-label="Konum filtresi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
-                            <th>Tarih <button type="button" class="column-filter-btn" data-attr="date" aria-label="Tarih filtresi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
-                            <th>Açıklama</th>
-                            <th>Oluşturan</th>
-                            <th>İşlem</th>
+                            <th>Type</th>
+                            <th>Title</th>
+                            <th>Category <button type="button" class="column-filter-btn" data-attr="category" aria-label="Filter category"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
+                            <th>Color</th>
+                            <th>Location <button type="button" class="column-filter-btn" data-attr="location" aria-label="Filter location"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
+                            <th>Date <button type="button" class="column-filter-btn" data-attr="date" aria-label="Filter date"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
+                            <th>Description</th>
+                            <th>Created By</th>
+                            <th>Action</th>
                         </tr>
                     </thead>
 
                     <tbody id="itemsBody">
                         <tr>
-                            <td colspan="9">Yükleniyor...</td>
+                            <td colspan="9">Loading...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -71,26 +70,25 @@
         </div>
     </div>
 
-    <!-- MODAL -->
     <div id="deliveryModal" class="modal hidden">
         <div class="modal-content">
             <div class="modal-header">
-                <h3>Eşya Teslim Et</h3>
-                <button type="button" class="modal-close" aria-label="Kapat">&times;</button>
+                <h3>Deliver Item</h3>
+                <button type="button" class="modal-close" aria-label="Close">&times;</button>
             </div>
 
             <div class="modal-body">
                 <p id="itemInfo"></p>
-                <p class="delivery-note">Buluntu ilanını, aktif kayıp ilanlardan biriyle eşleştirip teslim edin.</p>
-                <label for="recipientSelect">Kayıp ilan sahibi:</label>
+                <p class="delivery-note">Match this found item with an active lost report to complete delivery.</p>
+                <label for="recipientSelect">Lost Item Owner:</label>
                 <select id="recipientSelect"></select>
-                <label for="recipientItemSelect">Kayıp ilan:</label>
+                <label for="recipientItemSelect">Lost Report:</label>
                 <select id="recipientItemSelect" disabled></select>
             </div>
 
             <div class="modal-footer">
-                <button type="button" id="cancelDelivery">İptal</button>
-                <button type="button" id="confirmDelivery">Teslim Et</button>
+                <button type="button" id="cancelDelivery">Cancel</button>
+                <button type="button" id="confirmDelivery">Deliver</button>
             </div>
         </div>
     </div>
@@ -98,18 +96,17 @@
     <div id="attributeFilterModal" class="modal hidden">
         <div class="modal-content attr-filter-content">
             <div class="modal-header">
-                <h3 id="attributeFilterTitle">Filtre</h3>
-                <button type="button" class="modal-close" id="closeAttributeFilter" aria-label="Kapat">&times;</button>
+                <h3 id="attributeFilterTitle">Filter</h3>
+                <button type="button" class="modal-close" id="closeAttributeFilter" aria-label="Close">&times;</button>
             </div>
             <div class="modal-body" id="attributeFilterBody"></div>
             <div class="modal-footer">
-                <button type="button" id="clearAttributeFilter">Temizle</button>
-                <button type="button" id="applyAttributeFilter">Uygula</button>
+                <button type="button" id="clearAttributeFilter">Clear</button>
+                <button type="button" id="applyAttributeFilter">Apply</button>
             </div>
         </div>
     </div>
 
-    <!-- JS -->
     <script src="../frontend/js/admin_panel.js"></script>
     <script src="../frontend/js/nav.js?v=20260425"></script>
 

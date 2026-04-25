@@ -1,83 +1,82 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Eşya Bildir - Lost and Found</title>
+    <title>Report Item - Lost and Found</title>
     <link rel="stylesheet" href="style.css?v=20260425">
     <link rel="stylesheet" href="report_item.css">
-   
 </head>
 <body>
     <div class="container">
         <div class="form-container">
-            <h2 id="form-main-title">Yeni Eşya Bildirisi Oluştur</h2>
-            <p style="margin-bottom: 25px; color: #666;">Lütfen eşya hakkındaki bilgileri eksiksiz doldurunuz.</p>
+            <h2 id="form-main-title">Create New Item Report</h2>
+            <p style="margin-bottom: 25px; color: #666;">Please fill in the item details completely.</p>
             
             <form action="../backend/report_item.php" method="POST" enctype="multipart/form-data">
                 
                 <input type="hidden" name="type" id="hidden_type">
 
                 <div class="form-group">
-                    <label for="title">Eşya Adı</label>
-                    <input type="text" name="title" id="title" placeholder="Örn: Siyah Deri Cüzdan" required>
+                    <label for="title">Item Name</label>
+                    <input type="text" name="title" id="title" placeholder="e.g., Black Leather Wallet" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="category">Kategori</label>
+                    <label for="category">Category</label>
                     <select name="category" id="category" required>
-                        <option value="">Seçiniz...</option>
-                        <option value="electronic">Elektronik</option>
-                        <option value="wallet">Cüzdan/Kartlık</option>
-                        <option value="bag">Çanta</option>
-                        <option value="keychain">Anahtarlık</option>
-                        <option value="other">Diğer</option>
+                        <option value="">Select...</option>
+                        <option value="electronic">Electronics</option>
+                        <option value="wallet">Wallet/Cardholder</option>
+                        <option value="bag">Bag</option>
+                        <option value="keychain">Keychain</option>
+                        <option value="other">Other</option>
                     </select>
                 </div>
 
                 <div class="form-group">
-                    <label for="color">Renk</label>
-                    <input type="text" name="color" id="color" placeholder="Örn: Lacivert, Gri">
+                    <label for="color">Color</label>
+                    <input type="text" name="color" id="color" placeholder="e.g., Navy Blue, Grey">
                 </div>
 
                 <div class="form-group">
-    <label for="location">Nerede Kayboldu/Bulundu?</label>
-    <select name="location" id="location" required>
-        <option value="">Konum Seçiniz...</option>
-        <option value="bakırköy campus">Bakırköy Kampüs</option>
-        <option value="gayrettepe campus">Gayrettepe Kampüs</option>
-        <option value="mahmutbey campus A block">Mahmutbey Kampüs A Blok</option>
-        <option value="mahmutbey campus D block">Mahmutbey Kampüs D Blok</option>
-    </select>
-</div>
+                    <label for="location">Where was it Lost/Found?</label>
+                    <select name="location" id="location" required>
+                        <option value="">Select Location...</option>
+                        <option value="bakırköy campus">Bakırköy Campus</option>
+                        <option value="gayrettepe campus">Gayrettepe Campus</option>
+                        <option value="mahmutbey campus A block">Mahmutbey Campus A Block</option>
+                        <option value="mahmutbey campus D block">Mahmutbey Campus D Block</option>
+                    </select>
+                </div>
 
                 <div class="form-group">
-                    <label for="item_date">Tarih</label>
+                    <label for="item_date">Date</label>
                     <input type="date" name="item_date" id="item_date" required>
                 </div>
 
                 <div class="form-group">
-                    <label for="description">Detaylı Açıklama</label>
-                    <textarea name="description" id="description" rows="4" placeholder="Eşyayı ayırt edici özelliklerini yazınız..."></textarea>
+                    <label for="description">Detailed Description</label>
+                    <textarea name="description" id="description" rows="4" placeholder="Write down the distinguishing features of the item..."></textarea>
                 </div>
 
                 <div class="form-group">
-                    <label id="image_label" for="item_image">Eşya Fotoğrafları</label>
+                    <label id="image_label" for="item_image">Item Photos</label>
                     <input type="file" 
                            name="item_image[]" 
                            id="item_image" 
                            accept=".jpg,.jpeg,.png,.webp,.gif,.heic,.heif" 
                            multiple 
                            style="border:none; padding:0; background:none;">
-                    <span class="file-limit-info">Desteklenen formatlar: JPG, PNG, WEBP, GIF, HEIC. En fazla 5 fotoğraf.</span>
-                    <span id="file_count_error">⚠️ En fazla 5 fotoğraf seçebilirsiniz!</span>
+                    <span class="file-limit-info">Supported formats: JPG, PNG, WEBP, GIF, HEIC. Maximum 5 photos.</span>
+                    <span id="file_count_error">⚠️ You can select up to 5 photos!</span>
                 </div>
 
-                <button type="submit" class="btn">Bildiriyi Yayınla</button>
+                <button type="submit" class="btn">Publish Report</button>
             </form>
             
             <div class="footer-links">
-                <a href="dashboard.html" style="text-decoration: none; color: #667eea; font-weight: bold;">← Panele Geri Dön</a>
+                <a href="dashboard.html" style="text-decoration: none; color: #667eea; font-weight: bold;">← Back to Dashboard</a>
             </div>
         </div>
     </div>

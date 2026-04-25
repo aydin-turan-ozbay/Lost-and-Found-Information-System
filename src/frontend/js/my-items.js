@@ -15,8 +15,8 @@
     }
 
     function typeLabel(type) {
-        if (type === "lost") return "Kayıp";
-        if (type === "found") return "Buluntu";
+        if (type === "lost") return "Lost";
+        if (type === "found") return "Found";
         return "-";
     }
 
@@ -27,7 +27,7 @@
 
     function renderRows(items) {
         if (!items.length) {
-            tableBody.innerHTML = '<tr><td colspan="7" class="table-message">Bu filtre için ilan bulunamadı.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" class="table-message">No ads found for this filter.</td></tr>';
             return;
         }
 
@@ -102,7 +102,7 @@
             allItems = Array.isArray(data.items) ? data.items : [];
             applyFilters();
         } catch (error) {
-            tableBody.innerHTML = '<tr><td colspan="7" class="table-message">İlanlar yüklenirken bir hata oluştu.</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="7" class="table-message">An error occurred while loading the items.</td></tr>';
         }
     }
 

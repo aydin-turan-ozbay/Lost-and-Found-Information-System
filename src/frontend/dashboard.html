@@ -1,39 +1,39 @@
 <!DOCTYPE html>
-<html lang="tr">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Öğrenci Paneli - Lost and Found</title>
+    <title>Student Dashboard - Lost and Found</title>
     <link rel="stylesheet" href="style.css?v=20260425">
 </head>
 <body class="dashboard-page">
     <nav class="top-nav">
-        <a href="../backend/index.php" class="brand brand-link" aria-label="Ana sayfaya git">
+        <a href="../backend/index.php" class="brand brand-link" aria-label="Go to home page">
             <img src="../assets/logo.png" alt="Logo" class="logo" />
             <span>Lost And Found Information System</span>
         </a>
 
-        <button type="button" class="nav-toggle" aria-label="Menü" aria-expanded="false" aria-controls="navActions">☰</button>
+        <button type="button" class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="navActions">☰</button>
 
         <div class="nav-actions" id="navActions">
             <div class="auth user">
-                <a href="../backend/profile.php" class="icon-btn" title="Profil">👤 Profil</a>
-                <a href="../backend/logout.php" class="link-btn secondary">Çıkış Yap</a>
+                <a href="../backend/profile.php" class="icon-btn" title="Profile">👤 Profile</a>
+                <a href="../backend/logout.php" class="link-btn secondary">Logout</a>
             </div>
         </div>
     </nav>
 
     <div class="container">
-        <h1>Hoş Geldin!</h1>
-        <p>Lütfen yapmak istediğiniz işlemi seçiniz:</p>
+        <h1>Welcome!</h1>
+        <p>Please select the action you would like to perform:</p>
 
         <div class="button-group">
-            <a href="report_item.html?type=lost" class="main-btn btn-lost">Eşyamı Kaybettim</a>
-            <a href="report_item.html?type=found" class="main-btn btn-found">Eşya Buldum</a>
+            <a href="report_item.html?type=lost" class="main-btn btn-lost">I Lost Something</a>
+            <a href="report_item.html?type=found" class="main-btn btn-found">I Found Something</a>
         </div>
 
         <div class="footer-links">
-            <a href="../backend/index.php" class="back-text-link">← Geri Dön</a>
+            <a href="../backend/index.php" class="back-text-link">← Go Back</a>
         </div>
     </div>
 

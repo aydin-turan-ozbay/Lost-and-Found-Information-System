@@ -4,17 +4,19 @@ require_once 'db_config.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
+// Authentication Check
 if (!isset($_SESSION['user_id'])) {
     http_response_code(401);
     echo json_encode([
         "ok" => false,
-        "error" => "Lütfen önce giriş yapın."
+        "error" => "Please log in first."
     ]);
     exit();
 }
 
 $user_id = (int) $_SESSION['user_id'];
 
+// SQL Query to fetch user's items
 $sql = "
     SELECT
         id,
@@ -37,7 +39,7 @@ if (!$stmt) {
     http_response_code(500);
     echo json_encode([
         "ok" => false,
-        "error" => $conn->error
+        "error" => "Query preparation failed: " . $conn->error
     ]);
     exit();
 }
@@ -48,10 +50,12 @@ $result = $stmt->get_result();
 
 $items = [];
 
+// Fetch data into the items array
 while ($row = $result->fetch_assoc()) {
     $items[] = $row;
 }
 
+// Return result as JSON
 echo json_encode([
     "ok" => true,
     "items" => $items

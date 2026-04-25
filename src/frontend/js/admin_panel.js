@@ -1,22 +1,25 @@
-// --- DEĞİŞKENLER ---
+// --- VARIABLES ---
 let currentFilter = 'lost';
 let allItems = [];
 let currentDeliveryItem = null;
 let selectedLostItemId = null;
 let activeAttribute = null;
+
 const CATEGORY_OPTIONS = [
-    { value: 'electronic', label: 'Elektronik' },
-    { value: 'wallet', label: 'Cüzdan/Kartlık' },
-    { value: 'bag', label: 'Çanta' },
-    { value: 'keychain', label: 'Anahtarlık' },
-    { value: 'other', label: 'Diğer' }
+    { value: 'electronic', label: 'Electronics' },
+    { value: 'wallet', label: 'Wallet/Cardholder' },
+    { value: 'bag', label: 'Bag' },
+    { value: 'keychain', label: 'Keychain' },
+    { value: 'other', label: 'Other' }
 ];
+
 const LOCATION_OPTIONS = [
-    { value: 'bakirkoy', label: 'Bakırköy Kampüs' },
-    { value: 'gayrettepe', label: 'Gayrettepe Kampüs' },
-    { value: 'mahmutbey campus a block', label: 'Mahmutbey Kampüs A Blok' },
-    { value: 'mahmutbey campus d block', label: 'Mahmutbey Kampüs D Blok' }
+    { value: 'bakirkoy', label: 'Bakirkoy Campus' },
+    { value: 'gayrettepe', label: 'Gayrettepe Campus' },
+    { value: 'mahmutbey campus a block', label: 'Mahmutbey Campus A Block' },
+    { value: 'mahmutbey campus d block', label: 'Mahmutbey Campus D Block' }
 ];
+
 const columnFilters = {
     category: '',
     location: '',
@@ -25,21 +28,21 @@ const columnFilters = {
     endDate: ''
 };
 
-// --- SAYFA YÜKLENDİĞİNDE ÇALIŞACAKLAR ---
+// --- INITIALIZATION ---
 document.addEventListener('DOMContentLoaded', () => {
-    // İlk verileri yükle
+    // Initial data load
     fetchItems();
 
-    // Filtre butonlarına dinleyici ekle
+    // Setup filter buttons
     setupFilterButtons();
 
-    // Arama kutusuna dinleyici ekle
+    // Setup search box
     const searchInput = document.querySelector('#searchInput');
     if (searchInput) {
         searchInput.addEventListener('input', filterSearch);
     }
 
-    // Modal Kontrolleri
+    // Modal Controls
     const cancelBtn = document.getElementById('cancelDelivery');
     const closeBtn = document.querySelector('.modal-close');
     const confirmBtn = document.getElementById('confirmDelivery');
@@ -53,6 +56,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (cancelBtn) cancelBtn.addEventListener('click', closeDeliveryModal);
     if (closeBtn) closeBtn.addEventListener('click', closeDeliveryModal);
     if (confirmBtn) confirmBtn.addEventListener('click', confirmDelivery);
+    
     if (recipientSelect) {
         recipientSelect.addEventListener('change', function () {
             loadRecipientItems(this.value);
@@ -80,9 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 });
 
-// --- VERİ ÇEKME FONKSİYONLARI ---
+// --- DATA FETCHING ---
 function fetchItems() {
-    // Not: tabType parametresini kaldırıp tüm admin itemlarını çekiyoruz
     fetch('../backend/get_admin_items.php')
         .then(response => response.json())
         .then(data => {
@@ -97,7 +100,7 @@ function fetchItems() {
         .catch(error => console.error('Error fetching items:', error));
 }
 
-// --- TABLO OLUŞTURMA ---
+// --- TABLE RENDERING & FILTERING ---
 function isDelivered(item) {
     return item.delivered_to_user_id != null || item.status === 'delivered';
 }
@@ -155,7 +158,7 @@ function getVisibleItems() {
     if (searchTerm) {
         filtered = filtered.filter((item) => {
             const searchText = [
-                item.type === 'lost' ? 'kayıp' : 'buluntu',
+                item.type === 'lost' ? 'lost' : 'found',
                 item.title,
                 item.category,
                 item.color,
@@ -186,17 +189,16 @@ function renderItems(items) {
     tableBody.innerHTML = '';
 
     if (items.length === 0) {
-        tableBody.innerHTML = '<tr><td colspan="9">Bu filtre için ilan bulunamadı.</td></tr>';
+        tableBody.innerHTML = '<tr><td colspan="9">No items found for this filter.</td></tr>';
         return;
     }
 
     items.forEach(item => {
         const row = document.createElement('tr');
-        // Sadece 'buluntu' sekmesindeyken 'Teslim Et' butonunu göster
         const showDeliverBtn = (currentFilter === 'found' && item.type === 'found' && !isDelivered(item));
         
         row.innerHTML = `
-            <td>${item.type === 'lost' ? 'Kayıp' : 'Buluntu'}</td>
+            <td>${item.type === 'lost' ? 'Lost' : 'Found'}</td>
             <td>${escapeHtml(item.title)}</td>
             <td>${escapeHtml(item.category)}</td>
             <td>${escapeHtml(item.color || '-')}</td>
@@ -204,13 +206,13 @@ function renderItems(items) {
             <td>${item.item_date}</td>
             <td>${escapeHtml(item.description)}</td>
             <td>${escapeHtml(item.full_name)} (${item.student_id})</td>
-            <td>${showDeliverBtn ? `<button class="deliver-btn btn-deliver" onclick="openDeliveryModal(${item.id}, '${escapeHtml(item.title)}')">✓ Teslim Et</button>` : '-'}</td>
+            <td>${showDeliverBtn ? `<button class="deliver-btn btn-deliver" onclick="openDeliveryModal(${item.id}, '${escapeHtml(item.title)}')">✓ Deliver</button>` : '-'}</td>
         `;
         tableBody.appendChild(row);
     });
 }
 
-// --- FİLTRELEME VE ARAMA ---
+// --- FILTRATION & SEARCH HELPERS ---
 function setupFilterButtons() {
     document.querySelectorAll('.filter-btn').forEach(button => {
         button.addEventListener('click', () => {
@@ -231,7 +233,7 @@ function uniqueValuesByKey(items, key) {
     items.forEach((item) => {
         if (item[key]) values.add(String(item[key]).trim());
     });
-    return Array.from(values).sort((a, b) => a.localeCompare(b, 'tr'));
+    return Array.from(values).sort((a, b) => a.localeCompare(b, 'en'));
 }
 
 function normalizeCategory(value) {
@@ -260,6 +262,7 @@ function getTodayDateISO() {
     return `${now.getFullYear()}-${month}-${day}`;
 }
 
+// --- ATTRIBUTE FILTER MODAL ---
 function openAttributeFilter(attr) {
     activeAttribute = attr;
     const modal = document.getElementById('attributeFilterModal');
@@ -268,7 +271,7 @@ function openAttributeFilter(attr) {
     if (!modal || !title || !body) return;
 
     if (attr === 'category') {
-        title.textContent = 'Kategori Filtresi';
+        title.textContent = 'Category Filter';
         const knownValues = new Set(CATEGORY_OPTIONS.map((o) => o.value));
         const unknownFromData = uniqueValuesByKey(allItems, 'category')
             .map((v) => normalizeCategory(v))
@@ -280,46 +283,46 @@ function openAttributeFilter(attr) {
             .map((opt) => `<option value="${escapeHtml(opt.value)}" ${normalizeCategory(columnFilters.category) === normalizeCategory(opt.value) ? 'selected' : ''}>${escapeHtml(opt.label)}</option>`)
             .join('');
         body.innerHTML = `
-            <p class="filter-help">Veritabanındaki kategori değerlerinden seçim yapabilirsiniz.</p>
+            <p class="filter-help">Select from existing categories in the database.</p>
             <div class="filter-field">
-                <label for="attributeSelect">Kategori</label>
+                <label for="attributeSelect">Category</label>
                 <select id="attributeSelect">
-                    <option value="">Tümü</option>
+                    <option value="">All</option>
                     ${options}
                 </select>
             </div>
         `;
     } else if (attr === 'location') {
-        title.textContent = 'Konum Filtresi';
+        title.textContent = 'Location Filter';
         const options = LOCATION_OPTIONS
             .map((opt) => `<option value="${escapeHtml(opt.value)}" ${normalizeLocation(columnFilters.location) === normalizeLocation(opt.value) ? 'selected' : ''}>${escapeHtml(opt.label)}</option>`)
             .join('');
         body.innerHTML = `
-            <p class="filter-help">Sadece seçtiğiniz konumdaki ilanlar listelenir.</p>
+            <p class="filter-help">Only items from the selected location will be listed.</p>
             <div class="filter-field">
-                <label for="attributeSelect">Konum</label>
+                <label for="attributeSelect">Location</label>
                 <select id="attributeSelect">
-                    <option value="">Tümü</option>
+                    <option value="">All</option>
                     ${options}
                 </select>
             </div>
         `;
     } else if (attr === 'date') {
-        title.textContent = 'Tarih Filtresi';
+        title.textContent = 'Date Filter';
         const today = getTodayDateISO();
         body.innerHTML = `
-            <p class="filter-help">Tek gün seçebilir veya tarih aralığı belirleyebilirsiniz. Bugünden sonrası seçilemez.</p>
+            <p class="filter-help">Select a specific day or a date range. Future dates are disabled.</p>
             <div class="filter-field">
-                <label for="specificDateInput">Belirli Gün</label>
+                <label for="specificDateInput">Specific Day</label>
                 <input id="specificDateInput" type="date" max="${today}" value="${columnFilters.specificDate}">
             </div>
             <div class="date-grid">
                 <div class="filter-field">
-                    <label for="startDateInput">Başlangıç</label>
+                    <label for="startDateInput">Start Date</label>
                     <input id="startDateInput" type="date" max="${today}" value="${columnFilters.startDate}">
                 </div>
                 <div class="filter-field">
-                    <label for="endDateInput">Bitiş</label>
+                    <label for="endDateInput">End Date</label>
                     <input id="endDateInput" type="date" max="${today}" value="${columnFilters.endDate}">
                 </div>
             </div>
@@ -347,6 +350,7 @@ function applyAttributeFilter() {
         const startDateInput = document.getElementById('startDateInput');
         const endDateInput = document.getElementById('endDateInput');
         const today = getTodayDateISO();
+        
         const selectedSpecificDate = specificDateInput ? specificDateInput.value : '';
         const selectedStartDate = startDateInput ? startDateInput.value : '';
         const selectedEndDate = endDateInput ? endDateInput.value : '';
@@ -386,11 +390,11 @@ function updateColumnFilterButtons() {
     });
 }
 
-// --- MODAL İŞLEMLERİ (TESLİMAT) ---
+// --- DELIVERY MODAL OPERATIONS ---
 function openDeliveryModal(itemId, itemTitle) {
     currentDeliveryItem = itemId;
     const itemInfoPara = document.getElementById('itemInfo');
-    if (itemInfoPara) itemInfoPara.textContent = `Eşya: ${itemTitle}`;
+    if (itemInfoPara) itemInfoPara.textContent = `Item: ${itemTitle}`;
     
     loadRecipients();
     
@@ -404,11 +408,11 @@ function closeDeliveryModal() {
     currentDeliveryItem = null;
     selectedLostItemId = null;
     const select = document.getElementById('recipientSelect');
-    if (select) select.innerHTML = '<option value="">Seçiniz...</option>';
+    if (select) select.innerHTML = '<option value="">Select...</option>';
     const itemSelect = document.getElementById('recipientItemSelect');
     if (itemSelect) {
         itemSelect.disabled = true;
-        itemSelect.innerHTML = '<option value="">Önce kayıp ilan sahibini seçiniz</option>';
+        itemSelect.innerHTML = '<option value="">Select a lost item owner first</option>';
     }
 }
 
@@ -416,19 +420,18 @@ function loadRecipients() {
     const select = document.getElementById('recipientSelect');
     if (!select) return;
     
-    select.innerHTML = '<option value="">Yükleniyor...</option>';
+    select.innerHTML = '<option value="">Loading...</option>';
     const itemSelect = document.getElementById('recipientItemSelect');
     if (itemSelect) {
         itemSelect.disabled = true;
-        itemSelect.innerHTML = '<option value="">Önce kayıp ilan sahibini seçiniz</option>';
+        itemSelect.innerHTML = '<option value="">Select a lost item owner first</option>';
     }
 
-    // Daha önce konuştuğumuz deliver_item.php?action=get_users endpointini kullanıyoruz
     fetch('../backend/deliver_item.php?action=get_users')
         .then(response => response.json())
         .then(data => {
             if (data.ok && data.users.length > 0) {
-                select.innerHTML = '<option value="">Seçiniz...</option>';
+                select.innerHTML = '<option value="">Select...</option>';
                 data.users.forEach(user => {
                     const option = document.createElement('option');
                     option.value = user.id;
@@ -436,12 +439,12 @@ function loadRecipients() {
                     select.appendChild(option);
                 });
             } else {
-                select.innerHTML = '<option value="">Aktif kayıp ilanı olan kullanıcı bulunamadı</option>';
+                select.innerHTML = '<option value="">No users found with active lost items</option>';
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            select.innerHTML = '<option value="">Hata oluştu</option>';
+            select.innerHTML = '<option value="">An error occurred</option>';
         });
 }
 
@@ -453,18 +456,18 @@ function loadRecipientItems(userId) {
 
     if (!userId) {
         itemSelect.disabled = true;
-        itemSelect.innerHTML = '<option value="">Önce kayıp ilan sahibini seçiniz</option>';
+        itemSelect.innerHTML = '<option value="">Select a lost item owner first</option>';
         return;
     }
 
     itemSelect.disabled = true;
-    itemSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+    itemSelect.innerHTML = '<option value="">Loading...</option>';
 
     fetch(`../backend/deliver_item.php?action=get_user_items&user_id=${encodeURIComponent(userId)}`)
         .then(response => response.json())
         .then(data => {
             if (data.ok && data.items.length > 0) {
-                itemSelect.innerHTML = '<option value="">Kayıp ilan seçiniz...</option>';
+                itemSelect.innerHTML = '<option value="">Select a lost item...</option>';
                 data.items.forEach(item => {
                     const option = document.createElement('option');
                     option.value = item.id;
@@ -473,12 +476,12 @@ function loadRecipientItems(userId) {
                 });
                 itemSelect.disabled = false;
             } else {
-                itemSelect.innerHTML = '<option value="">Bu kullanıcıya ait aktif kayıp ilan bulunamadı</option>';
+                itemSelect.innerHTML = '<option value="">No active lost reports found for this user</option>';
             }
         })
         .catch(error => {
             console.error('Error:', error);
-            itemSelect.innerHTML = '<option value="">Kayıp ilanlar yüklenemedi</option>';
+            itemSelect.innerHTML = '<option value="">Could not load lost items</option>';
         });
 
     itemSelect.onchange = function () {
@@ -495,20 +498,19 @@ function confirmDelivery() {
     const recipientLostItemId = recipientItemSelect ? recipientItemSelect.value : '';
 
     if (!recipientId) {
-        alert('Lütfen kayıp ilan sahibini seçiniz');
+        alert('Please select the lost item owner');
         return;
     }
 
     if (!recipientLostItemId) {
-        alert('Lütfen teslim edilecek kayıp ilanı seçiniz');
+        alert('Please select the lost item to be delivered');
         return;
     }
 
     const confirmBtn = document.getElementById('confirmDelivery');
     confirmBtn.disabled = true;
-    confirmBtn.textContent = 'İşleniyor...';
+    confirmBtn.textContent = 'Processing...';
 
-    // HATA ÇÖZÜMÜ: Veriyi PHP'nin beklediği FormData formatında gönderiyoruz
     const formData = new FormData();
     formData.append('item_id', currentDeliveryItem);
     formData.append('recipient_id', recipientId);
@@ -521,24 +523,24 @@ function confirmDelivery() {
     .then(response => response.json())
     .then(data => {
         if (data.ok) {
-            alert('Eşya başarıyla teslim edildi!');
+            alert('Item successfully delivered!');
             closeDeliveryModal();
-            fetchItems(); // Tabloyu yenile
+            fetchItems(); // Refresh table
         } else {
-            alert('Hata: ' + data.error);
+            alert('Error: ' + data.error);
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Bağlantı hatası oluştu');
+        alert('A connection error occurred');
     })
     .finally(() => {
         confirmBtn.disabled = false;
-        confirmBtn.textContent = 'Teslim Et';
+        confirmBtn.textContent = 'Deliver';
     });
 }
 
-// --- YARDIMCI FONKSİYONLAR ---
+// --- HELPER FUNCTIONS ---
 function escapeHtml(text) {
     if (!text) return '';
     const map = {
