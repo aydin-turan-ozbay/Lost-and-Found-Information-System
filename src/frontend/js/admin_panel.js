@@ -107,13 +107,15 @@ function isDelivered(item) {
 
 function getTabFilteredItems(items) {
     if (currentFilter === 'lost') {
-        return items.filter(item => item.type === 'lost');
+        // Only active lost items should be visible
+        return items.filter(item => item.type === 'lost' && item.status === 'active');
     }
     if (currentFilter === 'found') {
         return items.filter(item => item.type === 'found' && !isDelivered(item));
     }
     if (currentFilter === 'delivered') {
-        return items.filter(item => isDelivered(item));
+        // Delivered tab should show delivered found items
+        return items.filter(item => item.type === 'found' && isDelivered(item));
     }
     return items;
 }

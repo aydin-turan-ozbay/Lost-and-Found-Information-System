@@ -2,7 +2,7 @@
 // Veritabanı bilgileri
 $host = "localhost";
 $username = "root";
-$password = "1234"; // Buraya kendi Workbench şifreni yaz!
+$password = "261907fb"; // Buraya kendi Workbench şifreni yaz!
 $db_name = "lost_found_db"; // Veritabanı adını güncelledim
 
 // Bağlantıyı oluştur

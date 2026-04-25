@@ -11,6 +11,8 @@
         const lower = String(value).toLowerCase();
         if (lower === "lost") return "lost";
         if (lower === "found") return "found";
+        if (lower === "kayıp" || lower === "kayip") return "lost";
+        if (lower === "buluntu") return "found";
         return lower;
     }
 

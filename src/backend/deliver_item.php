@@ -110,17 +110,17 @@ if (!$foundItem) {
     exit;
 }
 
-// 3. Delete both reports in a single transaction
+// 3. Update statuses in a single transaction (DO NOT DELETE)
 $conn->begin_transaction();
 
 try {
-    // ✅ FOUND ITEM → delivered
+    // ✅ FOUND ITEM → delivered (+ record delivered_to_user_id)
     $updateFoundStmt = $conn->prepare("
         UPDATE items 
-        SET status='delivered' 
-        WHERE id=? AND type='found'
+        SET status='delivered', delivered_to_user_id=?, updated_at=NOW()
+        WHERE id=? AND type='found' AND status='active'
     ");
-    $updateFoundStmt->bind_param("i", $item_id);
+    $updateFoundStmt->bind_param("ii", $recipient_id, $item_id);
     $updateFoundStmt->execute();
 
     if ($updateFoundStmt->affected_rows !== 1) {
@@ -128,11 +128,11 @@ try {
     }
     $updateFoundStmt->close();
 
-    // ✅ LOST ITEM → archived
+    // ✅ LOST ITEM → archived (so it doesn't show in tables but stays in DB)
     $updateLostStmt = $conn->prepare("
         UPDATE items 
-        SET status='archived' 
-        WHERE id=? AND type='lost'
+        SET status='archived', updated_at=NOW()
+        WHERE id=? AND type='lost' AND status='active'
     ");
     $updateLostStmt->bind_param("i", $recipient_lost_item_id);
     $updateLostStmt->execute();
