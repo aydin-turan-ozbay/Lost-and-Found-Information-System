@@ -7,7 +7,7 @@
     <title>Admin Paneli - Lost and Found</title>
 
     <!-- CSS -->
-    <link rel="stylesheet" href="../frontend/style.css">
+    <link rel="stylesheet" href="../frontend/style.css?v=20260425">
     <link rel="stylesheet" href="../frontend/admin_panel.css">
 </head>
 
@@ -19,15 +19,13 @@
             <span>Lost And Found Information System</span>
         </a>
 
-        <div class="nav-actions">
+        <button type="button" class="nav-toggle" aria-label="Menü" aria-expanded="false" aria-controls="navActions">☰</button>
+
+        <div class="nav-actions" id="navActions">
             <div class="auth user">
                 <span class="admin-badge">🔐 Yetkili Panel</span>
-
-                <span>👤 <?= htmlspecialchars($fullName) ?></span>
-
-                <!-- backend içindesin → ../backend YANLIŞ -->
-                <a href="profile.php">Profil</a>
-                <a href="logout.php">Çıkış Yap</a>
+                <a href="profile.php" class="icon-btn" title="Profil">👤 <?= htmlspecialchars($fullName) ?></a>
+                <a href="logout.php" class="link-btn secondary">Çıkış Yap</a>
             </div>
         </div>
     </nav>
@@ -47,32 +45,30 @@
                 <input type="text" id="searchInput" placeholder="Ara..." />
             </div>
 
-            <table class="items-table">
-                <thead>
-                    <tr>
-                        <th>Tür</th>
-                        <th>Başlık</th>
-                        <th>Kategori</th>
-                        <th>Renk</th>
-                        <th>Konum</th>
-                        <th>Tarih</th>
-                        <th>Açıklama</th>
-                        <th>Oluşturan</th>
-                        <th>İşlem</th>
-                    </tr>
-                </thead>
+            <div class="table-wrap">
+                <table class="items-table">
+                    <thead>
+                        <tr>
+                            <th>Tür</th>
+                            <th>Başlık</th>
+                            <th>Kategori <button type="button" class="column-filter-btn" data-attr="category" aria-label="Kategori filtresi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
+                            <th>Renk</th>
+                            <th>Konum <button type="button" class="column-filter-btn" data-attr="location" aria-label="Konum filtresi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
+                            <th>Tarih <button type="button" class="column-filter-btn" data-attr="date" aria-label="Tarih filtresi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
+                            <th>Açıklama</th>
+                            <th>Oluşturan</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
 
-                <tbody id="itemsBody">
-                    <tr>
-                        <td colspan="9">Yükleniyor...</td>
-                    </tr>
-                </tbody>
-            </table>
+                    <tbody id="itemsBody">
+                        <tr>
+                            <td colspan="9">Yükleniyor...</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
-
-    <div class="logout-container">
-        <a href="logout.php" class="logout-btn">Çıkış Yap</a>
     </div>
 
     <!-- MODAL -->
@@ -80,24 +76,42 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h3>Eşya Teslim Et</h3>
-                <button class="modal-close">&times;</button>
+                <button type="button" class="modal-close" aria-label="Kapat">&times;</button>
             </div>
 
             <div class="modal-body">
                 <p id="itemInfo"></p>
-                <label>Alıcı:</label>
+                <p class="delivery-note">Buluntu ilanını, aktif kayıp ilanlardan biriyle eşleştirip teslim edin.</p>
+                <label for="recipientSelect">Kayıp ilan sahibi:</label>
                 <select id="recipientSelect"></select>
+                <label for="recipientItemSelect">Kayıp ilan:</label>
+                <select id="recipientItemSelect" disabled></select>
             </div>
 
             <div class="modal-footer">
-                <button id="cancelDelivery">İptal</button>
-                <button id="confirmDelivery">Teslim Et</button>
+                <button type="button" id="cancelDelivery">İptal</button>
+                <button type="button" id="confirmDelivery">Teslim Et</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="attributeFilterModal" class="modal hidden">
+        <div class="modal-content attr-filter-content">
+            <div class="modal-header">
+                <h3 id="attributeFilterTitle">Filtre</h3>
+                <button type="button" class="modal-close" id="closeAttributeFilter" aria-label="Kapat">&times;</button>
+            </div>
+            <div class="modal-body" id="attributeFilterBody"></div>
+            <div class="modal-footer">
+                <button type="button" id="clearAttributeFilter">Temizle</button>
+                <button type="button" id="applyAttributeFilter">Uygula</button>
             </div>
         </div>
     </div>
 
     <!-- JS -->
     <script src="../frontend/js/admin_panel.js"></script>
+    <script src="../frontend/js/nav.js?v=20260425"></script>
 
 </body>
 </html>

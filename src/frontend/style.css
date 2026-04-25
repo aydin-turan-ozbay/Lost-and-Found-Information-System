@@ -59,6 +59,26 @@ body {
     gap: 12px;
 }
 
+.nav-toggle {
+    display: none;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    margin-top: 0;
+    border-radius: 12px;
+    border: 1px solid #d8e0ff;
+    background: #ffffff;
+    color: #3e4a6f;
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    box-shadow: none;
+    transform: none;
+}
+
 .auth {
     display: flex;
     align-items: center;
@@ -129,6 +149,7 @@ body {
     justify-content: center;
     align-items: flex-start;
     min-height: 100vh;
+    overflow-x: hidden;
 }
 
 /* Form Kartı */
@@ -373,6 +394,341 @@ button:hover {
 
 .footer-link.secondary:hover {
     color: #666;
+}
+
+.home-page,
+.dashboard-page,
+.my-items-page {
+    display: block;
+    min-height: 100vh;
+    padding: 88px 12px 20px;
+}
+
+.home-page .container,
+.dashboard-page .container,
+.my-items-page .items-container {
+    margin: 0 auto;
+}
+
+.auth-page {
+    padding: 26px 14px;
+    align-items: flex-start;
+}
+
+.auth-page .container {
+    margin: 0 auto;
+    max-width: 440px;
+}
+
+@media (max-width: 1200px) {
+    .container {
+        max-width: 92%;
+        padding: 28px;
+    }
+}
+
+@media (max-width: 992px) {
+    .top-nav {
+        height: auto;
+        min-height: 64px;
+        padding: 10px 14px;
+        flex-wrap: nowrap;
+        row-gap: 0;
+        align-items: center;
+    }
+
+    .brand {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .brand span {
+        font-size: 14px;
+        line-height: 1.25;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .nav-actions {
+        margin-left: auto;
+        width: auto;
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .auth {
+        flex-wrap: wrap;
+        justify-content: flex-end;
+    }
+
+    .container {
+        margin-top: 0;
+        max-width: 94%;
+        padding: 24px;
+    }
+
+    .hero h1 {
+        font-size: 28px;
+    }
+}
+
+@media (max-width: 768px) {
+    .home-page,
+    .dashboard-page,
+    .my-items-page {
+        padding-top: 112px;
+    }
+
+    .auth-page {
+        padding: 18px 10px;
+    }
+
+    .auth-page .container {
+        max-width: 100%;
+    }
+
+    .container {
+        margin-top: 0;
+        padding: 18px 14px;
+        border-radius: 12px;
+    }
+
+    .dashboard-page .container {
+        margin-top: 0;
+    }
+
+    h2 {
+        font-size: 22px;
+        margin-bottom: 18px;
+    }
+
+    .hero h1 {
+        font-size: 24px;
+    }
+
+    .hero p {
+        font-size: 14px;
+    }
+
+    .action-btn {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .main-btn {
+        font-size: 16px;
+        padding: 12px 14px;
+    }
+
+    .button-group {
+        gap: 14px;
+        margin: 22px 0;
+    }
+
+    .login-options-row {
+        flex-wrap: wrap;
+        justify-content: flex-start;
+    }
+
+    .forgot-password {
+        margin-left: 0;
+    }
+}
+
+@media (max-width: 576px) {
+    .top-nav {
+        padding: 8px 10px;
+        align-items: center;
+    }
+
+    .brand .logo {
+        width: 30px;
+        height: 30px;
+    }
+
+    .brand {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .brand span {
+        font-size: 13px;
+        line-height: 1.15;
+    }
+
+    .auth {
+        width: auto;
+        justify-content: flex-end;
+    }
+
+    .nav-actions {
+        width: auto;
+        margin-left: auto;
+        justify-content: flex-end;
+    }
+
+    .link-btn,
+    .icon-btn {
+        padding: 7px 10px;
+        font-size: 13px;
+        border-radius: 10px;
+    }
+
+    .icon-btn {
+        border-radius: 999px;
+        padding-left: 10px;
+        padding-right: 10px;
+    }
+
+    .container {
+        margin-top: 0;
+        max-width: calc(100% - 14px);
+        padding: 14px 10px;
+    }
+
+    .dashboard-page .container {
+        margin-top: 0;
+    }
+
+    .home-page,
+    .dashboard-page,
+    .my-items-page {
+        padding-top: 128px;
+        padding-left: 8px;
+        padding-right: 8px;
+    }
+
+    label {
+        font-size: 13px;
+    }
+
+    input {
+        font-size: 14px;
+        padding: 10px 12px;
+    }
+
+    button {
+        font-size: 15px;
+        padding: 12px;
+    }
+
+    .footer-links {
+        padding-top: 18px;
+        gap: 10px;
+    }
+}
+
+@media (max-width: 436px) {
+    .top-nav {
+        padding: 8px 10px;
+        align-items: center;
+        column-gap: 10px;
+    }
+
+    .brand {
+        flex: 1 1 auto;
+        min-width: 0;
+    }
+
+    .brand span {
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    .nav-toggle {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 40px;
+        height: 40px;
+        border-radius: 12px;
+        border: 1px solid #d8e0ff;
+        background: #ffffff;
+        color: #3e4a6f;
+        font-size: 20px;
+        cursor: pointer;
+    }
+
+    .nav-actions {
+        display: none;
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        right: auto;
+        top: calc(100% + 10px);
+        width: min(360px, calc(100% - 20px));
+        background: rgba(255, 255, 255, 0.98);
+        border: 1px solid #e6e8f0;
+        border-radius: 14px;
+        padding: 8px;
+        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+        z-index: 200;
+    }
+
+    body.nav-open .nav-actions {
+        display: block;
+    }
+
+    .auth {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+        justify-content: flex-start;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    /* Menü listesi: linkler sade, profil mavi kalsın */
+    .link-btn {
+        padding: 10px 12px;
+        font-size: 14px;
+        width: 100%;
+        justify-content: flex-start;
+        background: #ffffff;
+        color: #3e4a6f;
+        border: 1px solid #e6e8f0;
+    }
+
+    .icon-btn {
+        width: 100%;
+        justify-content: flex-start;
+        border-radius: 12px;
+    }
+
+    .link-btn.secondary {
+        background: linear-gradient(135deg, #4f70ff, #5f60f9);
+        color: #fff;
+        border-color: transparent;
+    }
+
+    .link-btn.secondary:hover {
+        filter: brightness(0.97);
+        transform: none;
+    }
+
+    .home-page,
+    .dashboard-page,
+    .my-items-page {
+        padding-top: 96px;
+    }
+}
+
+.back-text-link {
+    display: inline-block;
+    text-decoration: none;
+    color: #667eea;
+    font-weight: 700;
+    font-size: 15px;
+    padding: 0;
+    background: transparent;
+}
+
+.back-text-link:hover {
+    color: #4f5ed0;
+    text-decoration: underline;
 }
 
 .page-loader {

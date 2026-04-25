@@ -70,21 +70,71 @@ if (isset($_GET['action'])) {
  */
 $item_id = isset($_POST['item_id']) ? (int)$_POST['item_id'] : 0;
 $recipient_id = isset($_POST['recipient_id']) ? (int)$_POST['recipient_id'] : 0;
+$recipient_lost_item_id = isset($_POST['recipient_lost_item_id']) ? (int)$_POST['recipient_lost_item_id'] : 0;
 
-if (!$item_id || !$recipient_id) {
-    echo json_encode(["ok"=>false,"error"=>"Parametre eksik (Item: $item_id, Recipient: $recipient_id)"]);
+if (!$item_id || !$recipient_id || !$recipient_lost_item_id) {
+    echo json_encode(["ok"=>false,"error"=>"Parametre eksik (Found Item: $item_id, Recipient: $recipient_id, Lost Item: $recipient_lost_item_id)"]);
     exit;
 }
 
-// Güncelleme İşlemi
-// Bulunan eşyanın (found) durumunu 'delivered' yapıyoruz ve teslim alan kişiyi kaydediyoruz.
-$stmt = $conn->prepare("UPDATE items SET status='delivered', delivered_to_user_id=?, updated_at=NOW() WHERE id=?");
-$stmt->bind_param("ii", $recipient_id, $item_id);
+// Önce seçilen kayıp ilanı doğrula
+$checkLostStmt = $conn->prepare("SELECT user_id FROM items WHERE id=? AND type='lost' AND status='active'");
+$checkLostStmt->bind_param("i", $recipient_lost_item_id);
+$checkLostStmt->execute();
+$lostResult = $checkLostStmt->get_result();
+$lostItem = $lostResult->fetch_assoc();
+$checkLostStmt->close();
 
-if ($stmt->execute()) {
-    echo json_encode(["ok" => true, "message" => "Eşya başarıyla teslim edildi"]);
-} else {
-    echo json_encode(["ok" => false, "error" => "Veritabanı güncelleme hatası"]);
+if (!$lostItem) {
+    echo json_encode(["ok"=>false,"error"=>"Seçilen kayıp ilan geçersiz veya aktif değil"]);
+    exit;
+}
+
+if ((int)$lostItem['user_id'] !== $recipient_id) {
+    echo json_encode(["ok"=>false,"error"=>"Kayıp ilan sahibi ile seçilen alıcı eşleşmiyor"]);
+    exit;
+}
+
+// Seçilen buluntu ilanı doğrula
+$checkFoundStmt = $conn->prepare("SELECT id FROM items WHERE id=? AND type='found' AND status='active'");
+$checkFoundStmt->bind_param("i", $item_id);
+$checkFoundStmt->execute();
+$foundResult = $checkFoundStmt->get_result();
+$foundItem = $foundResult->fetch_assoc();
+$checkFoundStmt->close();
+
+if (!$foundItem) {
+    echo json_encode(["ok"=>false,"error"=>"Seçilen buluntu ilan geçersiz veya aktif değil"]);
+    exit;
+}
+
+// İki ilanı da tek işlemde sil
+$conn->begin_transaction();
+
+try {
+    $deleteFoundStmt = $conn->prepare("DELETE FROM items WHERE id=? AND type='found'");
+    $deleteFoundStmt->bind_param("i", $item_id);
+    $deleteFoundStmt->execute();
+
+    if ($deleteFoundStmt->affected_rows !== 1) {
+        throw new Exception("Buluntu ilan silinemedi");
+    }
+    $deleteFoundStmt->close();
+
+    $deleteLostStmt = $conn->prepare("DELETE FROM items WHERE id=? AND type='lost'");
+    $deleteLostStmt->bind_param("i", $recipient_lost_item_id);
+    $deleteLostStmt->execute();
+
+    if ($deleteLostStmt->affected_rows !== 1) {
+        throw new Exception("Kayıp ilan silinemedi");
+    }
+    $deleteLostStmt->close();
+
+    $conn->commit();
+    echo json_encode(["ok" => true, "message" => "Teslim tamamlandı. Buluntu ve seçilen kayıp ilan kaldırıldı."]);
+} catch (Exception $e) {
+    $conn->rollback();
+    echo json_encode(["ok" => false, "error" => "Teslim işlemi tamamlanamadı: " . $e->getMessage()]);
 }
 
 $conn->close();

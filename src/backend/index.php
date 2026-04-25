@@ -11,9 +11,9 @@ $isAdmin = ($role === 'admin');
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Öğrenci Paneli - Lost and Found</title>
-    <link rel="stylesheet" href="../frontend/style.css">
+    <link rel="stylesheet" href="../frontend/style.css?v=20260425">
 </head>
-<body>
+<body class="home-page">
     <div class="page-loader" id="pageLoader" aria-label="Yükleniyor" role="status">
         <div class="loader-spinner"></div>
     </div>
@@ -24,7 +24,9 @@ $isAdmin = ($role === 'admin');
             <span>Lost And Found Information System</span>
         </a>
 
-        <div class="nav-actions">
+        <button type="button" class="nav-toggle" aria-label="Menü" aria-expanded="false" aria-controls="navActions">☰</button>
+
+        <div class="nav-actions" id="navActions">
             <?php if ($loggedIn): ?>
                 <div class="auth user">
                     <?php if ($isAdmin): ?>
@@ -66,5 +68,6 @@ $isAdmin = ($role === 'admin');
     </div>
 
     <script src="../frontend/js/page-loader.js"></script>
+    <script src="../frontend/js/nav.js?v=20260425"></script>
 </body>
 </html>

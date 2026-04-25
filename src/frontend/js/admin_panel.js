@@ -2,6 +2,28 @@
 let currentFilter = 'lost';
 let allItems = [];
 let currentDeliveryItem = null;
+let selectedLostItemId = null;
+let activeAttribute = null;
+const CATEGORY_OPTIONS = [
+    { value: 'electronic', label: 'Elektronik' },
+    { value: 'wallet', label: 'Cüzdan/Kartlık' },
+    { value: 'bag', label: 'Çanta' },
+    { value: 'keychain', label: 'Anahtarlık' },
+    { value: 'other', label: 'Diğer' }
+];
+const LOCATION_OPTIONS = [
+    { value: 'bakirkoy', label: 'Bakırköy Kampüs' },
+    { value: 'gayrettepe', label: 'Gayrettepe Kampüs' },
+    { value: 'mahmutbey campus a block', label: 'Mahmutbey Kampüs A Blok' },
+    { value: 'mahmutbey campus d block', label: 'Mahmutbey Kampüs D Blok' }
+];
+const columnFilters = {
+    category: '',
+    location: '',
+    specificDate: '',
+    startDate: '',
+    endDate: ''
+};
 
 // --- SAYFA YÜKLENDİĞİNDE ÇALIŞACAKLAR ---
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,14 +44,38 @@ document.addEventListener('DOMContentLoaded', () => {
     const closeBtn = document.querySelector('.modal-close');
     const confirmBtn = document.getElementById('confirmDelivery');
     const modal = document.getElementById('deliveryModal');
+    const recipientSelect = document.getElementById('recipientSelect');
+    const attributeModal = document.getElementById('attributeFilterModal');
+    const closeAttributeModalBtn = document.getElementById('closeAttributeFilter');
+    const applyAttributeBtn = document.getElementById('applyAttributeFilter');
+    const clearAttributeBtn = document.getElementById('clearAttributeFilter');
 
     if (cancelBtn) cancelBtn.addEventListener('click', closeDeliveryModal);
     if (closeBtn) closeBtn.addEventListener('click', closeDeliveryModal);
     if (confirmBtn) confirmBtn.addEventListener('click', confirmDelivery);
+    if (recipientSelect) {
+        recipientSelect.addEventListener('change', function () {
+            loadRecipientItems(this.value);
+        });
+    }
 
     if (modal) {
         modal.addEventListener('click', function(e) {
             if (e.target === this) closeDeliveryModal();
+        });
+    }
+
+    document.querySelectorAll('.column-filter-btn').forEach((button) => {
+        button.addEventListener('click', () => openAttributeFilter(button.dataset.attr));
+    });
+
+    if (closeAttributeModalBtn) closeAttributeModalBtn.addEventListener('click', closeAttributeFilter);
+    if (applyAttributeBtn) applyAttributeBtn.addEventListener('click', applyAttributeFilter);
+    if (clearAttributeBtn) clearAttributeBtn.addEventListener('click', clearAttributeFilter);
+
+    if (attributeModal) {
+        attributeModal.addEventListener('click', function (e) {
+            if (e.target === this) closeAttributeFilter();
         });
     }
 });
@@ -42,7 +88,8 @@ function fetchItems() {
         .then(data => {
             if (data.ok) {
                 allItems = data.items;
-                renderItems(allItems, currentFilter);
+                renderItems(getVisibleItems());
+                updateColumnFilterButtons();
             } else {
                 console.error(data.error);
             }
@@ -51,32 +98,102 @@ function fetchItems() {
 }
 
 // --- TABLO OLUŞTURMA ---
-function renderItems(items, filter) {
+function isDelivered(item) {
+    return item.delivered_to_user_id != null || item.status === 'delivered';
+}
+
+function getTabFilteredItems(items) {
+    if (currentFilter === 'lost') {
+        return items.filter(item => item.type === 'lost');
+    }
+    if (currentFilter === 'found') {
+        return items.filter(item => item.type === 'found' && !isDelivered(item));
+    }
+    if (currentFilter === 'delivered') {
+        return items.filter(item => isDelivered(item));
+    }
+    return items;
+}
+
+function applyAttributeFilters(items) {
+    return items.filter((item) => {
+        const itemCategory = normalizeCategory(item.category);
+        const itemLocation = normalizeLocation(item.location);
+        const itemDate = item.item_date || '';
+
+        if (columnFilters.category && itemCategory !== normalizeCategory(columnFilters.category)) {
+            return false;
+        }
+
+        if (columnFilters.location && itemLocation !== normalizeLocation(columnFilters.location)) {
+            return false;
+        }
+
+        if (columnFilters.specificDate && itemDate !== columnFilters.specificDate) {
+            return false;
+        }
+
+        if (columnFilters.startDate && itemDate < columnFilters.startDate) {
+            return false;
+        }
+
+        if (columnFilters.endDate && itemDate > columnFilters.endDate) {
+            return false;
+        }
+
+        return true;
+    });
+}
+
+function getVisibleItems() {
+    const searchInput = document.querySelector('#searchInput');
+    const searchTerm = searchInput ? searchInput.value.toLowerCase() : '';
+
+    let filtered = getTabFilteredItems(allItems);
+    filtered = applyAttributeFilters(filtered);
+
+    if (searchTerm) {
+        filtered = filtered.filter((item) => {
+            const searchText = [
+                item.type === 'lost' ? 'kayıp' : 'buluntu',
+                item.title,
+                item.category,
+                item.color,
+                item.location,
+                item.item_date,
+                item.description,
+                item.full_name,
+                item.student_id,
+                item.email,
+                item.status,
+                item.delivered_to_name,
+                item.delivered_to_student_id
+            ]
+                .map((v) => (v === null || v === undefined ? '' : String(v).toLowerCase()))
+                .join(' ');
+
+            return searchText.includes(searchTerm);
+        });
+    }
+
+    return filtered;
+}
+
+function renderItems(items) {
     const tableBody = document.querySelector('#itemsBody');
     if (!tableBody) return;
     
     tableBody.innerHTML = '';
 
-    let filteredItems = items;
-    if (filter === 'lost') {
-        filteredItems = items.filter(item => item.type === 'lost');
-    } else if (filter === 'found') {
-        // Teslim edilmemiş buluntular
-        filteredItems = items.filter(item => item.type === 'found' && (item.status === 'active' || item.delivered_to_user_id == null));
-    } else if (filter === 'delivered') {
-        // Teslim edilmişler
-        filteredItems = items.filter(item => item.delivered_to_user_id != null || item.status === 'delivered');
-    }
-
-    if (filteredItems.length === 0) {
+    if (items.length === 0) {
         tableBody.innerHTML = '<tr><td colspan="9">Bu filtre için ilan bulunamadı.</td></tr>';
         return;
     }
 
-    filteredItems.forEach(item => {
+    items.forEach(item => {
         const row = document.createElement('tr');
         // Sadece 'buluntu' sekmesindeyken 'Teslim Et' butonunu göster
-        const showDeliverBtn = (filter === 'found' && item.type === 'found' && item.status !== 'delivered');
+        const showDeliverBtn = (currentFilter === 'found' && item.type === 'found' && !isDelivered(item));
         
         row.innerHTML = `
             <td>${item.type === 'lost' ? 'Kayıp' : 'Buluntu'}</td>
@@ -106,29 +223,167 @@ function setupFilterButtons() {
 }
 
 function filterSearch() {
-    const searchTerm = document.querySelector('#searchInput').value.toLowerCase();
-    let filtered = allItems;
+    renderItems(getVisibleItems());
+}
 
-    // Önce tab filtresi
-    if (currentFilter === 'lost') {
-        filtered = allItems.filter(item => item.type === 'lost');
-    } else if (currentFilter === 'found') {
-        filtered = allItems.filter(item => item.type === 'found' && item.status !== 'delivered');
-    } else if (currentFilter === 'delivered') {
-        filtered = allItems.filter(item => item.status === 'delivered');
+function uniqueValuesByKey(items, key) {
+    const values = new Set();
+    items.forEach((item) => {
+        if (item[key]) values.add(String(item[key]).trim());
+    });
+    return Array.from(values).sort((a, b) => a.localeCompare(b, 'tr'));
+}
+
+function normalizeCategory(value) {
+    const raw = String(value || '').trim().toLowerCase();
+    if (raw === 'electronic' || raw === 'electronics') return 'electronic';
+    if (raw === 'wallet') return 'wallet';
+    if (raw === 'bag') return 'bag';
+    if (raw === 'keychain' || raw === 'keys') return 'keychain';
+    if (raw === 'other') return 'other';
+    return raw;
+}
+
+function normalizeLocation(value) {
+    const raw = String(value || '').trim().toLowerCase();
+    if (raw === 'bakirkoy' || raw === 'bakırköy campus') return 'bakirkoy';
+    if (raw === 'gayrettepe' || raw === 'gayrettepe campus') return 'gayrettepe';
+    if (raw === 'mahmutbey' || raw === 'mahmutbey campus a block') return 'mahmutbey campus a block';
+    if (raw === 'mahmutbey campus d block') return 'mahmutbey campus d block';
+    return raw;
+}
+
+function getTodayDateISO() {
+    const now = new Date();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    return `${now.getFullYear()}-${month}-${day}`;
+}
+
+function openAttributeFilter(attr) {
+    activeAttribute = attr;
+    const modal = document.getElementById('attributeFilterModal');
+    const title = document.getElementById('attributeFilterTitle');
+    const body = document.getElementById('attributeFilterBody');
+    if (!modal || !title || !body) return;
+
+    if (attr === 'category') {
+        title.textContent = 'Kategori Filtresi';
+        const knownValues = new Set(CATEGORY_OPTIONS.map((o) => o.value));
+        const unknownFromData = uniqueValuesByKey(allItems, 'category')
+            .map((v) => normalizeCategory(v))
+            .filter((v) => v && !knownValues.has(v))
+            .map((v) => ({ value: v, label: v }));
+        const allCategoryOptions = [...CATEGORY_OPTIONS, ...unknownFromData];
+
+        const options = allCategoryOptions
+            .map((opt) => `<option value="${escapeHtml(opt.value)}" ${normalizeCategory(columnFilters.category) === normalizeCategory(opt.value) ? 'selected' : ''}>${escapeHtml(opt.label)}</option>`)
+            .join('');
+        body.innerHTML = `
+            <p class="filter-help">Veritabanındaki kategori değerlerinden seçim yapabilirsiniz.</p>
+            <div class="filter-field">
+                <label for="attributeSelect">Kategori</label>
+                <select id="attributeSelect">
+                    <option value="">Tümü</option>
+                    ${options}
+                </select>
+            </div>
+        `;
+    } else if (attr === 'location') {
+        title.textContent = 'Konum Filtresi';
+        const options = LOCATION_OPTIONS
+            .map((opt) => `<option value="${escapeHtml(opt.value)}" ${normalizeLocation(columnFilters.location) === normalizeLocation(opt.value) ? 'selected' : ''}>${escapeHtml(opt.label)}</option>`)
+            .join('');
+        body.innerHTML = `
+            <p class="filter-help">Sadece seçtiğiniz konumdaki ilanlar listelenir.</p>
+            <div class="filter-field">
+                <label for="attributeSelect">Konum</label>
+                <select id="attributeSelect">
+                    <option value="">Tümü</option>
+                    ${options}
+                </select>
+            </div>
+        `;
+    } else if (attr === 'date') {
+        title.textContent = 'Tarih Filtresi';
+        const today = getTodayDateISO();
+        body.innerHTML = `
+            <p class="filter-help">Tek gün seçebilir veya tarih aralığı belirleyebilirsiniz. Bugünden sonrası seçilemez.</p>
+            <div class="filter-field">
+                <label for="specificDateInput">Belirli Gün</label>
+                <input id="specificDateInput" type="date" max="${today}" value="${columnFilters.specificDate}">
+            </div>
+            <div class="date-grid">
+                <div class="filter-field">
+                    <label for="startDateInput">Başlangıç</label>
+                    <input id="startDateInput" type="date" max="${today}" value="${columnFilters.startDate}">
+                </div>
+                <div class="filter-field">
+                    <label for="endDateInput">Bitiş</label>
+                    <input id="endDateInput" type="date" max="${today}" value="${columnFilters.endDate}">
+                </div>
+            </div>
+        `;
     }
 
-    // Sonra arama terimi filtresi
-    if (searchTerm) {
-        filtered = filtered.filter(item =>
-            item.title.toLowerCase().includes(searchTerm) ||
-            item.category.toLowerCase().includes(searchTerm) ||
-            item.location.toLowerCase().includes(searchTerm) ||
-            item.description.toLowerCase().includes(searchTerm)
-        );
+    modal.classList.remove('hidden');
+}
+
+function closeAttributeFilter() {
+    const modal = document.getElementById('attributeFilterModal');
+    if (modal) modal.classList.add('hidden');
+    activeAttribute = null;
+}
+
+function applyAttributeFilter() {
+    if (!activeAttribute) return;
+
+    if (activeAttribute === 'category' || activeAttribute === 'location') {
+        const select = document.getElementById('attributeSelect');
+        const value = select ? select.value.trim() : '';
+        columnFilters[activeAttribute] = value;
+    } else if (activeAttribute === 'date') {
+        const specificDateInput = document.getElementById('specificDateInput');
+        const startDateInput = document.getElementById('startDateInput');
+        const endDateInput = document.getElementById('endDateInput');
+        const today = getTodayDateISO();
+        const selectedSpecificDate = specificDateInput ? specificDateInput.value : '';
+        const selectedStartDate = startDateInput ? startDateInput.value : '';
+        const selectedEndDate = endDateInput ? endDateInput.value : '';
+
+        columnFilters.specificDate = selectedSpecificDate && selectedSpecificDate <= today ? selectedSpecificDate : '';
+        columnFilters.startDate = selectedStartDate && selectedStartDate <= today ? selectedStartDate : '';
+        columnFilters.endDate = selectedEndDate && selectedEndDate <= today ? selectedEndDate : '';
     }
 
-    renderItems(filtered, currentFilter);
+    updateColumnFilterButtons();
+    closeAttributeFilter();
+    filterSearch();
+}
+
+function clearAttributeFilter() {
+    if (!activeAttribute) return;
+
+    if (activeAttribute === 'category' || activeAttribute === 'location') {
+        columnFilters[activeAttribute] = '';
+    } else if (activeAttribute === 'date') {
+        columnFilters.specificDate = '';
+        columnFilters.startDate = '';
+        columnFilters.endDate = '';
+    }
+
+    updateColumnFilterButtons();
+    closeAttributeFilter();
+    filterSearch();
+}
+
+function updateColumnFilterButtons() {
+    const hasDateFilter = Boolean(columnFilters.specificDate || columnFilters.startDate || columnFilters.endDate);
+    document.querySelectorAll('.column-filter-btn').forEach((btn) => {
+        const attr = btn.dataset.attr;
+        const active = (attr === 'date' && hasDateFilter) || (attr !== 'date' && Boolean(columnFilters[attr]));
+        btn.classList.toggle('active', active);
+    });
 }
 
 // --- MODAL İŞLEMLERİ (TESLİMAT) ---
@@ -147,8 +402,14 @@ function closeDeliveryModal() {
     const modal = document.getElementById('deliveryModal');
     if (modal) modal.classList.add('hidden');
     currentDeliveryItem = null;
+    selectedLostItemId = null;
     const select = document.getElementById('recipientSelect');
     if (select) select.innerHTML = '<option value="">Seçiniz...</option>';
+    const itemSelect = document.getElementById('recipientItemSelect');
+    if (itemSelect) {
+        itemSelect.disabled = true;
+        itemSelect.innerHTML = '<option value="">Önce kayıp ilan sahibini seçiniz</option>';
+    }
 }
 
 function loadRecipients() {
@@ -156,6 +417,11 @@ function loadRecipients() {
     if (!select) return;
     
     select.innerHTML = '<option value="">Yükleniyor...</option>';
+    const itemSelect = document.getElementById('recipientItemSelect');
+    if (itemSelect) {
+        itemSelect.disabled = true;
+        itemSelect.innerHTML = '<option value="">Önce kayıp ilan sahibini seçiniz</option>';
+    }
 
     // Daha önce konuştuğumuz deliver_item.php?action=get_users endpointini kullanıyoruz
     fetch('../backend/deliver_item.php?action=get_users')
@@ -179,14 +445,62 @@ function loadRecipients() {
         });
 }
 
+function loadRecipientItems(userId) {
+    const itemSelect = document.getElementById('recipientItemSelect');
+    if (!itemSelect) return;
+
+    selectedLostItemId = null;
+
+    if (!userId) {
+        itemSelect.disabled = true;
+        itemSelect.innerHTML = '<option value="">Önce kayıp ilan sahibini seçiniz</option>';
+        return;
+    }
+
+    itemSelect.disabled = true;
+    itemSelect.innerHTML = '<option value="">Yükleniyor...</option>';
+
+    fetch(`../backend/deliver_item.php?action=get_user_items&user_id=${encodeURIComponent(userId)}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.ok && data.items.length > 0) {
+                itemSelect.innerHTML = '<option value="">Kayıp ilan seçiniz...</option>';
+                data.items.forEach(item => {
+                    const option = document.createElement('option');
+                    option.value = item.id;
+                    option.textContent = escapeHtml(item.title);
+                    itemSelect.appendChild(option);
+                });
+                itemSelect.disabled = false;
+            } else {
+                itemSelect.innerHTML = '<option value="">Bu kullanıcıya ait aktif kayıp ilan bulunamadı</option>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            itemSelect.innerHTML = '<option value="">Kayıp ilanlar yüklenemedi</option>';
+        });
+
+    itemSelect.onchange = function () {
+        selectedLostItemId = this.value ? Number(this.value) : null;
+    };
+}
+
 function confirmDelivery() {
     if (!currentDeliveryItem) return;
 
     const recipientSelect = document.getElementById('recipientSelect');
     const recipientId = recipientSelect.value;
+    const recipientItemSelect = document.getElementById('recipientItemSelect');
+    const recipientLostItemId = recipientItemSelect ? recipientItemSelect.value : '';
 
     if (!recipientId) {
-        alert('Lütfen teslim alıcıyı seçiniz');
+        alert('Lütfen kayıp ilan sahibini seçiniz');
+        return;
+    }
+
+    if (!recipientLostItemId) {
+        alert('Lütfen teslim edilecek kayıp ilanı seçiniz');
         return;
     }
 
@@ -198,6 +512,7 @@ function confirmDelivery() {
     const formData = new FormData();
     formData.append('item_id', currentDeliveryItem);
     formData.append('recipient_id', recipientId);
+    formData.append('recipient_lost_item_id', recipientLostItemId);
 
     fetch('../backend/deliver_item.php', {
         method: 'POST',

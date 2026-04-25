@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Öğrenci Paneli - Lost and Found</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=20260425">
 </head>
 <body class="dashboard-page">
     <nav class="top-nav">
@@ -13,7 +13,9 @@
             <span>Lost And Found Information System</span>
         </a>
 
-        <div class="nav-actions">
+        <button type="button" class="nav-toggle" aria-label="Menü" aria-expanded="false" aria-controls="navActions">☰</button>
+
+        <div class="nav-actions" id="navActions">
             <div class="auth user">
                 <a href="../backend/profile.php" class="icon-btn" title="Profil">👤 Profil</a>
                 <a href="../backend/logout.php" class="link-btn secondary">Çıkış Yap</a>
@@ -29,6 +31,12 @@
             <a href="report_item.html?type=lost" class="main-btn btn-lost">Eşyamı Kaybettim</a>
             <a href="report_item.html?type=found" class="main-btn btn-found">Eşya Buldum</a>
         </div>
+
+        <div class="footer-links">
+            <a href="../backend/index.php" class="back-text-link">← Geri Dön</a>
+        </div>
     </div>
+
+    <script src="js/nav.js?v=20260425"></script>
 </body>
 </html>

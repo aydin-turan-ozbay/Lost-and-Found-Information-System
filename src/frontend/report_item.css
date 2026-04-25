@@ -59,3 +59,14 @@
             border: none;
             font-weight: bold;
         }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 24px 12px;
+            }
+
+            .container {
+                max-width: 100%;
+                padding: 18px 12px;
+            }
+        }
