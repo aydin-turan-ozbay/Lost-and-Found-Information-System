@@ -171,6 +171,7 @@ function getVisibleItems() {
                 item.student_id,
                 item.email,
                 item.status,
+                item.image_path,
                 item.delivered_to_name,
                 item.delivered_to_student_id
             ]
@@ -200,15 +201,29 @@ function renderItems(items) {
         const showDeliverBtn = (currentFilter === 'found' && item.type === 'found' && !isDelivered(item));
         
         row.innerHTML = `
-            <td>${item.type === 'lost' ? 'Lost' : 'Found'}</td>
-            <td>${escapeHtml(item.title)}</td>
-            <td>${escapeHtml(item.category)}</td>
-            <td>${escapeHtml(item.color || '-')}</td>
-            <td>${escapeHtml(item.location)}</td>
-            <td>${item.item_date}</td>
-            <td>${escapeHtml(item.description)}</td>
-            <td>${escapeHtml(item.full_name)} (${item.student_id})</td>
-            <td>${showDeliverBtn ? `<button class="deliver-btn btn-deliver" onclick="openDeliveryModal(${item.id}, '${escapeHtml(item.title)}')">✓ Deliver</button>` : '-'}</td>
+    <td>${item.type === 'lost' ? 'Lost' : 'Found'}</td>
+    <td>${escapeHtml(item.title)}</td>
+    <td>${escapeHtml(item.category)}</td>
+    <td>${escapeHtml(item.color || '-')}</td>
+    <td>${escapeHtml(item.location)}</td>
+    <td>${item.item_date}</td>
+
+    <td>${escapeHtml(item.description)}</td>
+
+    <td>
+        ${item.image_path 
+            ? `<img src="../${escapeHtml(item.image_path)}" alt="Item Image" style="width:50px;height:50px;object-fit:cover;border-radius:6px;">`
+            : '-'
+        }
+    </td>
+
+    <td>${escapeHtml(item.full_name)} (${item.student_id})</td>
+
+    <td>
+        ${showDeliverBtn 
+            ? `<button class="deliver-btn btn-deliver" onclick="openDeliveryModal(${item.id}, '${escapeHtml(item.title)}')">✓ Deliver</button>` 
+            : '-'}
+    </td>
         `;
         tableBody.appendChild(row);
     });
