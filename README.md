@@ -6,7 +6,7 @@ You can watch the demo video here:
 🔗 https://www.youtube.com/watch?v=qviwX3ozxsQ
 
 ## 📁 GitHub Repository
-The URL of the GitHub repository is here:
+The URL of the GitHub repository is here:   
 🔗 https://github.com/aydin-turan-ozbay/Lost-and-Found-Information-System
 
 ## 👥 Team Members
