@@ -273,7 +273,7 @@ function getOwnerCellContent(item) {
 
     const recipientName = escapeHtml(item.delivered_to_name || '-');
     const recipientStudentId = item.delivered_to_student_id ? ` (${escapeHtml(item.delivered_to_student_id)})` : '';
-    return `${creator} → ${recipientName}${recipientStudentId}`;
+    return `${recipientName}${recipientStudentId}`;
 }
 
 function uniqueValuesByKey(items, key) {

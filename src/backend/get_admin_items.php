@@ -36,9 +36,11 @@ if ($type === 'all') {
     // Get all items with user information
     $sql = "SELECT i.id, i.user_id, i.title, i.category, i.color, i.location, i.item_date, 
                    i.description, i.type, i.status, i.image_path, i.delivered_to_user_id,
-                   u.full_name, u.student_id, u.email
+                   u.full_name, u.student_id, u.email,
+                   du.full_name as delivered_to_name, du.student_id as delivered_to_student_id
             FROM items i
             LEFT JOIN users u ON i.user_id = u.id
+            LEFT JOIN users du ON i.delivered_to_user_id = du.id
             WHERE (i.location LIKE '%$location%' OR '$location' = '')
               AND (i.category LIKE '%$category%' OR '$category' = '')
             ORDER BY i.created_at DESC";
