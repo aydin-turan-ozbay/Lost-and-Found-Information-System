@@ -56,14 +56,14 @@
                             <th>Date <button type="button" class="column-filter-btn" data-attr="date" aria-label="Filter date"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 5h18l-7 8v5l-4 2v-7L3 5z"/></svg></button></th>
                             <th>Description</th>
                             <th>Image</th>
-                            <th>Created By</th>
+                            <th id="ownerColumnHeader">Created By</th>
                             <th>Action</th>
                         </tr>
                     </thead>
 
                     <tbody id="itemsBody">
                         <tr>
-                            <td colspan="9">Loading...</td>
+                            <td colspan="10">Loading...</td>
                         </tr>
                     </tbody>
                 </table>
@@ -104,6 +104,18 @@
             <div class="modal-footer">
                 <button type="button" id="clearAttributeFilter">Clear</button>
                 <button type="button" id="applyAttributeFilter">Apply</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="imagePreviewModal" class="modal hidden">
+        <div class="modal-content image-preview-content">
+            <div class="modal-header">
+                <h3>Image Preview</h3>
+                <button type="button" class="modal-close" id="closeImagePreview" aria-label="Close">&times;</button>
+            </div>
+            <div class="modal-body image-preview-body">
+                <img id="previewImage" src="" alt="Preview">
             </div>
         </div>
     </div>

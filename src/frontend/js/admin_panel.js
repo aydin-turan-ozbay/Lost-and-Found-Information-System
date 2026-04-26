@@ -49,6 +49,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const modal = document.getElementById('deliveryModal');
     const recipientSelect = document.getElementById('recipientSelect');
     const attributeModal = document.getElementById('attributeFilterModal');
+    const imagePreviewModal = document.getElementById('imagePreviewModal');
+    const closeImagePreviewBtn = document.getElementById('closeImagePreview');
     const closeAttributeModalBtn = document.getElementById('closeAttributeFilter');
     const applyAttributeBtn = document.getElementById('applyAttributeFilter');
     const clearAttributeBtn = document.getElementById('clearAttributeFilter');
@@ -82,6 +84,16 @@ document.addEventListener('DOMContentLoaded', () => {
             if (e.target === this) closeAttributeFilter();
         });
     }
+
+    if (closeImagePreviewBtn) closeImagePreviewBtn.addEventListener('click', closeImagePreview);
+    if (imagePreviewModal) {
+        imagePreviewModal.addEventListener('click', function (e) {
+            if (e.target === this) closeImagePreview();
+        });
+    }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closeImagePreview();
+    });
 });
 
 // --- DATA FETCHING ---
@@ -92,6 +104,7 @@ function fetchItems() {
             if (data.ok) {
                 allItems = data.items;
                 renderItems(getVisibleItems());
+                updateOwnerColumnHeader();
                 updateColumnFilterButtons();
             } else {
                 console.error(data.error);
@@ -212,12 +225,12 @@ function renderItems(items) {
 
     <td>
         ${item.image_path 
-            ? `<img src="../${escapeHtml(item.image_path)}" alt="Item Image" style="width:50px;height:50px;object-fit:cover;border-radius:6px;">`
+            ? `<img class="preview-thumb" src="../${item.image_path}" alt="Item Image" style="width:50px;height:50px;object-fit:cover;border-radius:6px;" onclick="openImagePreview(this.src)">`
             : '-'
         }
     </td>
 
-    <td>${escapeHtml(item.full_name)} (${item.student_id})</td>
+    <td>${getOwnerCellContent(item)}</td>
 
     <td>
         ${showDeliverBtn 
@@ -242,7 +255,25 @@ function setupFilterButtons() {
 }
 
 function filterSearch() {
+    updateOwnerColumnHeader();
     renderItems(getVisibleItems());
+}
+
+function updateOwnerColumnHeader() {
+    const header = document.getElementById('ownerColumnHeader');
+    if (!header) return;
+    header.textContent = currentFilter === 'delivered' ? 'Delivered By ' : 'Created By';
+}
+
+function getOwnerCellContent(item) {
+    const creator = `${escapeHtml(item.full_name || '-')}${item.student_id ? ` (${escapeHtml(item.student_id)})` : ''}`;
+    if (currentFilter !== 'delivered') {
+        return creator;
+    }
+
+    const recipientName = escapeHtml(item.delivered_to_name || '-');
+    const recipientStudentId = item.delivered_to_student_id ? ` (${escapeHtml(item.delivered_to_student_id)})` : '';
+    return `${creator} → ${recipientName}${recipientStudentId}`;
 }
 
 function uniqueValuesByKey(items, key) {
@@ -353,6 +384,21 @@ function closeAttributeFilter() {
     const modal = document.getElementById('attributeFilterModal');
     if (modal) modal.classList.add('hidden');
     activeAttribute = null;
+}
+
+function openImagePreview(src) {
+    const modal = document.getElementById('imagePreviewModal');
+    const preview = document.getElementById('previewImage');
+    if (!modal || !preview || !src) return;
+    preview.src = src;
+    modal.classList.remove('hidden');
+}
+
+function closeImagePreview() {
+    const modal = document.getElementById('imagePreviewModal');
+    const preview = document.getElementById('previewImage');
+    if (modal) modal.classList.add('hidden');
+    if (preview) preview.src = '';
 }
 
 function applyAttributeFilter() {
@@ -569,3 +615,5 @@ function escapeHtml(text) {
     };
     return text.replace(/[&<>"']/g, m => map[m]);
 }
+
+window.openImagePreview = openImagePreview;
